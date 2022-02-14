@@ -1,10 +1,21 @@
 const { Barber, BarberLocation } = require("../models/index");
+const Redis = require("ioredis");
+const redis = new Redis();
+
 
 const getBarbers = async (req, res) => {
+
   try {
-    const barbers = await Barber.findAll();
-    if (barbers) {
-      res.status(200).json(barbers);
+    const barbersCache = await redis.get("barbers")
+    if(barbersCache){
+      res.status(200).json(JSON.parse(barbersCache))
+    }else{
+      const barbers = await Barber.findAll();
+      if (barbers) {
+        await redis.set("barbers",JSON.stringify(barbers))
+        res.status(200).json(barbers);
+      }
+
     }
   } catch (err) {
     res.status(500).json(err);
@@ -27,6 +38,7 @@ const postBarber = async (req, res) => {
   try {
     const barber = await Barber.create({ name, email, password, phoneNumber });
     if (barber) {
+      await redis.del("barbers");
       res.status(201).json(barber);
     }
   } catch (err) {
