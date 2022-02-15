@@ -5,30 +5,33 @@ function AboutUs() {
   return (
     <>
       <div className="bg-white min-h-screen">
-        <div className="flex justify-end flex-row">
-          <div className="flex h-screen flex-col">
-            <ul className="flex flex-row m-auto">
-              <Fade left cascade>
-                <li className="m-auto text-right">
-                  <p className="font-bold text-6xl tracking-wider mr-10 mb-4">
-                    ABOUT US
-                  </p>
-                  <p className="font-light text-xl mr-10 mb-2">
-                    SHAVETIF8 STUDIO TERBENTUK PADA TAHUN 2017. SHAVETIF8 STUDIO
-                  </p>
-                  <p className="font-light text-xl mr-10 mb-2">
-                    MERUPAKAN TEMPAT CUKUR RAMBUT YANG MEMPUNYAI KONSEP
-                  </p>
-                  <p className="font-light text-xl mr-10 mb-2">
-                    MENGGABUNGKAN ANTARA BARBERSHOP DAN SALON.
-                  </p>
-                </li>
-                <li>
+        <div className="flex justify-end">
+          <div className="flex h-screen">
+            <ul className="flex flex-col m-auto">
+              <Fade right cascade>
+                <li className="flex justify-center">
                   <img
-                    className="w-auto mr-24"
+                    className="w-10/12"
                     alt="about us"
                     src="https://images.unsplash.com/photo-1578390432942-d323db577792?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80"
                   />
+                </li>
+                <li className="m-auto text-center ml-8 mt-4">
+                  <p className="font-bold text-4xl tracking-wider mr-10 mb-4">
+                    ABOUT US
+                  </p>
+                  <p className="font-light text-xs mr-10 mb-2">
+                    SHAVETIF8 STUDIO TERBENTUK PADA TAHUN 2017.
+                  </p>
+                  <p className="font-light text-xs mr-10 mb-2">
+                    SHAVETIF8 STUDIO MERUPAKAN TEMPAT CUKUR RAMBUT
+                  </p>
+                  <p className="font-light text-xs mr-10 mb-2">
+                    YANG MEMPUNYAI KONSEP MENGGABUNGKAN ANTARA
+                  </p>
+                  <p className="font-light text-xs mr-10 mb-2">
+                    BARBERSHOP DAN SALON.
+                  </p>
                 </li>
               </Fade>
             </ul>
