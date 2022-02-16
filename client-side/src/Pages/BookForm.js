@@ -151,6 +151,7 @@ function BookForm() {
           <div className="px-1 rounded-sm-2">
             <MapContainer
               center={[centerLat, centerLong]}
+              style={{height: 250}}
               id="mapid"
               zoom={13}
               className="max-w-full rounded px-2"

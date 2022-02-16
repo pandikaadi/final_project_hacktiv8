@@ -10,7 +10,7 @@ function LocationForm() {
   return (
     <>
       <div className=" w-full relative">
-        {/* <img
+        <img
           src={image2}
           alt="form"
           className="w-full h-full object-cover absolute mix-blend-overlay"
