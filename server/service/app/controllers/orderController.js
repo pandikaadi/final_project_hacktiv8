@@ -32,7 +32,6 @@ const postOrder = async (req, res) => {
     } else {
     }
   } catch (err) {
-    console.log(err);
     if (err.name === "SequelizeForeignKeyConstraintError") {
       res.status(400).json({ message: "bad request" });
     } else {
@@ -49,9 +48,11 @@ const postOrder = async (req, res) => {
   }
 };
 
-const getOrders = async (req, res) => {
+const getOrdersByUserId = async (req, res) => {
+  const { id } = req.currentUser;
   try {
     const orders = await Order.findAll({
+      where: { userId: id },
       include: [{ model: User }, { model: Barber }, { model: Service }],
     });
     if (orders) {
@@ -76,5 +77,23 @@ const getOrderByid = async (req, res) => {
     res.status(500).json(err);
   }
 };
-
-module.exports = { postOrder, getOrders, getOrderByid };
+const deleteOrder = async (req,res) => {
+  console.log('jalan 4001');
+  const {id} = req.params
+  try {
+    const order = await Order.findOne({
+      where: { id: id }
+    });
+    if (order) {
+      await Order.destroy({
+        where:{id:id}
+      })
+      res.status(200).json({message:'Order success to delete'});
+    }else{
+      res.status(404).json({message:'Order not found'});
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+}
+module.exports = { postOrder, getOrdersByUserId, getOrderByid,deleteOrder };

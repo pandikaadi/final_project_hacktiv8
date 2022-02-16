@@ -1,7 +1,7 @@
-const app = require('../app')
+const app = require('../../../../app')
 const request = require('supertest')
-const { User} = require('../models')
-const { createToken} = require("../helpers/jwt")
+const { User} = require('../../../../models')
+const { createToken} = require("../../../../helpers/jwt")
 
 const userTest ={
   username:"anggorego",
