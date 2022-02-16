@@ -1,0 +1,6 @@
+#mapid {
+  height: 100vh;
+}
+.leaflet-popup-tip {
+  display: none;
+}

@@ -1,16 +1,20 @@
 import React from "react";
 import Fade from "react-reveal/Fade";
+import { useNavigate } from "react-router-dom";
 import Footer from "./Footer";
 import image2 from "../assets/image2.png";
 
 function LocationForm() {
+  const navigate = useNavigate();
+
   return (
     <>
       <div className=" w-full relative">
         {/* <img
           src={image2}
-          className="w-full object-cover absolute mix-blend-overlay"
-        /> */}
+          alt="form"
+          className="w-full h-full object-cover absolute mix-blend-overlay"
+        />
         <div className="flex h-screen">
           <Fade top cascade>
             <form className="m-auto relative">
@@ -22,7 +26,10 @@ function LocationForm() {
                   <option value={"jakarta"}>Jakarta</option>
                   <option value={"bandung"}>Bandung</option>
                 </select>
-                <button className="bg-yellow-600 hover:bg-yellow-700 text-white rounded mt-4">
+                <button
+                  onClick={() => navigate("/map")}
+                  className="bg-yellow-600 hover:bg-yellow-700 text-white rounded mt-4"
+                >
                   SHAVE IT
                 </button>
               </div>
