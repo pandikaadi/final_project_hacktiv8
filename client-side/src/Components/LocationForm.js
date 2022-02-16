@@ -10,7 +10,7 @@ function LocationForm() {
   return (
     <>
       <div className=" w-full relative">
-        {/* <img
+        <img
           src={image2}
           alt="form"
           className="w-full h-full object-cover absolute mix-blend-overlay"
@@ -27,7 +27,7 @@ function LocationForm() {
                   <option value={"bandung"}>Bandung</option>
                 </select>
                 <button
-                  onClick={() => navigate("/map")}
+                  onClick={() => navigate("/book")}
                   className="bg-yellow-600 hover:bg-yellow-700 text-white rounded mt-4"
                 >
                   SHAVE IT
