@@ -6,11 +6,11 @@ import image2 from "../assets/image2.png";
 function LocationForm() {
   return (
     <>
-      <div className=" w-full h-screen relative">
-        <img
+      <div className=" w-full relative">
+        {/* <img
           src={image2}
-          className="w-full h-full object-cover absolute mix-blend-overlay"
-        />
+          className="w-full object-cover absolute mix-blend-overlay"
+        /> */}
         <div className="flex h-screen">
           <Fade top cascade>
             <form className="m-auto relative">
