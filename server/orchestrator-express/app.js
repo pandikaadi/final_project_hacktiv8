@@ -5,6 +5,8 @@ const port = 4000;
 const userController = require("./controllers/user");
 const orderController = require("./controllers/order");
 const barberController = require("./controllers/barber");
+const coordinateController = require('./controllers/coordinate')
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -20,6 +22,8 @@ app.get("/barbers", barberController.getBarbers);
 app.get("/barbers/:id", barberController.getBarberById);
 app.post("/barbers", barberController.postBarber);
 app.post("/barbers/login", barberController.loginBarber);
+app.post('/coordinates', coordinateController.translateCoordinate )
+
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);

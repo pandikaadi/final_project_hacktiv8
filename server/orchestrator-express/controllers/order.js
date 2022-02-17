@@ -1,5 +1,6 @@
 const axios = require("axios");
 const { verifyToken } = require("../helpers/jwt");
+
 const getOrders = async (req, res) => {
   const token = req.headers.access_token;
   try {
@@ -57,7 +58,7 @@ const postOrder = async (req, res) => {
           url: `http://localhost:4002/users/${payload.id}`,
         });
         if (user) {
-          res.status(201).json({ orders, userMongo:user });
+          res.status(201).json({ orders, userMongo: user });
         }
       }
     } else {
@@ -80,6 +81,20 @@ const deleteOrder = async (req, res) => {
     });
     res.status(200).json(orders);
   } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+const translateCoordinate = async (req, res) => {
+  const { lat, long } = req.body;
+
+  try {
+    const translated = await axios({
+      method: "get",
+      url: `https://nominatim.openstreetmap.org/reverse?lat=${+lat}&lon=${+long}&format=json`,
+    });
+    res.status(200).json(translated.data.display_name);
+  } catch (error) {
     res.status(500).json(err);
   }
 };

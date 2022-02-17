@@ -61,3 +61,6 @@ POST /barbers/login      => 4001 POST /barbers/login
 DELETE /barbers/:id      => 40001 DELETE /barbers/:id
                         => 4001 PUT /barbers/:id
 
+coordinates 
+
+POST /coorrdinates  
