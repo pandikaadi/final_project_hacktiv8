@@ -7,6 +7,7 @@
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
     "leaflet": "^1.7.1",
+    "proj4": "^2.7.5",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-leaflet": "^3.2.5",
@@ -16,6 +17,7 @@
     "react-scripts": "5.0.0",
     "redux": "^4.1.2",
     "redux-thunk": "^2.4.1",
+    "utm-latlng": "^1.0.6",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
