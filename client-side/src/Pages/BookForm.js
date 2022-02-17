@@ -10,6 +10,21 @@ import {
   Popup,
 } from "react-leaflet";
 import "../App.css";
+import { renderToStaticMarkup } from "react-dom/server";
+import { divIcon } from "leaflet";
+const iconMarkup = renderToStaticMarkup(
+  <i className="fa-solid fa-map-pin fa-4x"></i>
+);
+const customMarkerIcon = divIcon({
+  html: iconMarkup
+});
+// import marker from '../../Assets/icons/Location.svg';
+// import { Icon } from 'leaflet'
+// const myIcon = new Icon({
+//  iconUrl: marker,
+//  iconSize: [32,32]
+// })
+
 
 function BookForm() {
   const [centerLat, setCenterLat] = useState(-6.940116143023617);
@@ -31,17 +46,19 @@ function BookForm() {
     });
 
     return position === null ? null : (
-      <Marker position={position}>
+      <Marker icon={customMarkerIcon} position={position}>
         <Popup>You are here</Popup>
       </Marker>
     );
   }
   function HandleCenter({ mapCenter }) {
+    
     const map = useMap();
     map.setView(mapCenter);
     return null;
   }
-  function handleLocateButton() {
+  function handleLocateButton(e) {
+    e.preventDefault()
     // console.log(`hehe`);
     // console.log(position);
 
@@ -58,25 +75,40 @@ function BookForm() {
   }
   return (
     <>
-      <div className="flex justify-center text-neutral-300 flex-col bg-zinc-800 min-h-screen max-w-full">
-        <div className="max-w-full">
-          <div className="w-full">
-            <form className="flex flex-col items-center mt-3">
-              <div className="flex flex-col w-3/4 mb-2">
-                <label className="mb-1 text-neutral-300">Name</label>
-                <input className="border-2 border-black h-7 rounded flex items-center" />
+      <div className="flex justify-center bg-zinc-800 pt-10 min-h-screen">
+        <Fade>
+          <div className="m-auto">
+            {/* <div className="flex justify-end">
+              <div className="flex items-start">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
               </div>
-              <div className="flex flex-col w-3/4 mb-2">
-                <label className="mb-1 text-neutral-300">Phone Number</label>
-                <input className="border-2 px-2 border-black rounded flex h-7 items-center" />
+            </div> */}
+            <form className="pb-4  space-y-2 lg:px-2 sm:pb-6 xl:pb-8">
+              <div className="flex justify-center tracking-widest">
+                <h3 className="text-4xl font-light text-white dark:text-white pb-4">
+                  BOOK NOW
+                </h3>
               </div>
-              <div className="flex flex-col w-3/4 mb-2">
-                <label className="mb-1 text-neutral-300">Address</label>
-                <textarea className="border-2 px-2 border-black rounded h-21 flex items-center"></textarea>
+              
+              <div className="flex justify-center mb-2">
+                <input
+                  type="date"
+                  className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                />
               </div>
-              <div className="flex flex-col w-3/4 mb-2">
-                <label className="mb-1 text-neutral-300">Schedule</label>
-                <select className="border-2 rounded border-black h-7 px-2">
+              <div className="flex justify-center mb-2">
+                <select className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
                   <option>08.00 - 10.00</option>
                   <option>10.00 - 12.00</option>
                   <option>13.00 - 15.00</option>
@@ -84,100 +116,58 @@ function BookForm() {
                   <option>17.00 - 19.00</option>
                 </select>
               </div>
-              <div className="flex flex-col w-3/4 mb-2">
-                <label className="mb-1 text-neutral-300">Service</label>
-                <select className="border-2 rounded border-black h-7 px-2">
-                  <option className="px-2">Basic Cut - Rp. 75.000</option>
-                  <option className="px-2">
-                    Full Cut (Basic Cut + Beard & Mustache Trim) - Rp. 100.000
-                  </option>
-                  <option className="px-2">Buzz Cut - Rp. 40.000</option>
-                </select>
-              </div>
-              <div className="flex flex-col w-3/4 mb-2">
-                <label className="mb-1 text-neutral-300">Date</label>
-                <input
-                  type="date"
-                  className="border-2 px-2 h-7 border-black rounded flex items-center"
+              <div className="flex justify-center">
+                <textarea
+                  type="email"
+                  name="email"
+                  id="email"
+                  className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                  placeholder="address"
+                  required
                 />
               </div>
-              <div>
-                <div className="flex flex-row flex-wrap mx-auto content-center justify-evenly">
-                  <div className="rounded-md border-2 m-3 p-2 h-35">
-                    tukang cukur 1
-                  </div>
-                  <div className="rounded-md border-2 m-3 p-2 h-32">
-                    tukang cukur 1
-                  </div>
-                  <div className="rounded-md border-2 m-3 p-2 h-32">
-                    tukang cukur 1
-                  </div>
-                  <div className="rounded-md border-2 m-3 p-2 h-32">
-                    tukang cukur 1
-                  </div>
-                  <div className="rounded-md border-2 m-3 p-2 h-32">
-                    tukang cukur 1
-                  </div>
-                  <div className="rounded-md border-2 m-3 p-2 h-32">
-                    tukang cukur 1
-                  </div>
-                  <div className="rounded-md border-2 m-3 p-2 h-32">
-                    tukang cukur 1
-                  </div>
-                  <div className="rounded-md border-2 m-3 p-2 h-32">
-                    tukang cukur 1
-                  </div>
-                  <div className="rounded-md border-2 m-3 p-2 h-32">
-                    tukang cukur 1
-                  </div>
-                  <div className="rounded-md border-2 m-3 p-2 h-32">
-                    tukang cukur 1
-                  </div>
-                  <div className="rounded-md border-2 m-3 p-2 h-32">
-                    tukang cukur 1
-                  </div>
+              
+              <div className="justify-center mb-2 rounded-sm-2">
+                <div className="flex content-center my-3">
+                  <button
+                    onClick={handleLocateButton}
+                    className=" self-center content-center mx-auto text-white bg-indigo-500 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    Locate Yourself
+                  </button>
                 </div>
-              </div>
-            </form>
-          </div>
-          <div className="flex content-center my-3">
-            <button
-              onClick={handleLocateButton}
-              className="rounded text-stone-700 self-center content-center mx-auto bg-white w-1/5"
-            >
-              Click Me
-            </button>
-          </div>
-          <div className="px-1 rounded-sm-2">
-            <MapContainer
-              center={[centerLat, centerLong]}
-              id="mapid"
-              zoom={13}
-              className="max-w-full rounded px-2"
-            >
-              <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-              <LocationMarker />
-              <HandleCenter mapCenter={position} />
-              {/* <Marker position={[51.505, -0.09]}>
+                <MapContainer
+                  center={[centerLat, centerLong]}
+                  style={{ height: 350 }}
+                  id="mapid"
+                  zoom={13}
+                  className="max-w-7/8 rounded"
+                >
+                  <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
+                  <LocationMarker />
+                  <HandleCenter mapCenter={position} />
+                  {/* <Marker position={[51.505, -0.09]}>
                 <Popup>
                   A pretty CSS3 popup. <br /> Easily customizable.
                 </Popup>
               </Marker> */}
-            </MapContainer>
+                </MapContainer>
+              </div>
+              
+              <div className="flex justify-center mb-2">
+                <button
+                  type="submit"
+                  className="w-3/4 mx-auto mt-2 text-white bg-indigo-500 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                >
+                  Order
+                </button>
+              </div>
+            </form>
           </div>
-          <div className="mb-5 items-center content-center text-center">
-            <div>Distance: 4 km</div>
-            <div>Total Price: Rp. 75.000 + Rp. 20.000 = Rp. Rp.95.000</div>
-            <div className="my-2">
-              <button className="rounded border-2 p-1 px-5 bg-transparent text-neutral-300 font-bold border-neutral-300 ">
-                Submit
-              </button>
-            </div>
-          </div>
-        </div>
+        </Fade>
       </div>
     </>
   );
