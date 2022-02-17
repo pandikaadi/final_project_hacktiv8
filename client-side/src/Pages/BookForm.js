@@ -212,7 +212,7 @@ function BookForm() {
                 <div className="flex content-center my-3">
                   <button
                     onClick={handleLocateButton}
-                    className=" self-center content-center mx-auto text-white bg-indigo-500 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    className=" self-center content-center mx-auto text-white bg-transparent border-white border-2 hover:bg-slate-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   >
                     Locate Yourself
                   </button>
@@ -247,7 +247,7 @@ function BookForm() {
               <div className="flex justify-center mb-2">
                 <button
                   type="submit"
-                  className="w-3/4 mx-auto mt-2 text-white bg-indigo-500 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  className="w-3/4 mx-auto mt-2 text-white bg-transparent border-white border-2 hover:bg-slate-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
                   Order
                 </button>
