@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Placemark>
+    <name>Contoh 1</name>
+    <description>Deskripsi 1.</description>
+    <Point>
+      <coordinates>107.700402,-6.925742,0</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Contoh 2</name>
+    <description>Deskripsi 2.</description>
+    <Point>
+      <coordinates>107.644381,-6.92817,0</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Contoh 3</name>
+    <description>Deskripsi 3.</description>
+    <Point>
+      <coordinates>107.601046,-6.910634,0</coordinates>
+    </Point>
+  </Placemark>
+</kml>
