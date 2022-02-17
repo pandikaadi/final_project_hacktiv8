@@ -3,6 +3,7 @@ const { verifyToken } = require("../helpers/jwt");
 
 const getOrders = async (req, res) => {
   const token = req.headers.access_token;
+  const payload = verifyToken(token);
   try {
     const { data: orders } = await axios({
       method: "GET",
@@ -14,7 +15,32 @@ const getOrders = async (req, res) => {
     if (orders) {
       const { data: user } = await axios({
         method: "GET",
-        url: `http://localhost:4002/users/${id}`,
+        url: `http://localhost:4002/users/${payload.id}`,
+      });
+      res.status(200).json({ orders, user });
+    } else {
+      res.status(404).json({ message: "orders not found" });
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+const getOrdersByBarber = async (req, res) => {
+  const token = req.headers.access_token;
+  const payload = verifyToken(token);
+  try {
+    const { data: orders } = await axios({
+      method: "GET",
+      url: "http://localhost:4001/ordersBarber",
+      headers: {
+        access_token: token,
+      },
+    });
+    if (orders) {
+      const { data: barber } = await axios({
+        method: "GET",
+        url: `http://localhost:4001/barbers/${payload.id}`,
       });
       res.status(200).json(orders);
     } else {
@@ -98,5 +124,29 @@ const translateCoordinate = async (req, res) => {
     res.status(500).json(err);
   }
 };
+const updateStatusBarber = async (req, res) => {
+  const token = req.headers.access_token;
+  const { id } = req.params;
+  const { statusBarber } = req.body;
+  try {
+    const { data: statusBarber } = await axios({
+      method: "PATCH",
+      url: `http://localhost:4001/ordersBarber/${id}`,
+      data: req.body,
+      headers: {
+        access_token: token,
+      },
+    });
+    res.status(200).json(statusBarber);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
 
-module.exports = { getOrders, postOrder, deleteOrder };
+module.exports = {
+  getOrders,
+  postOrder,
+  deleteOrder,
+  getOrdersByBarber,
+  updateStatusBarber,
+};

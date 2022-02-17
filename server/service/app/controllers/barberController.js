@@ -49,7 +49,7 @@ const deleteBarber = async (req, res) => {
     const result = await Barber.findOne({
       where: { id: id },
     });
-    if (order) {
+    if (result) {
       await Barber.destroy({
         where: { id: id },
       });
@@ -58,6 +58,7 @@ const deleteBarber = async (req, res) => {
       res.status(404).json({ message: "Barber not found" });
     }
   } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 };
@@ -90,7 +91,6 @@ const updateBarber = async (req, res) => {
   }
 };
 const barberLogin = async (req, res) => {
-  console.log('jalan');
   try {
     const { email, password } = req.body;
     

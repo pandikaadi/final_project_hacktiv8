@@ -51,7 +51,7 @@ const postBarber = async (req, res) => {
 
 const loginBarber = async (req, res) => {
   const { email, password } = req.body;
- 
+
   try {
     const { data: token } = await axios({
       method: "POST",
@@ -62,7 +62,6 @@ const loginBarber = async (req, res) => {
       res.status(200).json(token);
     }
   } catch (err) {
-    console.log(err);
     res.status(500).json(err.message);
   }
 };
@@ -70,12 +69,9 @@ const loginBarber = async (req, res) => {
 const deleteBarber = async (req, res) => {
   const { id } = req.params;
   try {
-    const { data: barber} = await axios({
+    const { data: barber } = await axios({
       method: "DELETE",
       url: `http://localhost:4001/barbers/${id}`,
-      headers: {
-        access_token: token,
-      },
     });
     res.status(200).json(barber);
   } catch (err) {
@@ -83,5 +79,10 @@ const deleteBarber = async (req, res) => {
   }
 };
 
-
-module.exports = { getBarbers, getBarberById, postBarber, loginBarber, deleteBarber };
+module.exports = {
+  getBarbers,
+  getBarberById,
+  postBarber,
+  loginBarber,
+  deleteBarber,
+};

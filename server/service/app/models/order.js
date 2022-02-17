@@ -49,13 +49,11 @@ module.exports = (sequelize, DataTypes) => {
     orderKey: DataTypes.STRING,
     statusPayment: DataTypes.BOOLEAN,
     statusBarber: DataTypes.STRING,
-    statusOrder: DataTypes.BOOLEAN
   }, {
     sequelize,
     hooks: {
       beforeCreate(instance,option){
         instance.statusPayment = false
-        instance.statusOrder = false
         instance.statusBarber = 'Pending'
         instance.orderKey = instance.date[0]+instance.date[1]+instance.hour[0]+instance.hour[1]
       },
