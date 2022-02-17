@@ -1,4 +1,5 @@
 const axios = require("axios");
+
 const getUsers = async (req, res) => {
   try {
     const { data: users } = await axios({
@@ -58,7 +59,7 @@ const loginUser = async (req, res) => {
     });
     if (token) {
       res.status(200).json(token);
-    } 
+    }
   } catch (err) {
     res.status(500).json(err.message);
   }
