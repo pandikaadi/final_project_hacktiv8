@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const { compareHash } = require("../helpers/bcrypt");
 const { createToken } = require("../helpers/jwt");
+
 const findUsers = (req, res) => {
   User.findAll()
     .then((users) => {
@@ -33,6 +34,8 @@ const postUser = (req, res) => {
         email,
         password,
         phoneNumber,
+        lat:"",
+        long:""
       })
         .then((result) => {
           if (result) {
@@ -40,7 +43,6 @@ const postUser = (req, res) => {
               if (users) {
                 const id = users.length;
                 User.findOne(id).then((user) => {
-                  console.log(user);
                   res.status(201).json(user);
                 });
               }
@@ -53,6 +55,41 @@ const postUser = (req, res) => {
     }
   });
 };
+
+const updateLocation = (req,res) => {
+  
+  const { lat, long } = req.body;
+  const { id } = req.params
+  try{
+    User.updateLoc(id,req.body)
+    .then((user)=>{
+      res.status(200).json(user);
+    })
+    .catch((err)=>{
+      res.status(404).json(err)
+    })
+  }catch(err){
+    res.status(500).json(err);
+  }
+};
+
+const updateUser = (req,res) => {
+  
+  const { username, email, password, phoneNumber } = req.body;
+  const { id } = req.params
+  try{
+    User.update(id,req.body)
+    .then((user)=>{
+      res.status(200).json(user);
+    })
+    .catch((err)=>{
+      res.status(404).json(err)
+    })
+  }catch(err){
+    res.status(500).json(err);
+  }
+};
+
 
 const deleteUser = (req, res) => {
   const { id } = req.params;
@@ -107,4 +144,6 @@ module.exports = {
   postUser,
   deleteUser,
   postLogin,
+  updateLocation,
+  updateUser
 };

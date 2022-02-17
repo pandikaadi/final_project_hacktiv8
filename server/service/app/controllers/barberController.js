@@ -1,19 +1,10 @@
 const { Barber, BarberLocation } = require("../models/index");
-const Redis = require("ioredis");
-const redis = new Redis();
-
+const { compareHash } = require('../helpers/bcrypt')
+const { createToken} = require('../helpers/jwt')
 const getBarbers = async (req, res) => {
   try {
-    const barbersCache = await redis.get("barbers");
-    if (barbersCache) {
-      res.status(200).json(JSON.parse(barbersCache));
-    } else {
-      const barbers = await Barber.findAll();
-      if (barbers) {
-        await redis.set("barbers", JSON.stringify(barbers));
-        res.status(200).json(barbers);
-      }
-    }
+    const barbers = await Barber.findAll();
+    res.status(200).json(barbers);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -35,7 +26,6 @@ const postBarber = async (req, res) => {
   try {
     const barber = await Barber.create({ name, email, password, phoneNumber });
     if (barber) {
-      await redis.del("barbers");
       res.status(201).json(barber);
     }
   } catch (err) {
@@ -52,4 +42,97 @@ const postBarber = async (req, res) => {
     });
   }
 };
-module.exports = { getBarbers, postBarber, getBarberById };
+
+const deleteBarber = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await Barber.findOne({
+      where: { id: id },
+    });
+    if (order) {
+      await Barber.destroy({
+        where: { id: id },
+      });
+      res.status(200).json({ message: "Barber success to delete" });
+    } else {
+      res.status(404).json({ message: "Barber not found" });
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+const updateBarber = async (req, res) => {
+  const { name, email, password, phoneNumber } = req.body;
+  const { id } = req.params;
+  try {
+    const findBarber = await Barber.findOne({
+      where: { id: id },
+    });
+    if (findBarber) {
+      const updatedBarber = await Barber.update(
+        {
+          name: name,
+          email: email,
+          password: password,
+          phoneNumber: phoneNumber,
+        },
+        {
+          where: { id: id },
+          returning: true,
+        }
+      );
+      res.status(200).json({ result: updatedBarber[1][0] });
+    } else {
+      res.status(404).json({ message: "Barber not found" });
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+const barberLogin = async (req, res) => {
+  console.log('jalan');
+  try {
+    const { email, password } = req.body;
+    
+    const result = await Barber.findOne({
+      where: {
+        email: email,
+      },
+    });
+
+    if (!result) {
+      throw { message: "Invalid email/password" };
+    } else{
+
+    }
+    if (!compareHash(password, result.password)) {
+      throw { message: "Invalid email/password" };
+    }
+
+    const payload = {
+      id: result.id,
+      name: result.name,
+      role: result.role,
+    };
+
+    const token = createToken(payload);
+    res.status(200).json({
+      access_token: token,
+    });
+  } catch (err) {
+    if(err.message === "Invalid email/password"){
+      res.status(401).json(err);
+    }else{
+      res.status(500).json(err)
+    }
+    
+  }
+};
+module.exports = {
+  getBarbers,
+  postBarber,
+  getBarberById,
+  deleteBarber,
+  updateBarber,
+  barberLogin
+};
