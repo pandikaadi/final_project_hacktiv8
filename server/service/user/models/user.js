@@ -27,6 +27,19 @@ class User {
     const db = getMongoConnection();
     return db.collection("users").deleteOne({ id: Number(id) });
   }
+
+  static update(id,location){
+    const db = getMongoConnection();
+    return db.collection("users").updateOne({
+      id:Number(id)
+    },{
+      $set:{
+        lat: location.lat,
+        long: location.long
+      }
+    }
+    )
+  }
 }
 
 module.exports = User;

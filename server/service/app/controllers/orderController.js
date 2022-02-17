@@ -27,7 +27,7 @@ const postOrder = async (req, res) => {
           findOrder.Barber.name,
           findOrder.Service.name
         );
-        res.status(201).json(findOrder);
+        res.status(201).json({findOrder});
       }
     } else {
     }
