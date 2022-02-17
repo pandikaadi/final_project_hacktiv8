@@ -42,7 +42,7 @@ const postOrder = async (req, res) => {
     if (orders) {
       const { data: location } = await axios({
         method: "PUT",
-        url: `http://localhost:4002/users/${payload.id}`,
+        url: `http://localhost:4002/users/location/${payload.id}`,
         data: {
           lat,
           long,

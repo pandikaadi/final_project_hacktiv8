@@ -28,7 +28,7 @@ class User {
     return db.collection("users").deleteOne({ id: Number(id) });
   }
 
-  static update(id,location){
+  static updateLoc(id,location){
     const db = getMongoConnection();
     return db.collection("users").updateOne({
       id:Number(id)
@@ -36,6 +36,20 @@ class User {
       $set:{
         lat: location.lat,
         long: location.long
+      }
+    }
+    )
+  }
+  static update(id,data){
+    const db = getMongoConnection();
+    return db.collection("users").updateOne({
+      id:Number(id)
+    },{
+      $set:{
+        username: data.username,
+        email: data.email,
+        password: createHash(data.password),
+        phoneNumber: data.phoneNumber
       }
     }
     )

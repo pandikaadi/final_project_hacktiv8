@@ -49,6 +49,7 @@ const postOrder = async (req, res) => {
 };
 
 const getOrdersByUserId = async (req, res) => {
+  // get all orders by user id
   const { id } = req.currentUser;
   try {
     const orders = await Order.findAll({

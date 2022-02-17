@@ -61,6 +61,23 @@ const updateLocation = (req,res) => {
   const { lat, long } = req.body;
   const { id } = req.params
   try{
+    User.updateLoc(id,req.body)
+    .then((user)=>{
+      res.status(200).json(user);
+    })
+    .catch((err)=>{
+      res.status(404).json(err)
+    })
+  }catch(err){
+    res.status(500).json(err);
+  }
+};
+
+const updateUser = (req,res) => {
+  
+  const { username, email, password, phoneNumber } = req.body;
+  const { id } = req.params
+  try{
     User.update(id,req.body)
     .then((user)=>{
       res.status(200).json(user);
@@ -127,5 +144,6 @@ module.exports = {
   postUser,
   deleteUser,
   postLogin,
-  updateLocation
+  updateLocation,
+  updateUser
 };
