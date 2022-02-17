@@ -1,3 +1,6 @@
+
+import { useLocation } from "react-router-dom";
+import DataForm from "../Components/DataForm";
 import React, { useEffect, useState } from "react";
 import Fade from "react-reveal/Fade";
 import { Link } from "react-router-dom";
