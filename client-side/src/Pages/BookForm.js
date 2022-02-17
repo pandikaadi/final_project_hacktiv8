@@ -28,32 +28,23 @@ const iconMarkupBarber = renderToStaticMarkup(
 const customMarkerIconBarber = divIcon({
   html: iconMarkupBarber
 });
-// import marker from '../../Assets/icons/Location.svg';
-// import { Icon } from 'leaflet'
-// const myIcon = new Icon({
-//  iconUrl: marker,
-//  iconSize: [32,32]
-// })
 
 
 function BookForm() {
   proj4.defs("EPSG:32748","+proj=utm +zone=48 +south +datum=WGS84 +units=m +no_defs");
   const firstProjection = new proj4.Proj('WGS84')
   const secondProjection = new proj4.Proj('EPSG:32748');
-  // console.log(proj4(firstProjection,secondProjection,[107.5605011029984,-6.940116143023617])); // [long, lat]
   const [centerLat, setCenterLat] = useState(-6.940116143023617);
   const [centerLong, setCenterLong] = useState(107.5605011029984);
   const [distance, setDistance] = useState(null)
   const [price, setPrice] = useState(null)
   const [barberPosition, setBarberPosition] = useState({ lat: centerLat, lng: centerLong })
   const [position, setPosition] = useState(null);
-  // const utm = new utmObj();
   const [form, setForm] = useState({
     address: '',
     date: null,
     schedule: null
   })
-  console.log(form)
   function formHandler(e) {
 
     setForm({
@@ -159,22 +150,6 @@ function BookForm() {
       <div className="flex justify-center bg-zinc-800 pt-10 min-h-screen">
         {/* <Fade> */}
           <div className="m-auto">
-            {/* <div className="flex justify-end">
-              <div className="flex items-start">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
-            </div> */}
             <form className="pb-4  space-y-2 lg:px-2 sm:pb-6 xl:pb-8">
               <div className="flex justify-center tracking-widest">
                 <h3 className="text-4xl font-light text-white dark:text-white pb-4">
@@ -257,7 +232,6 @@ function BookForm() {
               </div>
             </form>
           </div>
-        {/* </Fade> */}
       </div>
     </>
   );
