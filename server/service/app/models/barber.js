@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Barber.hasMany(models.Order,{foreignKey:"barberId"})
+      Barber.hasMany(models.Vote,{foreignKey:'barberId'})
     }
   }
   Barber.init({

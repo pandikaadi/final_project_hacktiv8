@@ -15,8 +15,24 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Service.init({
-    name: DataTypes.STRING,
-    price: DataTypes.INTEGER
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          msg:'name is required'
+        }
+      }
+    },
+    price: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          msg:'price is required'
+        }
+      }
+    },
   }, {
     sequelize,
     modelName: 'Service',
