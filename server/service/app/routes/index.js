@@ -7,6 +7,7 @@ const registerRouter = require("./registerRouter");
 const loginRouter = require("./loginRouter");
 const orderForBarberRouter = require("./orderForBarberRouter");
 const serviceRouter = require("./serviceRouter")
+const voteRouter  = require("./voteRouter")
 
 indexRouter.use("/register", registerRouter);
 indexRouter.use("/login", loginRouter);
@@ -15,5 +16,6 @@ indexRouter.use("/barbers", barberRouter);
 indexRouter.use("/orders", orderRouter);
 indexRouter.use("/ordersBarber", orderForBarberRouter)
 indexRouter.use("/services", serviceRouter)
+indexRouter.use("/votes", voteRouter)
 
 module.exports = indexRouter;

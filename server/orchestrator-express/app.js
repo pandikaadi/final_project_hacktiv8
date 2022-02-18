@@ -7,6 +7,8 @@ const orderController = require("./controllers/order");
 const barberController = require("./controllers/barber");
 const coordinateController = require("./controllers/coordinate");
 const serviceController = require("./controllers/service");
+const voteController = require("./controllers/vote");
+const voteRouter = require("../service/app/routes/voteRouter");
 
 app.use(cors());
 app.use(express.json());
@@ -37,6 +39,9 @@ app.post("/services", serviceController.postService);
 app.delete("/services/:id", serviceController.deleteService);
 
 app.post("/coordinates", coordinateController.translateCoordinate);
+
+app.get("/votes/:barberId", voteController.getVotes)
+app.post("/votes/:barberId", voteController.postVote )
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);

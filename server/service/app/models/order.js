@@ -1,4 +1,10 @@
 'use strict';
+
+const randomString = (length, chars) => {
+    var result = '';
+    for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+    return result;
+}
 const {
   Model
 } = require('sequelize');
@@ -55,7 +61,7 @@ module.exports = (sequelize, DataTypes) => {
       beforeCreate(instance,option){
         instance.statusPayment = false
         instance.statusBarber = 'Pending'
-        instance.orderKey = instance.date[0]+instance.date[1]+instance.hour[0]+instance.hour[1]
+        instance.orderKey = randomString(10, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
       },
     },
     modelName: 'Order',

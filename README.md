@@ -40,6 +40,10 @@ service
 [+] PUT /services/:id
 [+] DELETE /service/:id
 
+vote
+[+] GET /votes/:barberId ( get votes by barberId)
+[+] POST /votes/:barberId  
+
 
 ===============================================================
 
@@ -72,7 +76,6 @@ USER ( tinggal update user)
 [+] PUT /users/:id           => 4002 PUT /users/:id
 
 
-
 ORDERS 
 
 [+] GET /orders              => 4001 GET /orders ( get semua order user yg sedang login)
@@ -94,12 +97,19 @@ BARBER ( tinggal upcdate)
 [+] DELETE /barbers/:id      => 40001 DELETE /barbers/:id
                         => 4001 PUT /barbers/:id
 
+
 SERVICE 
 
 [+] GET /services             => 4001 GET /services
 [+] GET /services/:id         => 4001 GET /services/:id
 [+] DELETE /services/:id      => 4001 DELETE /service/:id
 [+] POST /services            => 4001 POST /service
+
+VOTE
+
+[+] GET /votes/:barberId      => 4001 GET /votes/:barberId  ( get votes by barberId )
+[+] POST /votes/:barberId         => 4001 POST /votes/:barberId 
+
 
 
 COORDINATES
