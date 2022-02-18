@@ -1,12 +1,17 @@
 const cors = require("cors");
 const express = require("express");
+const { paymentHandler } = require("./controllers/orderController");
 const app = express();
 const port = 4001;
 const router = require("./routes/index");
 
 app.use(cors());
 app.use(express.json());
+app.post('/paymentHandler', paymentHandler)
 app.use(express.urlencoded({ extended: false }));
+
+
+
 app.use("/", router);
 
 app.listen(port, () => {

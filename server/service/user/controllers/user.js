@@ -114,6 +114,7 @@ const deleteUser = (req, res) => {
 
 const postLogin = (req, res) => {
   const { email, password } = req.body;
+  console.log(email, password);
 
   User.findOneCompare(email)
     .then((user) => {
@@ -126,6 +127,7 @@ const postLogin = (req, res) => {
 
       const payload = {
         id: user.id,
+        userMonggoId: user._id,
         username: user.username,
         role: user.role,
       };
@@ -135,6 +137,7 @@ const postLogin = (req, res) => {
       });
     })
     .catch((err) => {
+      console.log(err)
       res.status(500).json(err);
     });
 };
