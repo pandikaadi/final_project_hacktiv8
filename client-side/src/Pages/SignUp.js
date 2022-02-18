@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import Fade from "react-reveal/Fade";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function SignUp() {
+  const navigate = useNavigate();
   const [newUser, setNewUser] = useState({
     email: "",
     username: "",
@@ -31,6 +32,7 @@ function SignUp() {
     };
 
     console.log(payload);
+    navigate("/signin");
   };
 
   return (

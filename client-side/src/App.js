@@ -6,7 +6,8 @@ import SignIn from "./Pages/SignIn";
 import SignUp from "./Pages/SignUp";
 import ChooseService from "./Pages/ChooseService";
 import PaymentPage from "./Pages/PaymentPage";
-import PrivateRouter from "./Components/PrivateComponent";
+import PrivateRouter from "./Components/PrivateComponent/PrivateComponent";
+import BeforeBook from "./Components/PrivateComponent/BeforeBook";
 
 function App() {
   return (
@@ -23,7 +24,14 @@ function App() {
             </PrivateRouter>
           }
         />
-        <Route path="/book" element={<BookForm />} />
+        <Route
+          path="/book"
+          element={
+            <BeforeBook>
+              <BookForm />
+            </BeforeBook>
+          }
+        />
         <Route path="/payment" element={<PaymentPage />} />
         <Route
           path="*"
