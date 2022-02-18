@@ -40,6 +40,10 @@ service
 [+] PUT /services/:id
 [+] DELETE /service/:id
 
+vote
+[+] GET /votes/:barberId ( get votes by barberId)
+[+] POST /votes/:barberId  
+
 
 ===============================================================
 
@@ -63,7 +67,7 @@ USERS
 ORCHESTRATOR EXPRESS ENDPOINT
 PORT 4000
 
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 USER ( tinggal update user)
 
 [+] POST /users ( register ) => 4002 POST /users (register)
@@ -72,8 +76,6 @@ USER ( tinggal update user)
 [+] GET /users/:id           => 4002 GET /users/:id
 [+] PUT /users/:id           => 4002 PUT /users/:id
 
-
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 ORDERS 
 
@@ -87,7 +89,7 @@ ORDERS
 [+]  PATCH /ordersBarber/:id ( update statusBarber ) => 4001 PATCH/ordersBarber/:id
 
 
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 BARBER ( tinggal upcdate) 
 
 [+] GET /barbers             => 4001 GET /barbers
@@ -97,7 +99,7 @@ BARBER ( tinggal upcdate)
 [+] DELETE /barbers/:id      => 40001 DELETE /barbers/:id
                         => 4001 PUT /barbers/:id
 
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 SERVICE 
 
 [+] GET /services             => 4001 GET /services
@@ -105,8 +107,13 @@ SERVICE
 [+] DELETE /services/:id      => 4001 DELETE /service/:id
 [+] POST /services            => 4001 POST /service
 
+VOTE
 
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+[+] GET /votes/:barberId      => 4001 GET /votes/:barberId  ( get votes by barberId )
+[+] POST /votes/:barberId         => 4001 POST /votes/:barberId 
+
+
+
 COORDINATES
 
 [+] POST /coorrdinates  
