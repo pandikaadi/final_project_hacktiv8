@@ -12,6 +12,7 @@ import "../App.css";
 import { renderToStaticMarkup } from "react-dom/server";
 import { divIcon } from "leaflet";
 import { useSelector } from "react-redux";
+import dataReducer from "../store/reducers/data";
 
 const iconMarkup = renderToStaticMarkup(
   <i className="fa-solid fa-map-pin fa-4x"></i>
@@ -44,14 +45,32 @@ function BookForm() {
   const [position, setPosition] = useState(null);
   const [form, setForm] = useState({
     address: "",
-    date: null,
-    schedule: null,
+    date: "",
+    hour: "",
   });
+
   function formHandler(e) {
     setForm({
       ...form,
       [e.target.name]: e.target.value,
     });
+  }
+
+  const { location, service, barber } = useSelector((state) => state.data);
+  function handleNewOrder(e) {
+    e.preventDefault();
+
+    const payload = {
+      date: form.date,
+      hour: form.hour,
+      address: form.address,
+      orderKey: service,
+      barberId: barber,
+      statusPayment: false,
+      statusOrder: false,
+    };
+
+    console.log(payload);
   }
 
   function priceFormatter(price) {
@@ -151,7 +170,10 @@ function BookForm() {
       <div className="flex justify-center bg-zinc-800 pt-10 min-h-screen">
         {/* <Fade> */}
         <div className="m-auto">
-          <form className="pb-4  space-y-2 lg:px-2 sm:pb-6 xl:pb-8">
+          <form
+            className="pb-4  space-y-2 lg:px-2 sm:pb-6 xl:pb-8"
+            onSubmit={handleNewOrder}
+          >
             <div className="flex justify-center tracking-widest">
               <h3 className="text-4xl font-light text-white dark:text-white pb-4">
                 BOOK NOW
@@ -161,6 +183,7 @@ function BookForm() {
             <div className="flex justify-center mb-2">
               <input
                 onChange={formHandler}
+                value={form.date}
                 name="date"
                 type="date"
                 className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
@@ -168,23 +191,25 @@ function BookForm() {
             </div>
             <div className="flex justify-center mb-2">
               <select
+                defaultValue={"DEFAULT"}
                 onChange={formHandler}
-                name="schedule"
+                name="hour"
                 className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
               >
-                <option>08.00 - 10.00</option>
-                <option>10.00 - 12.00</option>
-                <option>13.00 - 15.00</option>
-                <option>15.00 - 17.00</option>
-                <option>17.00 - 19.00</option>
+                <option value="08.00 - 10.00">08.00 - 10.00</option>
+                <option value="10.00 - 12.00">10.00 - 12.00</option>
+                <option value="13.00 - 15.00">13.00 - 15.00</option>
+                <option value="15.00 - 17.00">15.00 - 17.00</option>
+                <option value="17.00 - 19.00">17.00 - 19.00</option>
               </select>
             </div>
             <div className="flex justify-center">
               <textarea
-                type="email"
+                type="text"
                 name="address"
                 onChange={formHandler}
-                id="email"
+                value={form.address}
+                id="address"
                 className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                 placeholder="address"
                 required
