@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setService, setLocation } from "../store/actionCreators/actionCreator";
 
 function CardForm() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [selector, setSelector] = useState(false);
   const firstImage =
@@ -22,13 +25,14 @@ function CardForm() {
     "https://images.unsplash.com/photo-1622296089780-1aba6f53dbb9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDN8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60";
 
   function handleSelector(e) {
-    console.log(e.target.value);
+    dispatch(setLocation(e.target.value));
     setSelector(true);
   }
 
   function toNavigate(value) {
-    if (selector) {
-      navigate("/book", { state: value });
+    if (value && selector) {
+      dispatch(setService(value));
+      navigate("/book");
     }
   }
 
@@ -72,7 +76,7 @@ function CardForm() {
           >
             <option>Your Location</option>
             <option value="1">Jakarta</option>
-            <option value="2">Batam</option>
+            <option value="2">Bandung</option>
           </select>
         </div>
         <div className="mx-4 mt-4 flex justify-center flex-row">
