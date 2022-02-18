@@ -6,6 +6,8 @@ import SignIn from "./Pages/SignIn";
 import SignUp from "./Pages/SignUp";
 import ChooseService from "./Pages/ChooseService";
 import PaymentPage from "./Pages/PaymentPage";
+import PrivateRouter from "./Components/PrivateComponent/PrivateComponent";
+import BeforeBook from "./Components/PrivateComponent/BeforeBook";
 
 function App() {
   return (
@@ -14,9 +16,31 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/home" element={<ChooseService />} />
-        <Route path="/book" element={<BookForm />} />
+        <Route
+          path="/home"
+          element={
+            <PrivateRouter>
+              <ChooseService />
+            </PrivateRouter>
+          }
+        />
+        <Route
+          path="/book"
+          element={
+            <BeforeBook>
+              <BookForm />
+            </BeforeBook>
+          }
+        />
         <Route path="/payment" element={<PaymentPage />} />
+        <Route
+          path="*"
+          element={
+            <main className="flex h-screen justify-center">
+              <p className="text-5xl font-bold m-auto">NOT FOUND!!</p>
+            </main>
+          }
+        />
       </Routes>
     </>
   );

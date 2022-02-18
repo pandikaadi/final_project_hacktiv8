@@ -18,6 +18,7 @@ function SignIn() {
   }
   function handleLogin(e) {
     e.preventDefault();
+    localStorage.setItem("access_token", "access_token");
     navigate("/home");
   }
 

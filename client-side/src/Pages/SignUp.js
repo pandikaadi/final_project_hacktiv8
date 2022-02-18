@@ -1,32 +1,49 @@
-import React from "react";
+import React, { useState } from "react";
 import Fade from "react-reveal/Fade";
 import { Link, useNavigate } from "react-router-dom";
 
 function SignUp() {
   const navigate = useNavigate();
+  const [newUser, setNewUser] = useState({
+    email: "",
+    username: "",
+    password: "",
+    phoneNumber: "",
+  });
+
+  const handleChangeInput = (e) => {
+    const result = e.target.value;
+    const field = e.target.name;
+
+    setNewUser({
+      ...newUser,
+      [field]: result,
+    });
+  };
+
+  const signUpHandler = (e) => {
+    e.preventDefault();
+
+    const payload = {
+      email: newUser.email,
+      username: newUser.username,
+      password: newUser.password,
+      phoneNumber: newUser.phoneNumber,
+    };
+
+    console.log(payload);
+    navigate("/signin");
+  };
 
   return (
     <>
       <div className="flex justify-center bg-zinc-800 h-screen">
         <Fade>
           <div className="m-auto">
-            {/* <div className="flex justify-end">
-              <div className="flex items-start">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
-            </div> */}
-            <form className="px-6 pb-4 space-y-6 lg:px-8 sm:pb-6 xl:pb-8">
+            <form
+              onSubmit={signUpHandler}
+              className="px-6 pb-4 space-y-6 lg:px-8 sm:pb-6 xl:pb-8"
+            >
               <div className="flex justify-center tracking-widest">
                 <h3 className="text-4xl font-light text-white dark:text-white pb-4">
                   SHAVE8
@@ -37,6 +54,8 @@ function SignUp() {
                   type="email"
                   name="email"
                   id="email"
+                  value={newUser.email}
+                  onChange={handleChangeInput}
                   className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                   placeholder="name@company.com"
                   required
@@ -47,6 +66,8 @@ function SignUp() {
                   type="text"
                   name="username"
                   id="username"
+                  value={newUser.username}
+                  onChange={handleChangeInput}
                   placeholder="username"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                   required
@@ -57,6 +78,8 @@ function SignUp() {
                   type="password"
                   name="password"
                   id="password"
+                  value={newUser.password}
+                  onChange={handleChangeInput}
                   placeholder="password"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                   required
@@ -67,6 +90,8 @@ function SignUp() {
                   type="number"
                   name="phoneNumber"
                   id="phoneNumber"
+                  value={newUser.phoneNumber}
+                  onChange={handleChangeInput}
                   placeholder="phone number"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                   required
@@ -74,7 +99,6 @@ function SignUp() {
               </div>
               <button
                 type="submit"
-                onClick={() => navigate("/signin")}
                 className="w-full text-white bg-blue-800 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               >
                 Sign up
