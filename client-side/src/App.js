@@ -5,7 +5,7 @@ import LandingPage from "./Pages/LandingPage";
 import SignIn from "./Pages/SignIn";
 import SignUp from "./Pages/SignUp";
 import ChooseService from "./Pages/ChooseService";
-import Home from "./Pages/Home";
+import VotePage from "./Pages/VotePage";
 
 function App() {
   return (
@@ -14,9 +14,9 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/book" element={<BookForm />} />
         <Route path="/card" element={<ChooseService />} />
+        <Route path="/book" element={<BookForm />} />
+        <Route path="/vote" element={<VotePage />} />
       </Routes>
     </>
   );

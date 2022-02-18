@@ -2,7 +2,6 @@ import React from "react";
 import Fade from "react-reveal/Fade";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import Home from "./Home";
 
 function SignIn() {
   const navigate = useNavigate();
