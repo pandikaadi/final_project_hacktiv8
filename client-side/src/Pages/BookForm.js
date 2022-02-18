@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+
+import { useLocation } from "react-router-dom";
+import DataForm from "../Components/DataForm";
+import React, { useEffect, useState } from "react";
 import Fade from "react-reveal/Fade";
 import { Link } from "react-router-dom";
 import {
@@ -9,6 +12,7 @@ import {
   Marker,
   Popup,
 } from "react-leaflet";
+import proj4 from 'proj4'
 import "../App.css";
 import { renderToStaticMarkup } from "react-dom/server";
 import { divIcon } from "leaflet";
@@ -18,24 +22,82 @@ const iconMarkup = renderToStaticMarkup(
 const customMarkerIcon = divIcon({
   html: iconMarkup
 });
-// import marker from '../../Assets/icons/Location.svg';
-// import { Icon } from 'leaflet'
-// const myIcon = new Icon({
-//  iconUrl: marker,
-//  iconSize: [32,32]
-// })
+const iconMarkupBarber = renderToStaticMarkup(
+  <i className="fa-solid text-rose-600 fa-map-pin fa-4x"></i>
+);
+const customMarkerIconBarber = divIcon({
+  html: iconMarkupBarber
+});
 
 
 function BookForm() {
+  proj4.defs("EPSG:32748","+proj=utm +zone=48 +south +datum=WGS84 +units=m +no_defs");
+  const firstProjection = new proj4.Proj('WGS84')
+  const secondProjection = new proj4.Proj('EPSG:32748');
   const [centerLat, setCenterLat] = useState(-6.940116143023617);
   const [centerLong, setCenterLong] = useState(107.5605011029984);
-  const [position, setPosition] = useState({ lat: centerLat, lng: centerLong });
+  const [distance, setDistance] = useState(null)
+  const [price, setPrice] = useState(null)
+  const [barberPosition, setBarberPosition] = useState({ lat: centerLat, lng: centerLong })
+  const [position, setPosition] = useState(null);
+  const [form, setForm] = useState({
+    address: '',
+    date: null,
+    schedule: null
+  })
+  function formHandler(e) {
+
+    setForm({
+      ...form,
+      [e.target.name] : e.target.value
+    })
+    
+  }
+  
+  function priceFormatter(price) {
+    let formattedPrice = price.toString().split("");
+
+    for (
+      let i = (formattedPrice.length % 3) - 1;
+      i < formattedPrice.length;
+      i += 3
+    ) {
+      if (i !== formattedPrice.length - 1) formattedPrice[i] += `.`;
+    }
+
+    return `Rp. ${formattedPrice.join("")}`;
+    
+  }
+  useEffect(() => {
+    if(position) {
+
+      let utmCust = proj4(firstProjection,secondProjection,[position.lng, position.lat])
+      let utmBarber =proj4(firstProjection,secondProjection,[barberPosition.lng, barberPosition.lat])
+      // console.log(utmCust, `<<<<`)
+      const powerDistance =
+        Math.pow(Math.abs(utmCust[0] - utmBarber[0]), 2) +
+        Math.pow(Math.abs(utmCust[1] - utmBarber[1]), 2);
+      const distance = Math.pow(powerDistance, 0.5);
+      // console.log(distance/1000, ">>>> Distance Meter")//METER
+      // console.log(Math.round((50_000 + distance * 5) / 1000), "=>>>>") 
+      // console.log("Rp. ",Math.round((50_000 + distance * 5) / 1000)*1000, ">>>>>>>>>>>>>>>> Harga")
+      setDistance((distance/1000).toFixed(1))
+      // console.log(distance)
+      if(distance) {
+        setPrice(Math.round((50_000 + distance * 5) / 1000)*1000);
+      }
+
+    }
+  },[position])
+
   function LocationMarker() {
     const map = useMapEvents({
       click(e) {
         setPosition(e.latlng);
-        setCenterLat(position.lat);
-        setCenterLong(position.lng);
+        if(position) {
+          setCenterLat(position.lat);
+          setCenterLong(position.lng);
+        }
         // console.log(centerLat, ">>>>>>");
         // console.log(centerLong, ">>>>>>");
       },
@@ -51,12 +113,22 @@ function BookForm() {
       </Marker>
     );
   }
+  function BarberMarker() {
+
+    return barberPosition === null ? null : (
+      <Marker icon={customMarkerIconBarber} position={barberPosition}>
+        <Popup>Shave8 HQ</Popup>
+      </Marker>
+    );
+  }
+
   function HandleCenter({ mapCenter }) {
     
     const map = useMap();
-    map.setView(mapCenter);
+    if(position) map.setView(mapCenter);
     return null;
   }
+
   function handleLocateButton(e) {
     e.preventDefault()
     // console.log(`hehe`);
@@ -76,24 +148,8 @@ function BookForm() {
   return (
     <>
       <div className="flex justify-center bg-zinc-800 pt-10 min-h-screen">
-        <Fade>
+        {/* <Fade> */}
           <div className="m-auto">
-            {/* <div className="flex justify-end">
-              <div className="flex items-start">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
-            </div> */}
             <form className="pb-4  space-y-2 lg:px-2 sm:pb-6 xl:pb-8">
               <div className="flex justify-center tracking-widest">
                 <h3 className="text-4xl font-light text-white dark:text-white pb-4">
@@ -103,12 +159,14 @@ function BookForm() {
               
               <div className="flex justify-center mb-2">
                 <input
+                  onChange={formHandler}
+                  name="date"
                   type="date"
                   className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                 />
               </div>
               <div className="flex justify-center mb-2">
-                <select className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
+                <select onChange={formHandler} name="schedule" className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
                   <option>08.00 - 10.00</option>
                   <option>10.00 - 12.00</option>
                   <option>13.00 - 15.00</option>
@@ -119,7 +177,8 @@ function BookForm() {
               <div className="flex justify-center">
                 <textarea
                   type="email"
-                  name="email"
+                  name="address"
+                  onChange={formHandler}
                   id="email"
                   className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                   placeholder="address"
@@ -131,7 +190,7 @@ function BookForm() {
                 <div className="flex content-center my-3">
                   <button
                     onClick={handleLocateButton}
-                    className=" self-center content-center mx-auto text-white bg-indigo-500 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    className=" self-center content-center mx-auto text-white bg-transparent border-white border-2 hover:bg-slate-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   >
                     Locate Yourself
                   </button>
@@ -148,26 +207,31 @@ function BookForm() {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   />
                   <LocationMarker />
+                  <BarberMarker />
+
                   <HandleCenter mapCenter={position} />
-                  {/* <Marker position={[51.505, -0.09]}>
-                <Popup>
-                  A pretty CSS3 popup. <br /> Easily customizable.
-                </Popup>
-              </Marker> */}
                 </MapContainer>
+              </div>
+              <div className="text-white flex justify-center mb-2">
+                {
+                  distance ? <span>Distance : {distance} KM</span> : ''
+
+                }
+              </div>
+              <div className="text-white flex justify-center mb-2">
+              <span>{price ? <span>Price : Rp. {priceFormatter(price)} </span> : ''}</span>
               </div>
               
               <div className="flex justify-center mb-2">
                 <button
                   type="submit"
-                  className="w-3/4 mx-auto mt-2 text-white bg-indigo-500 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  className="w-3/4 mx-auto mt-2 text-white bg-transparent border-white border-2 hover:bg-slate-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
                   Order
                 </button>
               </div>
             </form>
           </div>
-        </Fade>
       </div>
     </>
   );

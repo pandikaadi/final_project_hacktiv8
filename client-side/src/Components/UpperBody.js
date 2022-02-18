@@ -22,8 +22,8 @@ function UpperBody() {
 
   return (
     <>
-      <div className="">
-        <div className="w-full relative">
+      <div>
+        <div className="relative">
           <img
             src={image1}
             alt="navbar"
@@ -49,7 +49,9 @@ function UpperBody() {
             )}
             {!isAuthen && (
               <li>
-                <p className="text-white font-semibold  mx-4">SIGN UP</p>
+                <Link to="/signup" className="text-white font-semibold  mx-4">
+                  SIGN UP
+                </Link>
               </li>
             )}
           </ul>

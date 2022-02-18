@@ -63,7 +63,6 @@ USERS
 ORCHESTRATOR EXPRESS ENDPOINT
 PORT 4000
 
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 USER ( tinggal update user)
 
 [+] POST /users ( register ) => 4002 POST /users (register)
@@ -73,7 +72,6 @@ USER ( tinggal update user)
 [+] PUT /users/:id           => 4002 PUT /users/:id
 
 
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 ORDERS 
 
@@ -87,7 +85,6 @@ ORDERS
 [+]  PATCH /ordersBarber/:id ( update statusBarber ) => 4001 PATCH/ordersBarber/:id
 
 
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 BARBER ( tinggal upcdate) 
 
 [+] GET /barbers             => 4001 GET /barbers
@@ -97,7 +94,6 @@ BARBER ( tinggal upcdate)
 [+] DELETE /barbers/:id      => 40001 DELETE /barbers/:id
                         => 4001 PUT /barbers/:id
 
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 SERVICE 
 
 [+] GET /services             => 4001 GET /services
@@ -106,7 +102,6 @@ SERVICE
 [+] POST /services            => 4001 POST /service
 
 
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 COORDINATES
 
 [+] POST /coorrdinates  
