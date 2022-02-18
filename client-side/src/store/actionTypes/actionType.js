@@ -5,3 +5,4 @@ export const SET_BARBER = "set/barber";
 export const SHOW_RATINGFORM = "show/ratingForm";
 export const SET_RATING = "set/rating";
 export const CLIENT_HASORDER = "user/hasOrder";
+export const SHOW_ORDERDETAIL = "show/orderDetail";
