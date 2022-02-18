@@ -67,7 +67,6 @@ USERS
 ORCHESTRATOR EXPRESS ENDPOINT
 PORT 4000
 
-
 USER ( tinggal update user)
 
 [+] POST /users ( register ) => 4002 POST /users (register)
@@ -87,7 +86,6 @@ ORDERS
 
 [+] GET /ordersBarber (order berdasarkan barberId)      => 4001 GET /ordersBarber
 [+]  PATCH /ordersBarber/:id ( update statusBarber ) => 4001 PATCH/ordersBarber/:id
-
 
 
 BARBER ( tinggal upcdate) 
