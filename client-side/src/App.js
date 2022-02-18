@@ -5,7 +5,7 @@ import LandingPage from "./Pages/LandingPage";
 import SignIn from "./Pages/SignIn";
 import SignUp from "./Pages/SignUp";
 import ChooseService from "./Pages/ChooseService";
-import RatingModal from "./Components/RatingModal";
+import PaymentPage from "./Pages/PaymentPage";
 
 function App() {
   return (
@@ -16,7 +16,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/home" element={<ChooseService />} />
         <Route path="/book" element={<BookForm />} />
-        <Route path="/vote" element={<RatingModal />} />
+        <Route path="/payment" element={<PaymentPage />} />
       </Routes>
     </>
   );

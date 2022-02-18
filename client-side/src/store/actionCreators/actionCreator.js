@@ -6,6 +6,7 @@ import {
   SHOW_RATINGFORM,
   SET_RATING,
   CLIENT_HASORDER,
+  SHOW_ORDERDETAIL,
 } from "../actionTypes/actionType";
 
 export const setService = (payload) => {
@@ -18,6 +19,13 @@ export const setService = (payload) => {
 export const hasOrder = (payload) => {
   return {
     type: CLIENT_HASORDER,
+    payload,
+  };
+};
+
+export const showTheDetail = (payload) => {
+  return {
+    type: SHOW_ORDERDETAIL,
     payload,
   };
 };
