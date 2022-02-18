@@ -63,6 +63,8 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     role: DataTypes.STRING,
+    lat: DataTypes.STRING,
+    long: DataTypes.STRING
   }, {
     sequelize,
     hooks:{

@@ -65,4 +65,21 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { getUsers, getUserById, postUser, loginUser };
+const updateUser = async (req, res) => {
+  const { id } = req.params;
+  const { username, email, password, phoneNumber } = req.body;
+  try {
+    const { data: result } = await axios({
+      method: "PUT",
+      url: `http://localhost:4002/users/${id}`,
+      data: req.body,
+    });
+    if (result) {
+      res.status(201).json(result);
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+module.exports = { getUsers, getUserById, postUser, loginUser, updateUser };

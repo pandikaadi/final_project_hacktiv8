@@ -15,7 +15,6 @@ const postOrder = async (req, res) => {
       serviceId,
     });
     if (order) {
-      // console.log(order);
       const findOrder = await Order.findOne({
         where: { id: order.id },
         include: [{ model: User }, { model: Barber }, { model: Service }],
@@ -27,10 +26,9 @@ const postOrder = async (req, res) => {
           findOrder.Barber.name,
           findOrder.Service.name
         );
-        res.status(201).json({findOrder});
+        res.status(201).json({ findOrder });
       }
-    } else {
-    }
+    } 
   } catch (err) {
     if (err.name === "SequelizeForeignKeyConstraintError") {
       res.status(400).json({ message: "bad request" });
@@ -41,7 +39,7 @@ const postOrder = async (req, res) => {
         } else if (el.message === "hour is required") {
           res.status(400).json(el);
         } else {
-          // res.status(500).json(err);
+         
         }
       });
     }
@@ -54,7 +52,24 @@ const getOrdersByUserId = async (req, res) => {
   try {
     const orders = await Order.findAll({
       where: { userId: id },
-      include: [{ model: User }, { model: Barber }, { model: Service }],
+      include: [{ model: Barber }, { model: Service }],
+    });
+    if (orders) {
+      res.status(200).json(orders);
+    }
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+const getOrdersByBarberId = async (req, res) => {
+  // get all orders by barber id
+  const { id } = req.currentBarber;
+  
+  try {
+    const orders = await Order.findAll({
+      where: { barberId: id },
+      include: [{ model: Barber }, { model: Service }],
     });
     if (orders) {
       res.status(200).json(orders);
@@ -69,32 +84,63 @@ const getOrderByid = async (req, res) => {
   try {
     const order = await Order.findOne({
       where: { id: id },
-      include: [{ model: User }, { model: Barber }, { model: Service }],
+      include: [{ model: Barber }, { model: Service }],
     });
     if (order) {
       res.status(200).json(order);
     }
   } catch (err) {
+    
     res.status(500).json(err);
   }
 };
-const deleteOrder = async (req,res) => {
-  console.log('jalan 4001');
-  const {id} = req.params
+
+
+const deleteOrder = async (req, res) => {
+  const { id } = req.params;
   try {
     const order = await Order.findOne({
-      where: { id: id }
+      where: { id: id },
     });
     if (order) {
       await Order.destroy({
-        where:{id:id}
-      })
-      res.status(200).json({message:'Order success to delete'});
-    }else{
-      res.status(404).json({message:'Order not found'});
+        where: { id: id },
+      });
+      res.status(200).json({ message: "Order success to delete" });
+    } else {
+      res.status(404).json({ message: "Order not found" });
     }
   } catch (err) {
     res.status(500).json(err);
   }
+};
+
+const updateStatus = async(req,res) => {
+  const { id } = req.params
+  const { statusBarber } = req.body
+  try{
+      const findOrder = await Order.findOne({where:{id:id}})
+      if(findOrder){
+        const result = await Order.update({
+          statusBarber:statusBarber,
+        },{
+          where:{id:id},
+          returning:true
+        })
+        res.status(200).json(result[1][0])
+      } else {
+        res.status(500).json(err)
+      }
+
+  }catch(err){
+    res.status(500).json(err)
+  }
 }
-module.exports = { postOrder, getOrdersByUserId, getOrderByid,deleteOrder };
+module.exports = {
+  postOrder,
+  getOrdersByUserId,
+  getOrderByid,
+  deleteOrder,
+  getOrdersByBarberId,
+  updateStatus
+};

@@ -1,8 +1,6 @@
 const axios = require('axios')
-
 const translateCoordinate = async (req, res) => {
   const { lat, long } = req.body;
-  console.log(req.body);
   try {
     const translated = await axios({
       method: "GET",

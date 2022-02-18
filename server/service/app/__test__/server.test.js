@@ -1,7 +1,7 @@
-const app = require('../../../../app')
+const app = require('../../app')
 const request = require('supertest')
-const { User} = require('../../../../models')
-const { createToken} = require("../../../../helpers/jwt")
+const { User,Service,Barber,Order } = require('../../../service/app/models')
+const { createToken} = require("../../../service/app/helpers/jwt")
 
 const userTest ={
   username:"anggorego",
@@ -19,7 +19,10 @@ const orderTest = {
   barberId : 1,
   serviceId:1,
   date: "22/12/2022",
-  hour: " 19.00"
+  hour: "19.00",
+  lat:'-6.7092',
+  long:'106.88188'
+
 }
 
 const barberTest = {
@@ -29,36 +32,43 @@ const barberTest = {
   phoneNumber:"0821232323"
 }
 
+const ServiceTest = {
+  name : 'basic cut',
+  price: 100000,
+
+}
+
 let token ;
 const invalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBtYWlsLmNvbSIsImlkIjoxLCJpYXQiOjE2MjI2MDk2NTF9.gShAB2qaCUjlnvNuM1MBWfBVEjDGdqjWSJNMEScXIeE';
 
 
 beforeAll((done) => {
-  User
-    .create(userTest)
-    .then((result) => {
-      token = createToken({
-        id: result.id,
-        email: result.email,
-        role: result.role,
-      });
+  Promise.all([User.create(userTest),Service.create(ServiceTest),Barber.create(barberTest),]) 
+  .then((datas)=>{
+    token = createToken({
+      id: datas[0].id,
+      email: datas[0].email,
+      role: datas[0].role,
     })
-    .then(() => {
-      done();
-    })
-    .catch((err) => {
-      done(err);
-    });
+    Order.create(orderTest)
+    done()
+  })
+  .catch(err=>{
+    done(err)
+  })
 
 });
 afterAll(done=>{
-  User.destroy({ truncate: true, cascade: true, restartIdentity: true})
+  Promise.all([User.destroy({ truncate: true, cascade: true, restartIdentity: true}),Service.destroy({ truncate: true, cascade: true, restartIdentity: true})])
+  User.destroy({ truncate: true, cascade: true, restartIdentity: true},Barber.destroy({ truncate: true, cascade: true, restartIdentity: true}),
+  Order.destroy({ truncate: true, cascade: true, restartIdentity: true}))
   .then(_=>{
     done()
   })
   .catch(err => {
     done(err)
   })
+ 
 })
 
 describe('user routes test', ()=>{
@@ -287,6 +297,170 @@ describe('user routes test', ()=>{
   })
 })
 
+describe('order rouets test', ()=>{
+  describe('POST /orders', ()=>{
+      describe('succes create order',()=>{
+        test('201 Success create order - should create new Order',(done)=>{
+          request(app)
+          .post('/orders')
+          .set('access_token', token)
+          .send(orderTest)
+          .end((err,res)=>{
+            if (err) return done(err);
+            const { body, status } = res;
+    
+            expect(status).toBe(201);
+            expect(body).toEqual(expect.any(Object));
+            return done();
+          })
+        })
+      })
+      describe('failed create order',()=>{
+        test('400 failed create order - should return error if barberId is Empty',(done)=>{
+          request(app)
+          .post('/orders')
+          .set('access_token', token)
+          .send({
+            userId:1,
+            barberId : 0,
+            date: "22/12/2022",
+            hour: " 19.00"
+          })
+          .end((err,res)=>{
+            if (err) return done(err);
+            const { body, status } = res;
+    
+            expect(status).toBe(400);
+            expect(body).toEqual(expect.any(Object));
+            expect(body).toHaveProperty('message', 'bad request');
+            return done();
+          })
+        })
+        test('400 failed create order - should return error if date is Empty',(done)=>{
+          request(app)
+          .post('/orders')
+          .set('access_token', token)
+          .send({
+            userId:1,
+            barberId : 0,
+            date: "",
+            hour: " 19.00"
+          })
+          .end((err,res)=>{
+            if (err) return done(err);
+            const { body, status } = res;
+    
+            expect(status).toBe(400);
+            expect(body).toEqual(expect.any(Object));
+            expect(body).toHaveProperty('message', 'date is required');
+            return done();
+          })
+        })
+        test('400 failed create order - should return error if hour is Empty',(done)=>{
+          request(app)
+          .post('/orders')
+          .set('access_token', token)
+          .send({
+            userId:1,
+            barberId : 1,
+            date: "22/12/2022",
+            hour: ""
+          })
+          .end((err,res)=>{
+            if (err) return done(err);
+            const { body, status } = res;
+    
+            expect(status).toBe(400);
+            expect(body).toEqual(expect.any(Object));
+            expect(body).toHaveProperty('message', 'hour is required');
+            return done();
+          })
+        })
+      })
+  })
+  describe('GET /orders',()=>{
+    test('200 Success orders', (done) => {
+      request(app)
+        .get('/orders')
+        .set('access_token', token)
+        .then((response) => {
+          const { body, status } = response;
+  
+          expect(status).toBe(200);
+          expect(Array.isArray(body)).toBeTruthy();
+          expect(body.length).toBeGreaterThan(0);
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+    test('401 failed get orders with invalid token', (done) => {
+      request(app)
+        .get('/orders')
+        .set('access_token', invalidToken)
+        .then((response) => {
+          const { body, status } = response;
+  
+          expect(status).toBe(401);
+          expect(body).toEqual(expect.any(Object));
+          expect(body).toHaveProperty('message',"invalid signature");
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+  })
+  describe('GET /orders/:id',()=>{
+    test('200 Success get order by id', (done) => {
+      request(app)
+        .get('/orders/1')
+        .set('access_token', token)
+        .then((response) => {
+          const { body, status } = response;
+          expect(status).toBe(200);
+          expect(body).toEqual(expect.any(Object));
+          expect(body).toHaveProperty('id', expect.any(Number));
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    })
+  })
+  describe('DELETE /orders/:id', () => {
+    test('200 Success delete order by id', (done) => {
+      request(app)
+        .delete('/orders/1')
+        .set('access_token', token)
+        .then((response) => {
+          const { body, status } = response;
+          expect(status).toBe(200);
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    })
+    test('404 failed delete order by id', (done) => {
+      request(app)
+        .delete('/orders/1')
+        .set('access_token', token)
+        .then((response) => {
+          const { body, status } = response;
+          expect(status).toBe(404);
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    })
+  })
+  
+
+})
+
 describe('barber routes test',()=>{
   describe('POST /barbers', ()=>{
     describe('success create barber',()=>{
@@ -312,7 +486,6 @@ describe('barber routes test',()=>{
         request(app)
           .post('/barbers')
           .send({
-            
             email:"lebron.james@gmail.com",
             password:"testing",
             phoneNumber:"0821232323"
@@ -493,120 +666,14 @@ describe('barber routes test',()=>{
     });
     
 })
-})
-
-describe('order rouets test', ()=>{
-  describe('POST /orders', ()=>{
-      describe('succes create order',()=>{
-        test('201 Success create order - should create new Order',(done)=>{
-          request(app)
-          .post('/orders')
-          .set('access_token', token)
-          .send(orderTest)
-          .end((err,res)=>{
-            if (err) return done(err);
-            const { body, status } = res;
-    
-            expect(status).toBe(201);
-            expect(body).toEqual(expect.any(Object));
-            expect(body).toHaveProperty('id', expect.any(Number));
-            expect(body).toHaveProperty('userId', orderTest.userId);
-            expect(body).toHaveProperty('barberId', orderTest.barberId);
-            expect(body).toHaveProperty('date', orderTest.date);
-            return done();
-          })
-        })
-      })
-      describe('failed create order',()=>{
-        test('400 failed create order - should return error if barberId is Empty',(done)=>{
-          request(app)
-          .post('/orders')
-          .set('access_token', token)
-          .send({
-            userId:1,
-            barberId : 0,
-            date: "22/12/2022",
-            hour: " 19.00"
-          })
-          .end((err,res)=>{
-            if (err) return done(err);
-            const { body, status } = res;
-    
-            expect(status).toBe(400);
-            expect(body).toEqual(expect.any(Object));
-            expect(body).toHaveProperty('message', 'bad request');
-            return done();
-          })
-        })
-        test('400 failed create order - should return error if date is Empty',(done)=>{
-          request(app)
-          .post('/orders')
-          .set('access_token', token)
-          .send({
-            userId:1,
-            barberId : 0,
-            date: "",
-            hour: " 19.00"
-          })
-          .end((err,res)=>{
-            if (err) return done(err);
-            const { body, status } = res;
-    
-            expect(status).toBe(400);
-            expect(body).toEqual(expect.any(Object));
-            expect(body).toHaveProperty('message', 'date is required');
-            return done();
-          })
-        })
-        test('400 failed create order - should return error if hour is Empty',(done)=>{
-          request(app)
-          .post('/orders')
-          .set('access_token', token)
-          .send({
-            userId:1,
-            barberId : 1,
-            date: "22/12/2022",
-            hour: ""
-          })
-          .end((err,res)=>{
-            if (err) return done(err);
-            const { body, status } = res;
-    
-            expect(status).toBe(400);
-            expect(body).toEqual(expect.any(Object));
-            expect(body).toHaveProperty('message', 'hour is required');
-            return done();
-          })
-        })
-      })
-  })
-  describe('GET /orders',()=>{
-    test('200 Success orders', (done) => {
+  describe('DELETE /barbers',()=>{
+    test('200 Success delete barbers', (done) => {
       request(app)
-        .get('/orders')
-        .set('access_token', token)
+        .delete('/barbers/1')
         .then((response) => {
           const { body, status } = response;
   
           expect(status).toBe(200);
-          expect(Array.isArray(body)).toBeTruthy();
-          expect(body.length).toBeGreaterThan(0);
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
-    });
-    test('401 failed get orders with invalid token', (done) => {
-      request(app)
-        .get('/orders')
-        .set('access_token', invalidToken)
-        .then((response) => {
-          const { body, status } = response;
-  
-          expect(status).toBe(401);
-          expect(body).toEqual(expect.any(Object));
-          expect(body).toHaveProperty('message',"invalid signature");
           done();
         })
         .catch((err) => {
@@ -614,24 +681,8 @@ describe('order rouets test', ()=>{
         });
     });
   })
-  describe('GET /orders/:id',()=>{
-    test('200 Success get order by id', (done) => {
-      request(app)
-        .get('/orders/1')
-        .set('access_token', token)
-        .then((response) => {
-          const { body, status } = response;
-          expect(status).toBe(200);
-          expect(body).toEqual(expect.any(Object));
-          expect(body).toHaveProperty('id', expect.any(Number));
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
-    })
-  })
-
-
 })
+
+
+
 
