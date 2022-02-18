@@ -4,16 +4,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLocation } from "../store/actionCreators/actionCreator";
 import FormCard from "../Components/FormCard";
 import ChooseBarber from "../Components/BarberCard";
+import RatingModal from "../Components/RatingModal";
+import { showRatingForm } from "../store/actionCreators/actionCreator";
 
 function CardForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [selector, setSelector] = useState(false);
+  const { showRating } = useSelector((state) => state.data);
   const { isService } = useSelector((state) => state.client);
+
+  console.log(isService);
 
   function handleSelector(e) {
     dispatch(setLocation(e.target.value));
     setSelector(true);
+  }
+
+  function handleShowRating() {
+    dispatch(showRatingForm(true));
   }
 
   return (
@@ -77,14 +86,17 @@ function CardForm() {
             </button>
           </div>
           <div className="flex flex-row mt-2 border-2 w-fit px-2 py-1 rounded">
-            <button className="bg-transparent font-semibold border-1 border-white text-white text-xs">
-              MY PROMOS
+            <button
+              className="bg-transparent font-semibold border-1 border-white text-white text-xs"
+              onClick={() => handleShowRating()}
+            >
+              MY ORDER
             </button>
           </div>
         </div>
-
         {!isService && <FormCard isLocated={selector} />}
         {isService && <ChooseBarber />}
+        {showRating && <RatingModal />}
       </div>
     </>
   );

@@ -3,11 +3,35 @@ import {
   SET_SERVICE,
   SERVICE_SELECTED,
   SET_BARBER,
+  SHOW_RATINGFORM,
+  SET_RATING,
+  CLIENT_HASORDER,
 } from "../actionTypes/actionType";
 
 export const setService = (payload) => {
   return {
     type: SET_SERVICE,
+    payload,
+  };
+};
+
+export const hasOrder = (payload) => {
+  return {
+    type: CLIENT_HASORDER,
+    payload,
+  };
+};
+
+export const showRatingForm = (payload) => {
+  return {
+    type: SHOW_RATINGFORM,
+    payload,
+  };
+};
+
+export const setRatingStar = (payload) => {
+  return {
+    type: SET_RATING,
     payload,
   };
 };
