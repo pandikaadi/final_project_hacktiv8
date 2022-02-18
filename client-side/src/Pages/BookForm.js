@@ -1,9 +1,4 @@
-
-import { useLocation } from "react-router-dom";
-import DataForm from "../Components/DataForm";
 import React, { useEffect, useState } from "react";
-import Fade from "react-reveal/Fade";
-import { Link } from "react-router-dom";
 import {
   MapContainer,
   TileLayer,
@@ -12,48 +7,53 @@ import {
   Marker,
   Popup,
 } from "react-leaflet";
-import proj4 from 'proj4'
+import proj4 from "proj4";
 import "../App.css";
 import { renderToStaticMarkup } from "react-dom/server";
 import { divIcon } from "leaflet";
+import { useSelector } from "react-redux";
+
 const iconMarkup = renderToStaticMarkup(
   <i className="fa-solid fa-map-pin fa-4x"></i>
 );
 const customMarkerIcon = divIcon({
-  html: iconMarkup
+  html: iconMarkup,
 });
 const iconMarkupBarber = renderToStaticMarkup(
   <i className="fa-solid text-rose-600 fa-map-pin fa-4x"></i>
 );
 const customMarkerIconBarber = divIcon({
-  html: iconMarkupBarber
+  html: iconMarkupBarber,
 });
 
-
 function BookForm() {
-  proj4.defs("EPSG:32748","+proj=utm +zone=48 +south +datum=WGS84 +units=m +no_defs");
-  const firstProjection = new proj4.Proj('WGS84')
-  const secondProjection = new proj4.Proj('EPSG:32748');
+  proj4.defs(
+    "EPSG:32748",
+    "+proj=utm +zone=48 +south +datum=WGS84 +units=m +no_defs"
+  );
+  const firstProjection = new proj4.Proj("WGS84");
+  const secondProjection = new proj4.Proj("EPSG:32748");
   const [centerLat, setCenterLat] = useState(-6.940116143023617);
   const [centerLong, setCenterLong] = useState(107.5605011029984);
-  const [distance, setDistance] = useState(null)
-  const [price, setPrice] = useState(null)
-  const [barberPosition, setBarberPosition] = useState({ lat: centerLat, lng: centerLong })
+  const [distance, setDistance] = useState(null);
+  const [price, setPrice] = useState(null);
+  const [barberPosition, setBarberPosition] = useState({
+    lat: centerLat,
+    lng: centerLong,
+  });
   const [position, setPosition] = useState(null);
   const [form, setForm] = useState({
-    address: '',
+    address: "",
     date: null,
-    schedule: null
-  })
+    schedule: null,
+  });
   function formHandler(e) {
-
     setForm({
       ...form,
-      [e.target.name] : e.target.value
-    })
-    
+      [e.target.name]: e.target.value,
+    });
   }
-  
+
   function priceFormatter(price) {
     let formattedPrice = price.toString().split("");
 
@@ -66,35 +66,38 @@ function BookForm() {
     }
 
     return `Rp. ${formattedPrice.join("")}`;
-    
   }
   useEffect(() => {
-    if(position) {
-
-      let utmCust = proj4(firstProjection,secondProjection,[position.lng, position.lat])
-      let utmBarber =proj4(firstProjection,secondProjection,[barberPosition.lng, barberPosition.lat])
+    if (position) {
+      let utmCust = proj4(firstProjection, secondProjection, [
+        position.lng,
+        position.lat,
+      ]);
+      let utmBarber = proj4(firstProjection, secondProjection, [
+        barberPosition.lng,
+        barberPosition.lat,
+      ]);
       // console.log(utmCust, `<<<<`)
       const powerDistance =
         Math.pow(Math.abs(utmCust[0] - utmBarber[0]), 2) +
         Math.pow(Math.abs(utmCust[1] - utmBarber[1]), 2);
       const distance = Math.pow(powerDistance, 0.5);
       // console.log(distance/1000, ">>>> Distance Meter")//METER
-      // console.log(Math.round((50_000 + distance * 5) / 1000), "=>>>>") 
+      // console.log(Math.round((50_000 + distance * 5) / 1000), "=>>>>")
       // console.log("Rp. ",Math.round((50_000 + distance * 5) / 1000)*1000, ">>>>>>>>>>>>>>>> Harga")
-      setDistance((distance/1000).toFixed(1))
+      setDistance((distance / 1000).toFixed(1));
       // console.log(distance)
-      if(distance) {
-        setPrice(Math.round((50_000 + distance * 5) / 1000)*1000);
+      if (distance) {
+        setPrice(Math.round((50_000 + distance * 5) / 1000) * 1000);
       }
-
     }
-  },[position])
+  }, [position]);
 
   function LocationMarker() {
     const map = useMapEvents({
       click(e) {
         setPosition(e.latlng);
-        if(position) {
+        if (position) {
           setCenterLat(position.lat);
           setCenterLong(position.lng);
         }
@@ -114,7 +117,6 @@ function BookForm() {
     );
   }
   function BarberMarker() {
-
     return barberPosition === null ? null : (
       <Marker icon={customMarkerIconBarber} position={barberPosition}>
         <Popup>Shave8 HQ</Popup>
@@ -123,14 +125,13 @@ function BookForm() {
   }
 
   function HandleCenter({ mapCenter }) {
-    
     const map = useMap();
-    if(position) map.setView(mapCenter);
+    if (position) map.setView(mapCenter);
     return null;
   }
 
   function handleLocateButton(e) {
-    e.preventDefault()
+    e.preventDefault();
     // console.log(`hehe`);
     // console.log(position);
 
@@ -149,89 +150,92 @@ function BookForm() {
     <>
       <div className="flex justify-center bg-zinc-800 pt-10 min-h-screen">
         {/* <Fade> */}
-          <div className="m-auto">
-            <form className="pb-4  space-y-2 lg:px-2 sm:pb-6 xl:pb-8">
-              <div className="flex justify-center tracking-widest">
-                <h3 className="text-4xl font-light text-white dark:text-white pb-4">
-                  BOOK NOW
-                </h3>
-              </div>
-              
-              <div className="flex justify-center mb-2">
-                <input
-                  onChange={formHandler}
-                  name="date"
-                  type="date"
-                  className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                />
-              </div>
-              <div className="flex justify-center mb-2">
-                <select onChange={formHandler} name="schedule" className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
-                  <option>08.00 - 10.00</option>
-                  <option>10.00 - 12.00</option>
-                  <option>13.00 - 15.00</option>
-                  <option>15.00 - 17.00</option>
-                  <option>17.00 - 19.00</option>
-                </select>
-              </div>
-              <div className="flex justify-center">
-                <textarea
-                  type="email"
-                  name="address"
-                  onChange={formHandler}
-                  id="email"
-                  className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                  placeholder="address"
-                  required
-                />
-              </div>
-              
-              <div className="justify-center mb-2 rounded-sm-2">
-                <div className="flex content-center my-3">
-                  <button
-                    onClick={handleLocateButton}
-                    className=" self-center content-center mx-auto text-white bg-transparent border-white border-2 hover:bg-slate-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                  >
-                    Locate Yourself
-                  </button>
-                </div>
-                <MapContainer
-                  center={[centerLat, centerLong]}
-                  style={{ height: 350 }}
-                  id="mapid"
-                  zoom={13}
-                  className="max-w-7/8 rounded"
-                >
-                  <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  />
-                  <LocationMarker />
-                  <BarberMarker />
+        <div className="m-auto">
+          <form className="pb-4  space-y-2 lg:px-2 sm:pb-6 xl:pb-8">
+            <div className="flex justify-center tracking-widest">
+              <h3 className="text-4xl font-light text-white dark:text-white pb-4">
+                BOOK NOW
+              </h3>
+            </div>
 
-                  <HandleCenter mapCenter={position} />
-                </MapContainer>
-              </div>
-              <div className="text-white flex justify-center mb-2">
-                {
-                  distance ? <span>Distance : {distance} KM</span> : ''
+            <div className="flex justify-center mb-2">
+              <input
+                onChange={formHandler}
+                name="date"
+                type="date"
+                className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+              />
+            </div>
+            <div className="flex justify-center mb-2">
+              <select
+                onChange={formHandler}
+                name="schedule"
+                className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+              >
+                <option>08.00 - 10.00</option>
+                <option>10.00 - 12.00</option>
+                <option>13.00 - 15.00</option>
+                <option>15.00 - 17.00</option>
+                <option>17.00 - 19.00</option>
+              </select>
+            </div>
+            <div className="flex justify-center">
+              <textarea
+                type="email"
+                name="address"
+                onChange={formHandler}
+                id="email"
+                className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                placeholder="address"
+                required
+              />
+            </div>
 
-                }
-              </div>
-              <div className="text-white flex justify-center mb-2">
-              <span>{price ? <span>Price : Rp. {priceFormatter(price)} </span> : ''}</span>
-              </div>
-              
-              <div className="flex justify-center mb-2">
+            <div className="justify-center mb-2 rounded-sm-2">
+              <div className="flex content-center my-3">
                 <button
-                  type="submit"
-                  className="w-3/4 mx-auto mt-2 text-white bg-transparent border-white border-2 hover:bg-slate-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  onClick={handleLocateButton}
+                  className=" self-center content-center mx-auto text-white bg-transparent border-white border-2 hover:bg-slate-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
-                  Order
+                  Locate Yourself
                 </button>
               </div>
-            </form>
-          </div>
+              <MapContainer
+                center={[centerLat, centerLong]}
+                style={{ height: 350 }}
+                id="mapid"
+                zoom={13}
+                className="max-w-7/8 rounded"
+              >
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <LocationMarker />
+                <BarberMarker />
+
+                <HandleCenter mapCenter={position} />
+              </MapContainer>
+            </div>
+            <div className="text-white flex justify-center mb-2">
+              {distance ? <span>Distance : {distance} KM</span> : ""}
+            </div>
+            <div className="text-white flex justify-center mb-2">
+              <span>
+                {price ? <span>Price : Rp. {priceFormatter(price)} </span> : ""}
+              </span>
+            </div>
+
+            <div className="flex justify-center mb-2">
+              <button
+                type="submit"
+                className="w-3/4 mx-auto mt-2 text-white bg-transparent border-white border-2 hover:bg-slate-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              >
+                Order
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </>
   );
