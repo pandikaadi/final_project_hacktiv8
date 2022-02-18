@@ -7,12 +7,18 @@ import {
   Marker,
   Popup,
 } from "react-leaflet";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import proj4 from "proj4";
 import "../App.css";
 import { renderToStaticMarkup } from "react-dom/server";
 import { divIcon } from "leaflet";
 import { useSelector } from "react-redux";
 import dataReducer from "../store/reducers/data";
+import {
+  hasOrder,
+  isServiceSelected,
+} from "../store/actionCreators/actionCreator";
 
 const iconMarkup = renderToStaticMarkup(
   <i className="fa-solid fa-map-pin fa-4x"></i>
@@ -28,6 +34,8 @@ const customMarkerIconBarber = divIcon({
 });
 
 function BookForm() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   proj4.defs(
     "EPSG:32748",
     "+proj=utm +zone=48 +south +datum=WGS84 +units=m +no_defs"
@@ -71,6 +79,9 @@ function BookForm() {
     };
 
     console.log(payload);
+    dispatch(hasOrder(true));
+    dispatch(isServiceSelected(false));
+    navigate("/home");
   }
 
   function priceFormatter(price) {
