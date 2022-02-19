@@ -14,8 +14,6 @@ function CardForm() {
   const { showRating } = useSelector((state) => state.data);
   const { isService } = useSelector((state) => state.client);
 
-  console.log(isService);
-
   function handleSelector(e) {
     dispatch(setLocation(e.target.value));
     setSelector(true);

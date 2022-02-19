@@ -97,6 +97,7 @@ function BookForm() {
 
     return `Rp. ${formattedPrice.join("")}`;
   }
+
   useEffect(() => {
     if (position) {
       let utmCust = proj4(firstProjection, secondProjection, [
@@ -107,14 +108,11 @@ function BookForm() {
         barberPosition.lng,
         barberPosition.lat,
       ]);
-      // console.log(utmCust, `<<<<`)
       const powerDistance =
         Math.pow(Math.abs(utmCust[0] - utmBarber[0]), 2) +
         Math.pow(Math.abs(utmCust[1] - utmBarber[1]), 2);
       const distance = Math.pow(powerDistance, 0.5);
       // console.log(distance/1000, ">>>> Distance Meter")//METER
-      // console.log(Math.round((50_000 + distance * 5) / 1000), "=>>>>")
-      // console.log("Rp. ",Math.round((50_000 + distance * 5) / 1000)*1000, ">>>>>>>>>>>>>>>> Harga")
       setDistance((distance / 1000).toFixed(1));
       // console.log(distance)
       if (distance) {
@@ -131,13 +129,7 @@ function BookForm() {
           setCenterLat(position.lat);
           setCenterLong(position.lng);
         }
-        // console.log(centerLat, ">>>>>>");
-        // console.log(centerLong, ">>>>>>");
       },
-      // locationfound(e) {
-      //   setPosition(e.latlng)
-      //   map.flyTo(e.latlng, map.getZoom())
-      // },
     });
 
     return position === null ? null : (
@@ -146,6 +138,7 @@ function BookForm() {
       </Marker>
     );
   }
+
   function BarberMarker() {
     return barberPosition === null ? null : (
       <Marker icon={customMarkerIconBarber} position={barberPosition}>
@@ -162,20 +155,15 @@ function BookForm() {
 
   function handleLocateButton(e) {
     e.preventDefault();
-    // console.log(`hehe`);
-    // console.log(position);
 
     navigator.geolocation.getCurrentPosition((position) => {
       const { latitude, longitude } = position.coords;
       // Show a map centered at latitude / longitude.
       setPosition({ lat: latitude, lng: longitude });
 
-      // setCenterLat(position.lat)
-      // setCenterLong(position.lng)
-      // setCenterLat(position.lat)
-      // setCenterLong(position.lng)
     });
   }
+  
   return (
     <>
       <div className="flex justify-center bg-zinc-800 pt-10 min-h-screen">
@@ -258,7 +246,7 @@ function BookForm() {
             </div>
             <div className="text-white flex justify-center mb-2">
               <span>
-                {price ? <span>Price : Rp. {priceFormatter(price)} </span> : ""}
+                {price ? <span>Price : {priceFormatter(price)} </span> : ""}
               </span>
             </div>
 

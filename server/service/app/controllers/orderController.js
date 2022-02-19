@@ -5,7 +5,6 @@ const sendMailOrder = require("../helpers/nodemailerOrder");
 const postOrder = async (req, res) => {
   const userId = req.currentUser.id;
   const { barberId, date, hour, serviceId, price, address } = req.body;
-  console.log(req.body);
 
   try {
     const orderKey = `${barberId}-${userId}-${new Date()
