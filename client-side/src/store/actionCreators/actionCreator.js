@@ -67,6 +67,37 @@ export const doLogin = (payload) => {
     }
 };
 
+export const fetchLocation = (payload) => {
+  return dispatch => {
+    return fetch(`${baseUrl}/coordinates`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        lat: payload.lat,
+        long: payload.lng,
+      
+      })
+    })
+      .then((result) => {
+        if (!result.ok) {
+          return result.json().then((err) => {throw new Error(err.message)});
+        }
+        return result.json();
+      })
+      .then((data) => {
+        return data
+      })
+      .catch((err) => {
+        throw err
+      })
+      // .finally(() => {
+      //   dispatch(fetchUserLoading(false));
+      // });
+    }
+}
+
 export const hasOrder = (payload) => {
   return {
     type: CLIENT_HASORDER,

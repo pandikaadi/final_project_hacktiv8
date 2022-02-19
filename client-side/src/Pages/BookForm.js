@@ -16,6 +16,7 @@ import { divIcon } from "leaflet";
 import { useSelector } from "react-redux";
 import dataReducer from "../store/reducers/data";
 import {
+  fetchLocation,
   hasOrder,
   isServiceSelected,
   showRatingForm,
@@ -65,8 +66,8 @@ function BookForm() {
       [e.target.name]: e.target.value,
     });
   }
-
   const { location, service, barber } = useSelector((state) => state.data);
+  console.log(location, service, barber) //
   function handleNewOrder(e) {
     e.preventDefault();
 
@@ -123,6 +124,24 @@ function BookForm() {
     }
   }, [position]);
 
+  useEffect(() => {
+    if (location === '1') {
+      setBarberPosition({
+        lat: -6.250970, lng: 106.839584
+      })
+      setPosition({
+        lat: -6.250970, lng: 106.839584
+      })
+    } else if(location === '2') {
+      setBarberPosition({
+        lat: -6.917359, lng: 107.606478
+      })
+      setPosition({
+        lat: -6.917359, lng: 107.606478
+      })
+    }
+  }, []);
+console.log(form)
   function LocationMarker() {
     const map = useMapEvents({
       click(e) {
@@ -130,6 +149,17 @@ function BookForm() {
         if (position) {
           setCenterLat(position.lat);
           setCenterLong(position.lng);
+          dispatch(fetchLocation(position))
+          .then((data) => {
+            setForm({
+              ...form,
+              address: data
+            })
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+          
         }
       },
     });
@@ -154,14 +184,25 @@ function BookForm() {
     if (position) map.setView(mapCenter);
     return null;
   }
-
+  console.log(typeof new Date(form.date), form.date)
+  console.log(new Date(form.date));
   function handleLocateButton(e) {
     e.preventDefault();
 
-    navigator.geolocation.getCurrentPosition((position) => {
+    navigator.geolocation.getCurrentPosition(async (position) => {
       const { latitude, longitude } = position.coords;
       // Show a map centered at latitude / longitude.
-      setPosition({ lat: latitude, lng: longitude });
+      await setPosition({ lat: latitude, lng: longitude });
+      dispatch(fetchLocation({ lat: latitude, lng: longitude }))
+          .then((data) => {
+            setForm({
+              ...form,
+              address: data
+            })
+          })
+          .catch((err) => {
+            console.log(err);
+          })
 
     });
   }
