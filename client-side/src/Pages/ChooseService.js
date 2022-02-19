@@ -6,6 +6,7 @@ import FormCard from "../Components/FormCard";
 import ChooseBarber from "../Components/BarberCard";
 import RatingModal from "../Components/RatingModal";
 import { showRatingForm } from "../store/actionCreators/actionCreator";
+import { toast } from "react-toastify";
 
 function CardForm() {
   const dispatch = useDispatch();
@@ -23,7 +24,7 @@ function CardForm() {
 
   function handleShowRating() {
     if (!hasOrder) {
-      console.log("No order is available");
+      toast.error("No order is available");
     } else {
       navigate("/payment");
     }
@@ -74,14 +75,16 @@ function CardForm() {
             Hello User
           </p>
           <p className="text-white">Find your personality now!</p>
-          <select
-            onChange={handleSelector}
-            className="flex font-semibold bg-white mt-4 px-2 pb-1 rounded"
-          >
-            <option>Your Location</option>
-            <option value="1">Jakarta</option>
-            <option value="2">Bandung</option>
-          </select>
+          {!isService && (
+            <select
+              onChange={handleSelector}
+              className="flex font-semibold bg-white mt-4 px-2 pb-1 rounded"
+            >
+              <option>Your Location</option>
+              <option value="1">Jakarta</option>
+              <option value="2">Bandung</option>
+            </select>
+          )}
         </div>
 
         <div className="mx-4 mt-4 flex justify-center flex-row mb-4">

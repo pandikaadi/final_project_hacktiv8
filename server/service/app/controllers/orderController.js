@@ -45,7 +45,7 @@ const postOrder = async (req, res) => {
       serviceId,
       orderKey,
       price,
-      paymentUrl: transaction.redirect_url
+      paymentUrl: transaction.redirect_url,
     });
     if (order) {
       const findOrder = await Order.findOne({
@@ -63,10 +63,9 @@ const postOrder = async (req, res) => {
       }
     }
   } catch (err) {
-    console.log(err, `EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE`)
     if (err.name === "SequelizeForeignKeyConstraintError") {
       res.status(400).json({ message: "bad request" });
-    } else if(err.errors) {
+    } else if (err.errors) {
       err.errors.map((el) => {
         if (el.message === "date is required") {
           res.status(400).json(el);
@@ -80,7 +79,7 @@ const postOrder = async (req, res) => {
         }
       });
     } else {
-      res.status(500).json({ message: "Internal Server Error"})
+      res.status(500).json({ message: "Internal Server Error" });
     }
   }
 };
@@ -192,24 +191,29 @@ const updateStatus = async (req, res) => {
   }
 };
 
-const paymentHandler = async(req, res) => {
+const paymentHandler = async (req, res) => {
   try {
-    if(req.body.transaction_status == "settlement" || req.body.transaction_status == "capture") {
-      const updatedPayment = await Order.update({
-        statusPayment: true,
-        statusBarber: "Paid"
-      },{
-        where: {
-          orderKey: req.body.order_id,
+    if (
+      req.body.transaction_status == "settlement" ||
+      req.body.transaction_status == "capture"
+    ) {
+      const updatedPayment = await Order.update(
+        {
+          statusPayment: true,
+          statusBarber: "Paid",
+        },
+        {
+          where: {
+            orderKey: req.body.order_id,
+          },
         }
-      })
+      );
     }
-    res.status(200).json("ok")
-    
+    res.status(200).json("ok");
   } catch (error) {
-    res.status(500).json({message: "Internal Server Error"})
+    res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 module.exports = {
   postOrder,
   getOrdersByUserId,
@@ -218,5 +222,4 @@ module.exports = {
   getOrdersByBarberId,
   updateStatus,
   paymentHandler,
-  getBarbers
 };

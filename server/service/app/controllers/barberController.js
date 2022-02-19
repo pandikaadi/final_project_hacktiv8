@@ -116,7 +116,7 @@ const barberLogin = async (req, res) => {
     });
 
     if (!result) {
-      throw new Error ('no result');
+      throw { message: "Invalid email/password" };
     } else {
     }
     if (!compareHash(password, result.password)) {
@@ -134,7 +134,6 @@ const barberLogin = async (req, res) => {
       access_token: token,
     });
   } catch (err) {
-
     if(err.message === 'invalid password'){
       res.status(401).json(err.message)
     } else if (err.message === 'no result'){
@@ -148,7 +147,6 @@ const barberLogin = async (req, res) => {
     // }else if (err === ) {
     //     res.status(401).json(err);
     // }
-  
   }
 };
 module.exports = {
