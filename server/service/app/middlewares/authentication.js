@@ -6,7 +6,7 @@ const authentication = async (req, res, next) => {
   try {
     const { access_token } = req.headers;
     const payload = verifyToken(access_token);
-    console.log(payload);
+    console.log(payload,'ini payload');
     if (payload.role === "Customer") {
       const user = await axios({
         method: "GET",

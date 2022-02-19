@@ -4,6 +4,7 @@ const sendMailOrder = require("../helpers/nodemailerOrder");
 
 const postOrder = async (req, res) => {
   const userId = req.currentUser.id;
+  
   const { barberId, date, hour, serviceId } = req.body;
 
   try {
@@ -20,12 +21,12 @@ const postOrder = async (req, res) => {
         include: [{ model: User }, { model: Barber }, { model: Service }],
       });
       if (findOrder) {
-        sendMailOrder(
-          findOrder.User.email,
-          findOrder.User.username,
-          findOrder.Barber.name,
-          findOrder.Service.name
-        );
+        // sendMailOrder(
+        //   findOrder.User.email,
+        //   findOrder.User.username,
+        //   findOrder.Barber.name,
+        //   findOrder.Service.name
+        // );
         res.status(201).json({ findOrder });
       }
     } 
@@ -37,6 +38,10 @@ const postOrder = async (req, res) => {
         if (el.message === "date is required") {
           res.status(400).json(el);
         } else if (el.message === "hour is required") {
+          res.status(400).json(el);
+        } else if (el.message === "date cant be null") {
+          res.status(400).json(el);
+        } else if (el.message === "hour cant be null") {
           res.status(400).json(el);
         } else {
          

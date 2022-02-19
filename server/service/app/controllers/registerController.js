@@ -5,7 +5,7 @@ const postRegister = async (req, res) => {
     const { username, email, password, phoneNumber } = req.body;
     const user = await User.create({ username, email, password, phoneNumber });
     if (user) {
-      sendMail(email,username)
+      // sendMail(email,username)
       res.status(201).json(user);
     } else{
       res.status(500).json({message:'Internal server error'})
