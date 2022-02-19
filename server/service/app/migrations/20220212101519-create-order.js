@@ -8,11 +8,9 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      userId: { type: Sequelize.INTEGER ,
-        references:{
-          model:{tableName:'Users'},
-          key:'id'
-        }
+      userMonggoId: 
+        { 
+          type: Sequelize.STRING ,
         },
       barberId: { type: Sequelize.INTEGER ,
         references:{
@@ -21,7 +19,7 @@ module.exports = {
         }
         },
       date: {
-        type: Sequelize.STRING
+        type: Sequelize.DATE
       },
       hour: {
         type: Sequelize.STRING

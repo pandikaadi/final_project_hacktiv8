@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Vote.init({
-    userId: DataTypes.INTEGER,
+    userMonggoId: DataTypes.STRING,
     barberId: { 
       type: DataTypes.INTEGER ,
       references:{

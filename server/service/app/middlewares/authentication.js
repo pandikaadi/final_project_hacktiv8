@@ -14,6 +14,7 @@ const authentication = async (req, res, next) => {
       });
       req.currentUser = {
         id: user.data.id,
+        userMonggoId: payload.userMonggoId || null,
         role: user.data.role,
         username: user.data.username,
         email: user.data.email,

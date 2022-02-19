@@ -14,9 +14,7 @@ const postLogin = async (req, res) => {
 
     if (!result) {
       throw { message: "Invalid email/password" };
-    } else{
-
-    }
+    } 
     if (!compareHash(password, result.password)) {
       throw { message: "Invalid email/password" };
     }
