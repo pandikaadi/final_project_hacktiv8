@@ -85,18 +85,16 @@ function BookForm() {
       city: location
     };
     dispatch(postNewOrder(payload))
-    .then((data) => {
-      console.log(data);
-      dispatch(hasOrder(true));
-      dispatch(isServiceSelected(false));
-      dispatch(showRatingForm(true));
-      navigate("/home");
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-
-   
+      .then((data) => {
+        dispatch(hasOrder(true));
+        dispatch(isServiceSelected(false));
+        dispatch(showRatingForm(true));
+        console.log("sebelum navigate ke home");
+        navigate("/home");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   function priceFormatter(price) {
@@ -137,23 +135,27 @@ function BookForm() {
   }, [position]);
 
   useEffect(() => {
-    if (location === '1') {
+    if (location === "1") {
       setBarberPosition({
-        lat: -6.250970, lng: 106.839584
-      })
+        lat: -6.25097,
+        lng: 106.839584,
+      });
       setPosition({
-        lat: -6.250970, lng: 106.839584
-      })
-    } else if(location === '2') {
+        lat: -6.25097,
+        lng: 106.839584,
+      });
+    } else if (location === "2") {
       setBarberPosition({
-        lat: -6.917359, lng: 107.606478
-      })
+        lat: -6.917359,
+        lng: 107.606478,
+      });
       setPosition({
-        lat: -6.917359, lng: 107.606478
-      })
+        lat: -6.917359,
+        lng: 107.606478,
+      });
     }
   }, []);
-console.log(form)
+  // console.log(form);
   function LocationMarker() {
     const map = useMapEvents({
       click(e) {
@@ -162,16 +164,15 @@ console.log(form)
           setCenterLat(position.lat);
           setCenterLong(position.lng);
           dispatch(fetchLocation(position))
-          .then((data) => {
-            setForm({
-              ...form,
-              address: data
+            .then((data) => {
+              setForm({
+                ...form,
+                address: data,
+              });
             })
-          })
-          .catch((err) => {
-            console.log(err);
-          })
-          
+            .catch((err) => {
+              console.log(err);
+            });
         }
       },
     });
@@ -196,7 +197,6 @@ console.log(form)
     if (position) map.setView(mapCenter);
     return null;
   }
-  
   function handleLocateButton(e) {
     e.preventDefault();
 
@@ -205,16 +205,15 @@ console.log(form)
       // Show a map centered at latitude / longitude.
       await setPosition({ lat: latitude, lng: longitude });
       dispatch(fetchLocation({ lat: latitude, lng: longitude }))
-          .then((data) => {
-            setForm({
-              ...form,
-              address: data
-            })
-          })
-          .catch((err) => {
-            console.log(err);
-          })
-
+        .then((data) => {
+          setForm({
+            ...form,
+            address: data,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     });
   }
   
