@@ -40,7 +40,6 @@ function SignUp() {
       <div className="flex justify-center bg-zinc-800 h-screen">
         <Fade>
           <div className="m-auto">
-            
             <form
               onSubmit={signUpHandler}
               className="px-6 pb-4 space-y-6 lg:px-8 sm:pb-6 xl:pb-8"
