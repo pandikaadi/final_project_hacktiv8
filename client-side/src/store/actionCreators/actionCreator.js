@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   SET_LOCATION,
   SET_SERVICE,
@@ -8,6 +9,23 @@ import {
   CLIENT_HASORDER,
   SHOW_ORDERDETAIL,
 } from "../actionTypes/actionType";
+const url = "http://localhost:/4000/";
+
+export const CreateNewClient = (payload) => {
+  return (dispatch) => {
+    axios({
+      method: "POST",
+      url: "http://localhost:4000/users",
+      data: payload,
+    })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+};
 
 export const setService = (payload) => {
   return {
