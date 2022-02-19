@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Fade from "react-reveal/Fade";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 import { CreateNewClient } from "../store/actionCreators/actionCreator";
 
 function SignUp() {
@@ -34,12 +35,14 @@ function SignUp() {
       phoneNumber: newUser.phoneNumber,
     };
 
-    // console.log(payload);
-    dispatch(CreateNewClient(payload));
-    // .then((res) => {
-    //   console.log(res);
-    // });
-    // navigate("/signin");
+    dispatch(CreateNewClient(payload))
+      .then(() => {
+        toast.success("Sign up success");
+        navigate("/signin");
+      })
+      .catch((err) => {
+        toast.error(err);
+      });
   };
 
   return (

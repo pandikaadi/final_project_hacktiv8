@@ -9,22 +9,20 @@ import {
   CLIENT_HASORDER,
   SHOW_ORDERDETAIL,
 } from "../actionTypes/actionType";
-const baseUrl = 'http://localhost:4000'
+const baseUrl = "http://localhost:4000";
 
 export const CreateNewClient = (payload) => {
   return (dispatch) => {
-    axios({
+    return axios({
       method: "POST",
       url: `${baseUrl}/users`,
       data: payload,
-    })
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    });
   };
+};
+
+export const fetchBarber = (payload) => {
+  return (dispatch) => {};
 };
 
 export const setService = (payload) => {
@@ -35,7 +33,7 @@ export const setService = (payload) => {
 };
 
 export const doLogin = (payload) => {
-  return dispatch => {
+  return (dispatch) => {
     return fetch(`${baseUrl}/login`, {
       method: "POST",
       headers: {
@@ -43,28 +41,29 @@ export const doLogin = (payload) => {
       },
       body: JSON.stringify({
         email: payload.email,
-        password: payload.password
-        
-      })
+        password: payload.password,
+      }),
     })
       .then((result) => {
         if (!result.ok) {
-          return result.json().then((err) => {throw new Error(err.message)});
+          return result.json().then((err) => {
+            throw new Error(err.message);
+          });
         }
         return result.json();
       })
       .then((data) => {
-        localStorage.access_token = data.access_token
-        localStorage.role = data.role
-        return data
+        localStorage.access_token = data.access_token;
+        localStorage.role = data.role;
+        return data;
       })
       .catch((err) => {
-        throw err
-      })
-      // .finally(() => {
-      //   dispatch(fetchUserLoading(false));
-      // });
-    }
+        throw err;
+      });
+    // .finally(() => {
+    //   dispatch(fetchUserLoading(false));
+    // });
+  };
 };
 
 export const hasOrder = (payload) => {

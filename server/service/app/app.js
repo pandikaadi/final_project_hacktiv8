@@ -7,10 +7,8 @@ const router = require("./routes/index");
 
 app.use(cors());
 app.use(express.json());
-app.post('/paymentHandler', paymentHandler)
 app.use(express.urlencoded({ extended: false }));
-
-
+app.post("/paymentHandler", paymentHandler);
 
 app.use("/", router);
 

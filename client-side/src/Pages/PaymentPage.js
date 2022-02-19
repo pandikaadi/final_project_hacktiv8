@@ -22,7 +22,7 @@ function PaymentPage() {
   );
   const firstProjection = new proj4.Proj("WGS84");
   const secondProjection = new proj4.Proj("EPSG:32748");
-  
+
   const dispatch = useDispatch();
   const [distance, setDistance] = useState(null);
   const { showDetail } = useSelector((state) => state.client);
@@ -46,9 +46,8 @@ function PaymentPage() {
         Math.pow(Math.abs(utmCust[0] - utmBarber[0]), 2) +
         Math.pow(Math.abs(utmCust[1] - utmBarber[1]), 2);
       const distance = Math.pow(powerDistance, 0.5);
-      
+
       setDistance((distance / 1000).toFixed(1));
-      
     }
   }, []);
   const [position, setPosition] = useState({
@@ -86,14 +85,15 @@ function PaymentPage() {
     <>
       <div className="flex justify-center bg-zinc-800 h-screen">
         {showDetail && <PaymentDetailCard />}
-        {
-          !showDetail && <Bounce top>
-          <div className="flex flex-col m-auto bg-white px-5 py-8  rounded-md">
-          <MapContainer
+        {!showDetail && (
+          <Bounce top>
+            <div className="flex flex-col m-auto bg-white px-2 py-4 rounded">
+              <MapContainer
                 center={[centerLat, centerLong]}
-                style={{ height: 350, width:350 }}
+                style={{ height: 350, width: 350 }}
                 zoom={13}
                 className="max-w-7/8 rounded"
+                // className="w-3/6 rounded"
               >
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -101,22 +101,25 @@ function PaymentPage() {
                 />
                 <LocationMarker />
                 <BarberMarker />
-
               </MapContainer>
-          <div className="flex justify-center mt-2">
-              <span>The barber is {distance} KM away from you</span>
+              <div className="flex justify-center mt-2">
+                <p>
+                  The barber is{" "}
+                  <span className="text-blue-500 font-bold">{distance} KM</span>{" "}
+                  away from you
+                </p>
+              </div>
+              <div className="flex justify-center mt-2">
+                <button
+                  onClick={() => dispatch(showTheDetail(true))}
+                  className="bg-green-400 hover:bg-green-200 shadow-lg shadow-green-500/50 px-4 py-2 text-white text-sm font-semibold tracking-wider rounded"
+                >
+                  SHOW ME THE DETAILS!
+                </button>
+              </div>
             </div>
-          <div className="flex justify-center mt-2">
-              <button
-                onClick={() => dispatch(showTheDetail(true))}
-                className="bg-green-400 hover:bg-green-200 shadow-lg shadow-green-500/50 px-4 py-2 text-white text-sm font-semibold tracking-wider rounded"
-              >
-                SHOW ME THE DETAILS!
-              </button>
-            </div>
-          </div>
-        </Bounce>
-        }
+          </Bounce>
+        )}
       </div>
     </>
   );

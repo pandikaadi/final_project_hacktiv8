@@ -1,6 +1,7 @@
-const { Barber, BarberLocation } = require("../models/index");
-const { compareHash } = require('../helpers/bcrypt')
-const { createToken} = require('../helpers/jwt')
+const { Barber, BarberLocation } = require("../models");
+const { compareHash } = require("../helpers/bcrypt");
+const { createToken } = require("../helpers/jwt");
+
 const getBarbers = async (req, res) => {
   try {
     const barbers = await Barber.findAll();
@@ -93,7 +94,7 @@ const updateBarber = async (req, res) => {
 const barberLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
-    
+
     const result = await Barber.findOne({
       where: {
         email: email,
@@ -102,8 +103,7 @@ const barberLogin = async (req, res) => {
 
     if (!result) {
       throw { message: "Invalid email/password" };
-    } else{
-
+    } else {
     }
     if (!compareHash(password, result.password)) {
       throw { message: "Invalid email/password" };
@@ -120,12 +120,11 @@ const barberLogin = async (req, res) => {
       access_token: token,
     });
   } catch (err) {
-    if(err.message === "Invalid email/password"){
+    if (err.message === "Invalid email/password") {
       res.status(401).json(err);
-    }else{
-      res.status(500).json(err)
+    } else {
+      res.status(500).json(err);
     }
-    
   }
 };
 module.exports = {
@@ -134,5 +133,5 @@ module.exports = {
   getBarberById,
   deleteBarber,
   updateBarber,
-  barberLogin
+  barberLogin,
 };
