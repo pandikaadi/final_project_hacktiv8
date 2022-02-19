@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -8,22 +8,37 @@ import { GetBarberData } from "../store/actionCreators/actionCreator";
 function ChooseBarber() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { barberDatas } = useSelector((state) => state.data);
-
+  const { barberDatas, location } = useSelector((state) => state.data);
+  console.log(location, barberDatas);
+  const [filteredBarbers, setFiltered] = useState([])
   function toNavigate(value) {
     dispatch(setBarber(value));
     navigate("/book");
   }
-  console.log(barberDatas);
   useEffect(() => {
-    dispatch(GetBarberData());
+    dispatch(GetBarberData())
   }, [dispatch]);
+  useEffect(() => {
+    if(barberDatas) {
+      console.log(barberDatas, `>>>> pas dispatch`);
+      let filtered = []
+      
+        filtered = barberDatas.filter(e => {
+          if(location === "1") {
+          return e.city === "Jakarta"
+          } else {
+            return e.city === "Bandung"
+          }
+        })
+        setFiltered(filtered)
+    }
+  }, [barberDatas]);
 
   return (
     <>
       <div className="flex justify-center">
         <div className="flex flex-col w-full">
-          {barberDatas.map((x) => (
+          {filteredBarbers.map((x) => (
             <div
               key={x.id}
               className="mb-4 bg-no-repeat bg-cover h-48"
