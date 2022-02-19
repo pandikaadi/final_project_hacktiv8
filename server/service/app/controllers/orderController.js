@@ -68,6 +68,10 @@ const postOrder = async (req, res) => {
           res.status(400).json(el);
         } else if (el.message === "hour is required") {
           res.status(400).json(el);
+        } else if (el.message === "date cant be null") {
+          res.status(400).json(el);
+        } else if (el.message === "hour cant be null") {
+          res.status(400).json(el);
         } else {
         }
       });

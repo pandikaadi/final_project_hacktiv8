@@ -21,6 +21,9 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notEmpty: {
           msg:'name is required'
+        },
+        notNull:{
+          msg:'name is required'
         }
       }
     },
@@ -29,6 +32,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notEmpty: {
+          msg:'price is required'
+        },
+        notNull:{
           msg:'price is required'
         }
       }
