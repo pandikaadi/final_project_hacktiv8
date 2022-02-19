@@ -3,8 +3,9 @@ const { Order, Barber, Service, User } = require("../models/index");
 const sendMailOrder = require("../helpers/nodemailerOrder");
 
 const postOrder = async (req, res) => {
+  console.log(`sadadas`);
   const userId = req.currentUser.id;
-  const { barberId, date, hour, serviceId, price, address } = req.body;
+  const { barberId, date, hour, serviceId, city, price, address, lat, long } = req.body;
 
   try {
     const orderKey = `${barberId}-${userId}-${new Date()
@@ -18,7 +19,7 @@ const postOrder = async (req, res) => {
       isProduction: false,
       serverKey: "SB-Mid-server-0f3s9hGBklmiZm7cVhZ9KBZO",
     });
-
+    console.log(req.body, `>>>>>>>`);
     let parameter = {
       transaction_details: {
         order_id: orderKey,
@@ -35,9 +36,12 @@ const postOrder = async (req, res) => {
     const order = await Order.create({
       userMonggoId: req.currentUser.userMonggoId,
       barberId,
-      address: address,
-      date: new Date(),
+      address,
+      date,
       hour,
+      city,
+      lat: +lat,
+      long: +long,
       serviceId,
       orderKey,
       price,
@@ -59,7 +63,7 @@ const postOrder = async (req, res) => {
       }
     }
   } catch (err) {
-    console.log(err)
+    console.log(err, `EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE`)
     if (err.name === "SequelizeForeignKeyConstraintError") {
       res.status(400).json({ message: "bad request" });
     } else if(err.errors) {
@@ -83,16 +87,32 @@ const postOrder = async (req, res) => {
 
 const getOrdersByUserId = async (req, res) => {
   // get all orders by user id
-  const { id } = req.currentUser;
+  const { userMonggoId } = req.currentUser;
   try {
     const orders = await Order.findAll({
-      where: { userId: id },
+      where: { userMonggoId },
       include: [{ model: Barber }, { model: Service }],
     });
     if (orders) {
       res.status(200).json(orders);
     }
   } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+};
+
+const getBarbers = async (req, res) => {
+  // get all orders by user id
+  console.log(">>>>>>");
+  const { userMonggoId } = req.currentUser;
+  try {
+    const barbers = await Barber.findAll();
+    if (barbers) {
+      res.status(200).json(barbers);
+    }
+  } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 };
@@ -197,5 +217,6 @@ module.exports = {
   deleteOrder,
   getOrdersByBarberId,
   updateStatus,
-  paymentHandler
+  paymentHandler,
+  getBarbers
 };

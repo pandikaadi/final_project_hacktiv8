@@ -19,6 +19,7 @@ import {
   fetchLocation,
   hasOrder,
   isServiceSelected,
+  postNewOrder,
   showRatingForm,
 } from "../store/actionCreators/actionCreator";
 import RatingModal from "../Components/RatingModal";
@@ -68,23 +69,33 @@ function BookForm() {
   }
   const { location, service, barber } = useSelector((state) => state.data);
   console.log(location, service, barber) //
+  console.log(form, `>>>form`);
   function handleNewOrder(e) {
     e.preventDefault();
-
     const payload = {
-      date: form.date,
+      date: new Date(form.date),
       hour: form.hour,
       address: form.address,
-      orderKey: service,
-      barberId: barber,
-      statusPayment: false,
-      statusOrder: false,
+      price: price,
+      lat: +position.lat,
+      long: +position.lng,
+      serviceId: 2,
+      barberId: 2,
+      city: location
     };
+    dispatch(postNewOrder(payload))
+    .then((data) => {
+      console.log(data);
+      dispatch(hasOrder(true));
+      dispatch(isServiceSelected(false));
+      dispatch(showRatingForm(true));
+      navigate("/home");
+    })
+    .catch((err) => {
+      console.log(err);
+    })
 
-    dispatch(hasOrder(true));
-    dispatch(isServiceSelected(false));
-    dispatch(showRatingForm(true));
-    navigate("/home");
+   
   }
 
   function priceFormatter(price) {
@@ -185,7 +196,7 @@ console.log(form)
     return null;
   }
   console.log(typeof new Date(form.date), form.date)
-  console.log(new Date(form.date));
+  console.log();
   function handleLocateButton(e) {
     e.preventDefault();
 
@@ -225,6 +236,7 @@ console.log(form)
             <div className="flex justify-center mb-2">
               <input
                 onChange={formHandler}
+                required
                 value={form.date}
                 name="date"
                 type="date"
@@ -235,6 +247,7 @@ console.log(form)
               <select
                 defaultValue={"DEFAULT"}
                 onChange={formHandler}
+                required
                 name="hour"
                 className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
               >

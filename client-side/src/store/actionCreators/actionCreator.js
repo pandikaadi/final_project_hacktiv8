@@ -98,6 +98,35 @@ export const fetchLocation = (payload) => {
     }
 }
 
+export const postNewOrder = (payload) => {
+  return dispatch => {
+    return fetch(`${baseUrl}/orders`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        access_token: localStorage.access_token
+      },
+      body: JSON.stringify(payload)
+    })
+      .then((result) => {
+        if (!result.ok) {
+          return result.json().then((err) => {throw new Error(err.message)});
+        }
+        return result.json();
+      })
+      .then((data) => {
+        console.log(data, `>>>>>>>>>>`);
+        return data
+      })
+      .catch((err) => {
+        throw err
+      })
+      // .finally(() => {
+      //   dispatch(fetchUserLoading(false));
+      // });
+    }
+}
+
 export const hasOrder = (payload) => {
   return {
     type: CLIENT_HASORDER,
