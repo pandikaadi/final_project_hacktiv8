@@ -39,34 +39,21 @@ module.exports = (sequelize, DataTypes) => {
             msg: "Email is required",
           },
         },
-      },
-      password: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          len: [5, 12],
-          notEmpty: { msg: "Password is required" },
-          notNull: {
-            msg: "Password is required",
-          },
-        },
-      },
-      phoneNumber: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notEmpty: {
-            msg: "Phone Number is required",
-          },
-          notNull: {
-            msg: "Phone Number is required",
-          },
-        },
-      },
-      role: DataTypes.STRING,
-      lat: DataTypes.INTEGER,
-      city: DataTypes.STRING,
-      long: DataTypes.INTEGER,
+        notNull:{
+          msg:'Phone Number is required'
+        }
+      }
+    },
+    role: DataTypes.STRING,
+    lat: DataTypes.DECIMAL,
+    city: DataTypes.STRING,
+    long: DataTypes.DECIMAL
+  }, {
+    sequelize,
+    hooks:{
+      beforeCreate(user,option){
+        user.role = 'Barber'
+      }
     },
     {
       sequelize,
