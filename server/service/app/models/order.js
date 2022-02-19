@@ -18,13 +18,14 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Order.belongsTo(models.Barber,{foreignKey:"barberId"})
-      Order.belongsTo(models.User,{foreignKey:"userId"})
       Order.belongsTo(models.Service,{foreignKey:'serviceId'})
 
     }
   }
   Order.init({
-    userId: DataTypes.INTEGER,
+    userMonggoId: DataTypes.STRING,
+    lat: DataTypes.INTEGER,
+    long: DataTypes.INTEGER,
     barberId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -35,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     date: {
-      type: DataTypes.STRING,
+      type: DataTypes.DATE,
       allowNull: false,
       validate: {
         notEmpty: {
@@ -58,15 +59,16 @@ module.exports = (sequelize, DataTypes) => {
     },
     orderKey: DataTypes.STRING,
     statusPayment: DataTypes.BOOLEAN,
+    address: DataTypes.STRING,
     statusBarber: DataTypes.STRING,
+    price: DataTypes.INTEGER,
+    paymentUrl: DataTypes.STRING,
   }, {
     sequelize,
     hooks: {
       beforeCreate(instance,option){
         instance.statusPayment = false
         instance.statusBarber = 'Pending'
-        instance.orderKey = randomString(10, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
-        // instance.orderKey = 'orderkey'
       },
     },
     modelName: 'Order',
