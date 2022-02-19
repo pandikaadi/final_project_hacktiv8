@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Bounce from "react-reveal/Bounce";
 import {
   GetOrders,
@@ -80,9 +80,9 @@ function PaymentDetailCard() {
               </button>
             </div>
             <div className="flex justify-center pt-2 space-x-2">
-              <button className="pb-2 rounded bg-slate-300 hover:bg-slate-200 shadow-lg shadow-slate-500/50 px-4 pt-2 text-xs font-semibold">
-                <a href="">Pay Order</a>
-              </button>
+              <Link className="pb-2 rounded bg-slate-300 hover:bg-slate-200 shadow-lg shadow-slate-500/50 px-4 pt-2 text-xs font-semibold">
+                Pay Order
+              </Link>
               <button className="pb-2 rounded bg-red-400 hover:bg-red-300 shadow-lg shadow-red-700/50 px-2 pt-2 text-xs text-white font-semibold">
                 Cancel Order
               </button>

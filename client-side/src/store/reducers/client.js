@@ -8,6 +8,8 @@ const initialState = {
   isService: false,
   hasOrder: false,
   showDetail: true,
+  loading: true,
+  error: null,
 };
 
 function clientReducer(state = initialState, action) {
