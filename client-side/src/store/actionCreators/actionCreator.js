@@ -49,6 +49,19 @@ export const GetOrders = (payload) => {
     })
       .then((res) => {
         dispatch(getUserOrder(res.data));
+export const getTodayBooks = (payload) => {
+  return (dispatch) => {
+    return axios({
+      method: "GET",
+      url: `${baseUrl}/dailyOrders`,
+      headers: {
+        "Content-Type": "application/json",
+        access_token: localStorage.access_token
+      },
+      params: payload,
+    })
+      .then((res) => {
+        return res.data.orders
       })
       .catch((err) => {
         console.log(err);

@@ -7,6 +7,7 @@ const getServices = async (req, res) => {
       res.status(200).json(services);
     }
   } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 };

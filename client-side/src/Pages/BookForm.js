@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import dataReducer from "../store/reducers/data";
 import {
   fetchLocation,
+  getTodayBooks,
   hasOrder,
   isServiceSelected,
   postNewOrder,
@@ -50,6 +51,7 @@ function BookForm() {
   const [centerLong, setCenterLong] = useState(107.5605011029984);
   const [distance, setDistance] = useState(null);
   const [price, setPrice] = useState(null);
+  const [bookedHour, setBookedHour] = useState({})
   const [barberPosition, setBarberPosition] = useState({
     lat: centerLat,
     lng: centerLong,
@@ -67,7 +69,8 @@ function BookForm() {
       [e.target.name]: e.target.value,
     });
   }
-  const { location, service, barber } = useSelector((state) => state.data);
+  const { location, service, barber, servicePrice } = useSelector((state) => state.data);
+  console.log(bookedHour, `>>>BOOKED HOUR`);
   function handleNewOrder(e) {
     e.preventDefault();
     const payload = {
@@ -79,7 +82,7 @@ function BookForm() {
       long: +position.lng,
       serviceId: service,
       barberId: barber,
-      city: 2,
+      city: location
     };
     dispatch(postNewOrder(payload))
       .then((data) => {
@@ -126,7 +129,7 @@ function BookForm() {
       setDistance((distance / 1000).toFixed(1));
       // console.log(distance)
       if (distance) {
-        setPrice(Math.round((50_000 + distance * 5) / 1000) * 1000);
+        setPrice(Math.round((servicePrice + distance * 5) / 1000) * 1000);
       }
     }
   }, [position]);
@@ -194,8 +197,6 @@ function BookForm() {
     if (position) map.setView(mapCenter);
     return null;
   }
-  // console.log(typeof new Date(form.date), form.date);
-  // console.log();
   function handleLocateButton(e) {
     e.preventDefault();
 
@@ -215,7 +216,22 @@ function BookForm() {
         });
     });
   }
+  
 
+  useEffect(() => {
+    if(form.date) {
+      dispatch(getTodayBooks({date: new Date(form.date), barberId: barber}))
+      .then((data) => {
+        let obj = {}
+        data.forEach((e) => {
+          obj[e.hour] = true
+        })
+        setBookedHour(obj)
+  
+      })
+    }
+
+  }, [form.date])
   return (
     <>
       <div className="flex justify-center bg-zinc-800 pt-10 min-h-screen">
@@ -249,11 +265,11 @@ function BookForm() {
                 name="hour"
                 className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
               >
-                <option value="08.00 - 10.00">08.00 - 10.00</option>
-                <option value="10.00 - 12.00">10.00 - 12.00</option>
-                <option value="13.00 - 15.00">13.00 - 15.00</option>
-                <option value="15.00 - 17.00">15.00 - 17.00</option>
-                <option value="17.00 - 19.00">17.00 - 19.00</option>
+                <option disabled = {bookedHour["08.00 - 10.00"] ? true : false} value="08.00 - 10.00">08.00 - 10.00</option>
+                <option disabled = {bookedHour["10.00 - 12.00"] ? true : false} value="10.00 - 12.00">10.00 - 12.00</option>
+                <option disabled = {bookedHour["13.00 - 15.00"] ? true : false} value="13.00 - 15.00">13.00 - 15.00</option>
+                <option disabled = {bookedHour["15.00 - 17.00"] ? true : false} value="15.00 - 17.00">15.00 - 17.00</option>
+                <option  disabled = {bookedHour["17.00 - 19.00"] ? true : false} value="17.00 - 19.00">17.00 - 19.00</option>
               </select>
             </div>
             <div className="flex justify-center">

@@ -100,6 +100,24 @@ const getOrdersByUserId = async (req, res) => {
     res.status(500).json(err);
   }
 };
+const getDailyOrders = async (req, res) => {
+  // get all orders by user id
+  const { userMonggoId } = req.currentUser;
+  const { date, barberId } = req.query
+  try {
+    const orders = await Order.findAll({
+      where: { date, barberId },
+      include: [{ model: Barber }, { model: Service }],
+    });
+    if (orders) {
+      console.log(orders);
+      res.status(200).json(orders);
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+};
 
 const getBarbers = async (req, res) => {
   // get all orders by user id
@@ -222,4 +240,5 @@ module.exports = {
   getOrdersByBarberId,
   updateStatus,
   paymentHandler,
+  getDailyOrders
 };
