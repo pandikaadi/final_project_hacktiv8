@@ -2,6 +2,8 @@ import {
   SERVICE_SELECTED,
   CLIENT_HASORDER,
   SHOW_ORDERDETAIL,
+  SET_LOADING,
+  SET_ERROR,
 } from "../actionTypes/actionType";
 
 const initialState = {
@@ -27,6 +29,16 @@ function clientReducer(state = initialState, action) {
     return {
       ...state,
       showDetail: action.payload,
+    };
+  } else if (action.type === SET_LOADING) {
+    return {
+      ...state,
+      loading: action.payload,
+    };
+  } else if (action.type === SET_ERROR) {
+    return {
+      ...state,
+      error: action.payload,
     };
   } else {
     return state;

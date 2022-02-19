@@ -11,6 +11,8 @@ import {
   GET_BARBER,
   GET_SERVICES,
   GET_USER_ORDER,
+  SET_LOADING,
+  SET_ERROR,
 } from "../actionTypes/actionType";
 const baseUrl = "http://localhost:4000";
 
@@ -51,7 +53,10 @@ export const GetOrders = (payload) => {
         dispatch(getUserOrder(res.data));
       })
       .catch((err) => {
-        console.log(err);
+        dispatch(setError(err));
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
       });
   };
 };
@@ -234,6 +239,20 @@ export const setBarber = (payload) => {
 export const fetchServices = (payload) => {
   return {
     type: GET_SERVICES,
+    payload,
+  };
+};
+
+export const setLoading = (payload) => {
+  return {
+    type: SET_LOADING,
+    payload,
+  };
+};
+
+export const setError = (payload) => {
+  return {
+    type: SET_ERROR,
     payload,
   };
 };

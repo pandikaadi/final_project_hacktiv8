@@ -9,3 +9,5 @@ export const SHOW_ORDERDETAIL = "show/orderDetail";
 export const GET_BARBER = "get/barber";
 export const GET_SERVICES = "get/services";
 export const GET_USER_ORDER = "get/userOrder";
+export const SET_LOADING = "set/loading";
+export const SET_ERROR = "set/error";
