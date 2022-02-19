@@ -8,6 +8,7 @@ import {
   SET_RATING,
   CLIENT_HASORDER,
   SHOW_ORDERDETAIL,
+  GET_BARBER,
 } from "../actionTypes/actionType";
 const baseUrl = "http://localhost:4000";
 
@@ -21,8 +22,20 @@ export const CreateNewClient = (payload) => {
   };
 };
 
-export const fetchBarber = (payload) => {
-  return (dispatch) => {};
+export const GetBarberData = (payload) => {
+  return (dispatch) => {
+    return axios({
+      method: "GET",
+      url: `${baseUrl}/barbers`,
+      data: payload,
+    })
+      .then((res) => {
+        dispatch(fetchBarber(res.data));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 };
 
 export const setService = (payload) => {
@@ -76,6 +89,13 @@ export const hasOrder = (payload) => {
 export const showTheDetail = (payload) => {
   return {
     type: SHOW_ORDERDETAIL,
+    payload,
+  };
+};
+
+export const fetchBarber = (payload) => {
+  return {
+    type: GET_BARBER,
     payload,
   };
 };

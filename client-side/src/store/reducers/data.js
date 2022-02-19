@@ -4,6 +4,7 @@ import {
   SET_BARBER,
   SHOW_RATINGFORM,
   SET_RATING,
+  GET_BARBER,
 } from "../actionTypes/actionType";
 
 const initialState = {
@@ -12,6 +13,7 @@ const initialState = {
   barber: 0,
   showRating: false,
   rating: 0,
+  barberDatas: [],
 };
 
 function dataReducer(state = initialState, action) {
@@ -39,6 +41,11 @@ function dataReducer(state = initialState, action) {
     return {
       ...state,
       rating: action.payload,
+    };
+  } else if (action.type === GET_BARBER) {
+    return {
+      ...state,
+      barberDatas: action.payload,
     };
   } else {
     return state;
