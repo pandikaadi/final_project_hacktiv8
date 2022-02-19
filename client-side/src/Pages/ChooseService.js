@@ -24,8 +24,8 @@ function CardForm() {
   console.log(userOrder.orders);
   function handleShowRating() {
     if (
-      userOrder.orders[0].statusBarber === "Pending" &&
-      userOrder.orders[0].statusPayment === false
+      userOrder.orders[userOrder.orders.length-1].statusBarber !== "Finished" &&
+      userOrder.orders[userOrder.orders.length-1].statusBarber !== "Voted"
     ) {
       navigate("/payment");
     } else {

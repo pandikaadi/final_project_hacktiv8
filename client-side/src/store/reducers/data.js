@@ -28,7 +28,6 @@ function dataReducer(state = initialState, action) {
       location: action.payload,
     };
   } else if (action.type === SET_SERVICE) {
-    console.log(action.payload, `>>>>>ACTIONPAYLOAD`);
     return {
       ...state,
       service: action.payload.id,

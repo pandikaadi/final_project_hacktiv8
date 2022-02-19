@@ -9,7 +9,7 @@ import { GetAllService } from "../store/actionCreators/actionCreator";
 function FormCard({ isLocated }) {
   const dispatch = useDispatch();
   const { serviceDatas } = useSelector((state) => state.data);
-
+  
   function toNavigate(value) {
     if (value && isLocated) {
       dispatch(setService(value));

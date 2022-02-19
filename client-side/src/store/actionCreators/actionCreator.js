@@ -51,6 +51,32 @@ export const GetOrders = (payload) => {
     })
       .then((res) => {
         dispatch(getUserOrder(res.data));
+      })
+      .catch((err) => {
+        dispatch(setError(err));
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
+      });
+  };
+};
+export const cancelOrder = (payload) => {
+  console.log(payload);
+  return (dispatch) => {
+    return axios({
+      method: "DELETE",
+      url: `${baseUrl}/orders/${payload}`,
+      headers: { access_token: localStorage.access_token },
+    })
+      .catch((err) => {
+        dispatch(setError(err));
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
+      });
+  };
+};
+
 export const getTodayBooks = (payload) => {
   return (dispatch) => {
     return axios({

@@ -89,6 +89,7 @@ const getOrdersByUserId = async (req, res) => {
   const { userMonggoId } = req.currentUser;
   try {
     const orders = await Order.findAll({
+      order: ['id'],
       where: { userMonggoId },
       include: [{ model: Barber }, { model: Service }],
     });
