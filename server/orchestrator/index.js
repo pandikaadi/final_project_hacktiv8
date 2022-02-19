@@ -79,7 +79,7 @@ const resolvers = {
       try {
         const users = await axios({
           method: "GET",
-          url: "http://localhost:5002/users",
+          url: "http://localhost:4002/users",
         });
         if (users) {
           return users.data;
@@ -92,7 +92,7 @@ const resolvers = {
       try {
         const user = await axios({
           method: "GET",
-          url: `http://localhost:5002/users/${args.id}`,
+          url: `http://localhost:4002/users/${args.id}`,
         });
         if (user) {
           return user.data;
@@ -105,7 +105,7 @@ const resolvers = {
       try {
         const barbers = await axios({
           method: "GET",
-          url: "http://localhost:5001/barbers",
+          url: "http://localhost:4001/barbers",
         });
         if (barbers) {
           return barbers.data;
@@ -118,7 +118,7 @@ const resolvers = {
       try {
         const barber = await axios({
           method: "GET",
-          url: `http://localhost:5001/barbers/${args.id}`,
+          url: `http://localhost:4001/barbers/${args.id}`,
         });
         if (barber) {
           return barber.data;
@@ -131,7 +131,7 @@ const resolvers = {
       try {
         const orders = await axios({
           method: "GET",
-          url: "http://localhost:5001/orders",
+          url: "http://localhost:4001/orders",
           headers: {},
         });
         if (orders) {
@@ -148,7 +148,7 @@ const resolvers = {
       try {
         const user = await axios({
           method: "POST",
-          url: "http://localhost:5001/login",
+          url: "http://localhost:4001/login",
           data: args,
         });
         if (user) {

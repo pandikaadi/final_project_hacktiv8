@@ -1,15 +1,19 @@
-const { Barber, BarberLocation } = require("../models");
+const { Barber, Order } = require("../models/index");
 const { compareHash } = require("../helpers/bcrypt");
 const { createToken } = require("../helpers/jwt");
+// const e = require("cors");
 
 const getBarbers = async (req, res) => {
   try {
     const barbers = await Barber.findAll();
     res.status(200).json(barbers);
   } catch (err) {
+  
     res.status(500).json(err);
   }
 };
+
+
 const getBarberById = async (req, res) => {
   const { id } = req.params;
   try {
@@ -30,17 +34,21 @@ const postBarber = async (req, res) => {
       res.status(201).json(barber);
     }
   } catch (err) {
-    err.errors.map((el) => {
-      if (el.message === "Name is required") {
-        res.status(400).json(el);
-      } else if (el.message === "Email is required") {
-        res.status(400).json(el);
-      } else if (el.message === "Password is required") {
-        res.status(400).json(el);
-      } else if (el.message === "Phone Number is required") {
-        res.status(400).json(el);
-      }
-    });
+    if (!err.errors) {
+      res.status(500).json(err);
+    } else {
+      err.errors.map((el) => {
+        if (el.message === "Name is required") {
+          res.status(400).json(el);
+        } else if (el.message === "Email is required") {
+          res.status(400).json(el);
+        } else if (el.message === "Password is required") {
+          res.status(400).json(el);
+        } else if (el.message === "Phone Number is required") {
+          res.status(400).json(el);
+        }
+      });
+    }
   }
 };
 
@@ -51,18 +59,23 @@ const deleteBarber = async (req, res) => {
       where: { id: id },
     });
     if (result) {
+      await Order.destroy({
+        where:{barberId:id}
+      })
       await Barber.destroy({
         where: { id: id },
       });
       res.status(200).json({ message: "Barber success to delete" });
     } else {
-      res.status(404).json({ message: "Barber not found" });
+      // res.status(404).json({ message: "Barber not found" });
+      res.status(500).json(new Error('error'));
     }
   } catch (err) {
-    console.log(err);
     res.status(500).json(err);
   }
 };
+
+
 const updateBarber = async (req, res) => {
   const { name, email, password, phoneNumber } = req.body;
   const { id } = req.params;
@@ -91,6 +104,7 @@ const updateBarber = async (req, res) => {
     res.status(500).json(err);
   }
 };
+
 const barberLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -106,7 +120,7 @@ const barberLogin = async (req, res) => {
     } else {
     }
     if (!compareHash(password, result.password)) {
-      throw { message: "Invalid email/password" };
+      throw new Error( 'invalid password');
     }
 
     const payload = {
@@ -120,11 +134,19 @@ const barberLogin = async (req, res) => {
       access_token: token,
     });
   } catch (err) {
-    if (err.message === "Invalid email/password") {
-      res.status(401).json(err);
+    if(err.message === 'invalid password'){
+      res.status(401).json(err.message)
+    } else if (err.message === 'no result'){
+      res.status(404).json(err.message)
     } else {
-      res.status(500).json(err);
+      res.status(500).json(err)
+
     }
+    // if(!err.errors){
+    //   res.status(500).json(err)
+    // }else if (err === ) {
+    //     res.status(401).json(err);
+    // }
   }
 };
 module.exports = {

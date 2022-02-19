@@ -1,6 +1,9 @@
-"use strict";
-const { Model } = require("sequelize");
-// const barberRouter = require('../routes/barberRouter');
+
+'use strict';
+const {
+  Model
+} = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Vote extends Model {
     /**
