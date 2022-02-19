@@ -14,14 +14,14 @@ function CardForm() {
   const navigate = useNavigate();
   const [selector, setSelector] = useState(false);
   const { showRating, userOrder } = useSelector((state) => state.data);
-  const { isService, hasOrder } = useSelector((state) => state.client);
+  const { isService, hasOrder, loading, error } = useSelector(
+    (state) => state.client
+  );
 
   function handleSelector(e) {
     dispatch(setLocation(e.target.value));
     setSelector(true);
   }
-
-  console.log(userOrder.orders);
   function handleShowRating() {
     if (
       userOrder.orders[0].statusBarber === "Pending" &&
@@ -33,6 +33,12 @@ function CardForm() {
     }
   }
 
+  function showingRating() {
+    if (userOrder.orders[0].statusPayment === true) {
+      dispatch(showRatingForm(true));
+    }
+  }
+
   function logoutHandler() {
     localStorage.clear();
     navigate("/");
@@ -40,7 +46,26 @@ function CardForm() {
 
   useEffect(() => {
     dispatch(GetOrders(localStorage.getItem("access_token")));
-  }, []);
+  }, [dispatch]);
+
+  if (loading) {
+    return (
+      <>
+        <p>LOADING..</p>
+      </>
+    );
+  }
+  if (error) {
+    return (
+      <>
+        <div className="flex justify-center">
+          <p className="font-bold text-white m-auto text-xl">
+            SOMETHING WENT WRONG
+          </p>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
