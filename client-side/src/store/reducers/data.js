@@ -6,6 +6,7 @@ import {
   SET_RATING,
   GET_BARBER,
   GET_SERVICES,
+  GET_USER_ORDER,
 } from "../actionTypes/actionType";
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
   rating: 0,
   barberDatas: [],
   serviceDatas: [],
+  userOrder: [],
 };
 
 function dataReducer(state = initialState, action) {
@@ -53,6 +55,11 @@ function dataReducer(state = initialState, action) {
     return {
       ...state,
       serviceDatas: action.payload,
+    };
+  } else if (action.type === GET_USER_ORDER) {
+    return {
+      ...state,
+      userOrder: action.payload,
     };
   } else {
     return state;

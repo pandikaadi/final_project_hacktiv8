@@ -8,3 +8,4 @@ export const CLIENT_HASORDER = "user/hasOrder";
 export const SHOW_ORDERDETAIL = "show/orderDetail";
 export const GET_BARBER = "get/barber";
 export const GET_SERVICES = "get/services";
+export const GET_USER_ORDER = "get/userOrder";

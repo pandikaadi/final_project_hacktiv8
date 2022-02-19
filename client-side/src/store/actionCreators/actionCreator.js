@@ -10,6 +10,7 @@ import {
   SHOW_ORDERDETAIL,
   GET_BARBER,
   GET_SERVICES,
+  GET_USER_ORDER,
 } from "../actionTypes/actionType";
 const baseUrl = "http://localhost:4000";
 
@@ -32,6 +33,22 @@ export const GetBarberData = (payload) => {
     })
       .then((res) => {
         dispatch(fetchBarber(res.data));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+};
+
+export const GetOrders = (payload) => {
+  return (dispatch) => {
+    axios({
+      method: "GET",
+      url: `${baseUrl}/orders`,
+      headers: { access_token: payload },
+    })
+      .then((res) => {
+        dispatch(getUserOrder(res.data));
       })
       .catch((err) => {
         console.log(err);
@@ -67,6 +84,7 @@ export const doLogin = (payload) => {
         return result.json();
       })
       .then((data) => {
+        console.log(data);
         localStorage.access_token = data.access_token;
         localStorage.role = data.role;
         return data;
@@ -96,7 +114,7 @@ export const GetAllService = (payload) => {
   };
 };
 export const fetchLocation = (payload) => {
-  return dispatch => {
+  return (dispatch) => {
     return fetch(`${baseUrl}/coordinates`, {
       method: "POST",
       headers: {
@@ -105,55 +123,57 @@ export const fetchLocation = (payload) => {
       body: JSON.stringify({
         lat: payload.lat,
         long: payload.lng,
-      
-      })
+      }),
     })
       .then((result) => {
         if (!result.ok) {
-          return result.json().then((err) => {throw new Error(err.message)});
+          return result.json().then((err) => {
+            throw new Error(err.message);
+          });
         }
         return result.json();
       })
       .then((data) => {
-        return data
+        return data;
       })
       .catch((err) => {
-        throw err
-      })
-      // .finally(() => {
-      //   dispatch(fetchUserLoading(false));
-      // });
-    }
-}
+        throw err;
+      });
+    // .finally(() => {
+    //   dispatch(fetchUserLoading(false));
+    // });
+  };
+};
 
 export const postNewOrder = (payload) => {
-  return dispatch => {
+  return (dispatch) => {
     return fetch(`${baseUrl}/orders`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        access_token: localStorage.access_token
+        access_token: localStorage.access_token,
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     })
       .then((result) => {
         if (!result.ok) {
-          return result.json().then((err) => {throw new Error(err.message)});
+          return result.json().then((err) => {
+            throw new Error(err.message);
+          });
         }
         return result.json();
       })
       .then((data) => {
-        console.log(data, `>>>>>>>>>>`);
-        return data
+        return data;
       })
       .catch((err) => {
-        throw err
-      })
-      // .finally(() => {
-      //   dispatch(fetchUserLoading(false));
-      // });
-    }
-}
+        throw err;
+      });
+    // .finally(() => {
+    //   dispatch(fetchUserLoading(false));
+    // });
+  };
+};
 
 export const hasOrder = (payload) => {
   return {
@@ -214,6 +234,13 @@ export const setBarber = (payload) => {
 export const fetchServices = (payload) => {
   return {
     type: GET_SERVICES,
+    payload,
+  };
+};
+
+export const getUserOrder = (payload) => {
+  return {
+    type: GET_USER_ORDER,
     payload,
   };
 };

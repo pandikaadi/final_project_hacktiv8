@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setLocation } from "../store/actionCreators/actionCreator";
@@ -7,26 +7,29 @@ import ChooseBarber from "../Components/BarberCard";
 import RatingModal from "../Components/RatingModal";
 import { showRatingForm } from "../store/actionCreators/actionCreator";
 import { toast } from "react-toastify";
+import { GetOrders } from "../store/actionCreators/actionCreator";
 
 function CardForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [selector, setSelector] = useState(false);
-  const { showRating } = useSelector((state) => state.data);
+  const { showRating, userOrder } = useSelector((state) => state.data);
   const { isService, hasOrder } = useSelector((state) => state.client);
-
-  console.log(hasOrder);
 
   function handleSelector(e) {
     dispatch(setLocation(e.target.value));
     setSelector(true);
   }
 
+  console.log(userOrder.orders);
   function handleShowRating() {
-    if (!hasOrder) {
-      toast.error("No order is available");
-    } else {
+    if (
+      userOrder.orders[0].statusBarber === "Pending" &&
+      userOrder.orders[0].statusPayment === false
+    ) {
       navigate("/payment");
+    } else {
+      toast.error("No order is available");
     }
   }
 
@@ -34,6 +37,10 @@ function CardForm() {
     localStorage.clear();
     navigate("/");
   }
+
+  useEffect(() => {
+    dispatch(GetOrders(localStorage.getItem("access_token")));
+  }, []);
 
   return (
     <>

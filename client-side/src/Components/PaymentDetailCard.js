@@ -1,17 +1,26 @@
-import React from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Bounce from "react-reveal/Bounce";
-import { showTheDetail } from "../store/actionCreators/actionCreator";
+import {
+  GetOrders,
+  showTheDetail,
+} from "../store/actionCreators/actionCreator";
 import image from "../assets/image3.png";
 
 function PaymentDetailCard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { userOrder } = useSelector((state) => state.data);
 
+  console.log(userOrder);
   const backHome = () => {
     navigate("/home");
   };
+
+  useEffect(() => {
+    dispatch(GetOrders(localStorage.getItem("access_token")));
+  }, []);
 
   return (
     <>
@@ -27,9 +36,9 @@ function PaymentDetailCard() {
               stroke="currentColor"
             >
               <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
                 d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
@@ -39,17 +48,24 @@ function PaymentDetailCard() {
           </div>
           <div className="space-y-2">
             <p>
-              <span className="font-semibold">Service:</span> Hair cut
+              <span className="font-semibold">Service: </span>
+              {userOrder.orders[0].Service.name}
             </p>
             <p>
-              <span className="font-semibold">Date:</span> 22 January 2022, 8 pm
+              <span className="font-semibold">Date: </span>
+              {userOrder.orders[0].date}
             </p>
             <p>
-              <span className="font-semibold">Payment Status:</span> Not yet
-              paid
+              <span className="font-semibold">Time: </span>
+              {userOrder.orders[0].hour}
             </p>
             <p>
-              <span className="font-semibold">Status Order:</span> Ongoing
+              <span className="font-semibold">Payment Status: </span>
+              {!userOrder.orders[0].statusPayment && <span>Not paid</span>}
+            </p>
+            <p>
+              <span className="font-semibold">Status Order: </span>
+              {userOrder.orders[0].statusBarber}
             </p>
             <img src={image} alt="icon" />
             <div className="flex justify-center">
@@ -65,7 +81,7 @@ function PaymentDetailCard() {
             </div>
             <div className="flex justify-center pt-2 space-x-2">
               <button className="pb-2 rounded bg-slate-300 hover:bg-slate-200 shadow-lg shadow-slate-500/50 px-4 pt-2 text-xs font-semibold">
-                Pay order
+                <a href="">Pay Order</a>
               </button>
               <button className="pb-2 rounded bg-red-400 hover:bg-red-300 shadow-lg shadow-red-700/50 px-2 pt-2 text-xs text-white font-semibold">
                 Cancel Order
