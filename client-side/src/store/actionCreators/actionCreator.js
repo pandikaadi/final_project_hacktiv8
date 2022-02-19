@@ -37,7 +37,10 @@ export const GetBarberData = (payload) => {
         dispatch(fetchBarber(res.data));
       })
       .catch((err) => {
-        console.log(err);
+        dispatch(setError(err));
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
       });
   };
 };
@@ -127,7 +130,10 @@ export const GetAllService = (payload) => {
         dispatch(fetchServices(res.data));
       })
       .catch((err) => {
-        console.log(err);
+        dispatch(setError(err));
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
       });
   };
 };
