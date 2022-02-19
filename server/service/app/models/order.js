@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notEmpty: {
-          msg:'Please choose one'
+          msg:'Please choose one '
         }
       }
     },
@@ -41,8 +41,6 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notEmpty: {
           msg:'date is required'
-        }, notNull:{
-          msg:'date cant be null'
         }
       }
     },
@@ -52,8 +50,6 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notEmpty: {
           msg:'hour is required'
-        }, notNull:{
-          msg:'hour cant be null'
         }
       }
     },
