@@ -1,7 +1,7 @@
 const { Barber, Order } = require("../models/index");
 const { compareHash } = require("../helpers/bcrypt");
 const { createToken } = require("../helpers/jwt");
-const e = require("cors");
+// const e = require("cors");
 
 const getBarbers = async (req, res) => {
   try {
