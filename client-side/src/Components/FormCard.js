@@ -30,7 +30,7 @@ function FormCard({ isLocated }) {
               key={x.id}
               className="mb-4 bg-no-repeat bg-cover h-48"
               style={{ backgroundImage: `url(${x.image})` }}
-              onClick={() => toNavigate(x.id)}
+              onClick={() => toNavigate(x)}
             >
               <div className="flex justify-center mt-20">
                 <p className="text-white text-2xl font-semibold">{x.name}</p>

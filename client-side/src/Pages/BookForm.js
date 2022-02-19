@@ -69,9 +69,8 @@ function BookForm() {
       [e.target.name]: e.target.value,
     });
   }
-  const { location, service, barber } = useSelector((state) => state.data);
-  console.log(location, service, barber) //
-  console.log(form, `>>>form`);
+  const { location, service, barber, servicePrice } = useSelector((state) => state.data);
+  console.log(bookedHour, `>>>BOOKED HOUR`);
   function handleNewOrder(e) {
     e.preventDefault();
     const payload = {
@@ -81,8 +80,8 @@ function BookForm() {
       price: price,
       lat: +position.lat,
       long: +position.lng,
-      serviceId: 2,
-      barberId: 2,
+      serviceId: service,
+      barberId: barber,
       city: location
     };
     dispatch(postNewOrder(payload))
@@ -132,7 +131,7 @@ function BookForm() {
       setDistance((distance / 1000).toFixed(1));
       // console.log(distance)
       if (distance) {
-        setPrice(Math.round((50_000 + distance * 5) / 1000) * 1000);
+        setPrice(Math.round((servicePrice + distance * 5) / 1000) * 1000);
       }
     }
   }, [position]);
@@ -222,7 +221,7 @@ console.log(form)
 
   useEffect(() => {
     if(form.date) {
-      dispatch(getTodayBooks({date: new Date(form.date), barberId: 3}))
+      dispatch(getTodayBooks({date: new Date(form.date), barberId: barber}))
       .then((data) => {
         let obj = {}
         data.forEach((e) => {
