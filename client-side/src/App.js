@@ -8,6 +8,7 @@ import ChooseService from "./Pages/ChooseService";
 import PaymentPage from "./Pages/PaymentPage";
 import PrivateRouter from "./Components/PrivateComponent/PrivateComponent";
 import BeforeBook from "./Components/PrivateComponent/BeforeBook";
+import ToSignGuard from "./Components/PrivateComponent/signInAndUpGuard";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -28,8 +29,22 @@ function App() {
       />
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
+        <Route
+          path="/signin"
+          element={
+            <ToSignGuard>
+              <SignIn />
+            </ToSignGuard>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <ToSignGuard>
+              <SignUp />
+            </ToSignGuard>
+          }
+        />
         <Route
           path="/home"
           element={

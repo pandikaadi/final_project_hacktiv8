@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import Fade from "react-reveal/Fade";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { CreateNewClient } from "../store/actionCreators/actionCreator";
 
 function SignUp() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [newUser, setNewUser] = useState({
     email: "",
@@ -31,8 +34,12 @@ function SignUp() {
       phoneNumber: newUser.phoneNumber,
     };
 
-    console.log(payload);
-    navigate("/signin");
+    // console.log(payload);
+    dispatch(CreateNewClient(payload));
+    // .then((res) => {
+    //   console.log(res);
+    // });
+    // navigate("/signin");
   };
 
   return (

@@ -1,3 +1,4 @@
+import axios from "axios";
 import {
   SET_LOCATION,
   SET_SERVICE,
@@ -9,6 +10,23 @@ import {
   SHOW_ORDERDETAIL,
 } from "../actionTypes/actionType";
 const baseUrl = 'http://localhost:4000'
+
+export const CreateNewClient = (payload) => {
+  return (dispatch) => {
+    axios({
+      method: "POST",
+      url: `${baseUrl}/users`,
+      data: payload,
+    })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+};
+
 export const setService = (payload) => {
   return {
     type: SET_SERVICE,
