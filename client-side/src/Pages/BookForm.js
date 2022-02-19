@@ -80,7 +80,6 @@ function BookForm() {
       statusOrder: false,
     };
 
-    console.log(payload);
     dispatch(hasOrder(true));
     dispatch(isServiceSelected(false));
     dispatch(showRatingForm(true));

@@ -9,13 +9,13 @@ import {
   CLIENT_HASORDER,
   SHOW_ORDERDETAIL,
 } from "../actionTypes/actionType";
-const url = "http://localhost:/4000/";
+const baseUrl = 'http://localhost:4000'
 
 export const CreateNewClient = (payload) => {
   return (dispatch) => {
     axios({
       method: "POST",
-      url: "http://localhost:4000/users",
+      url: `${baseUrl}/users`,
       data: payload,
     })
       .then((res) => {
@@ -32,6 +32,39 @@ export const setService = (payload) => {
     type: SET_SERVICE,
     payload,
   };
+};
+
+export const doLogin = (payload) => {
+  return dispatch => {
+    return fetch(`${baseUrl}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: payload.email,
+        password: payload.password
+        
+      })
+    })
+      .then((result) => {
+        if (!result.ok) {
+          return result.json().then((err) => {throw new Error(err.message)});
+        }
+        return result.json();
+      })
+      .then((data) => {
+        localStorage.access_token = data.access_token
+        localStorage.role = data.role
+        return data
+      })
+      .catch((err) => {
+        throw err
+      })
+      // .finally(() => {
+      //   dispatch(fetchUserLoading(false));
+      // });
+    }
 };
 
 export const hasOrder = (payload) => {

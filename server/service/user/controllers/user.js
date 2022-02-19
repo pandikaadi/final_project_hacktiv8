@@ -119,22 +119,27 @@ const postLogin = (req, res) => {
   User.findOneCompare(email)
     .then((user) => {
       if (!user) {
+        console.log(`nullified`);
         res.status(401).json({ message: "Invalid email/password" });
-      }
-      if (!compareHash(password, user.password)) {
-        res.status(401).json({ message: "Invalid email/password" });
+      } else {
+        if (!compareHash(password, user.password)) {
+          res.status(401).json({ message: "Invalid email/password" });
+        } else {
+          const payload = {
+            id: user.id,
+            userMonggoId: user._id,
+            username: user.username,
+            role: user.role,
+          };
+          const token = createToken(payload);
+          res.status(200).json({
+            access_token: token,
+            role: user.role
+          });
+        }
+
       }
 
-      const payload = {
-        id: user.id,
-        userMonggoId: user._id,
-        username: user.username,
-        role: user.role,
-      };
-      const token = createToken(payload);
-      res.status(200).json({
-        access_token: token,
-      });
     })
     .catch((err) => {
       console.log(err)
