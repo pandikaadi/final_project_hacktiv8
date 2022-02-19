@@ -6,6 +6,7 @@ import {
   GetOrders,
   showTheDetail,
 } from "../store/actionCreators/actionCreator";
+import { formatDate, currency } from "../helper/helper";
 import image from "../assets/image3.png";
 
 function PaymentDetailCard() {
@@ -21,12 +22,23 @@ function PaymentDetailCard() {
 
   useEffect(() => {
     dispatch(GetOrders(localStorage.getItem("access_token")));
-  }, []);
+  }, [dispatch]);
 
   if (loading) {
     return (
       <>
         <p>LOADING..</p>
+      </>
+    );
+  }
+  if (error) {
+    return (
+      <>
+        <div className="flex justify-center">
+          <p className="font-bold text-white m-auto text-xl">
+            SOMETHING WENT WRONG
+          </p>
+        </div>
       </>
     );
   }
@@ -62,7 +74,7 @@ function PaymentDetailCard() {
             </p>
             <p>
               <span className="font-semibold">Date: </span>
-              {userOrder.orders[0].date}
+              {formatDate(userOrder.orders[0].date)}
             </p>
             <p>
               <span className="font-semibold">Time: </span>
@@ -71,10 +83,15 @@ function PaymentDetailCard() {
             <p>
               <span className="font-semibold">Payment Status: </span>
               {!userOrder.orders[0].statusPayment && <span>Not paid</span>}
+              {userOrder.orders[0].statusPayment && <span>Paid</span>}
             </p>
             <p>
               <span className="font-semibold">Status Order: </span>
               {userOrder.orders[0].statusBarber}
+            </p>
+            <p>
+              <span className="font-semibold">Price: </span>
+              {currency(userOrder.orders[0].price)}
             </p>
             <img src={image} alt="icon" />
             <div className="flex justify-center">

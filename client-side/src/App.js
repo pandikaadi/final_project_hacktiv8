@@ -62,14 +62,14 @@ function App() {
           }
         />
         <Route path="/payment" element={<PaymentPage />} />
-        {/* <Route
+        <Route
           path="*"
           element={
             <main className="flex h-screen justify-center">
               <p className="text-5xl font-bold m-auto">NOT FOUND!!</p>
             </main>
           }
-        /> */}
+        />
       </Routes>
     </>
   );
