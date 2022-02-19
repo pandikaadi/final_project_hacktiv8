@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import dataReducer from "../store/reducers/data";
 import {
   fetchLocation,
+  getTodayBooks,
   hasOrder,
   isServiceSelected,
   postNewOrder,
@@ -50,6 +51,7 @@ function BookForm() {
   const [centerLong, setCenterLong] = useState(107.5605011029984);
   const [distance, setDistance] = useState(null);
   const [price, setPrice] = useState(null);
+  const [bookedHour, setBookedHour] = useState({})
   const [barberPosition, setBarberPosition] = useState({
     lat: centerLat,
     lng: centerLong,
@@ -195,8 +197,7 @@ console.log(form)
     if (position) map.setView(mapCenter);
     return null;
   }
-  console.log(typeof new Date(form.date), form.date)
-  console.log();
+  
   function handleLocateButton(e) {
     e.preventDefault();
 
@@ -218,6 +219,21 @@ console.log(form)
     });
   }
   
+
+  useEffect(() => {
+    if(form.date) {
+      dispatch(getTodayBooks({date: new Date(form.date), barberId: 3}))
+      .then((data) => {
+        let obj = {}
+        data.forEach((e) => {
+          obj[e.hour] = true
+        })
+        setBookedHour(obj)
+  
+      })
+    }
+
+  }, [form.date])
   return (
     <>
       <div className="flex justify-center bg-zinc-800 pt-10 min-h-screen">
@@ -251,11 +267,11 @@ console.log(form)
                 name="hour"
                 className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
               >
-                <option value="08.00 - 10.00">08.00 - 10.00</option>
-                <option value="10.00 - 12.00">10.00 - 12.00</option>
-                <option value="13.00 - 15.00">13.00 - 15.00</option>
-                <option value="15.00 - 17.00">15.00 - 17.00</option>
-                <option value="17.00 - 19.00">17.00 - 19.00</option>
+                <option disabled = {bookedHour["08.00 - 10.00"] ? true : false} value="08.00 - 10.00">08.00 - 10.00</option>
+                <option disabled = {bookedHour["10.00 - 12.00"] ? true : false} value="10.00 - 12.00">10.00 - 12.00</option>
+                <option disabled = {bookedHour["13.00 - 15.00"] ? true : false} value="13.00 - 15.00">13.00 - 15.00</option>
+                <option disabled = {bookedHour["15.00 - 17.00"] ? true : false} value="15.00 - 17.00">15.00 - 17.00</option>
+                <option  disabled = {bookedHour["17.00 - 19.00"] ? true : false} value="17.00 - 19.00">17.00 - 19.00</option>
               </select>
             </div>
             <div className="flex justify-center">
