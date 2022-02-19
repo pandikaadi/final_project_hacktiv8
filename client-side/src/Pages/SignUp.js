@@ -40,14 +40,11 @@ function SignUp() {
       <div className="flex justify-center bg-zinc-800 h-screen">
         <Fade>
           <div className="m-auto">
-<<<<<<< HEAD
-            <form className="px-6 pb-4 space-y-6 lg:px-8 sm:pb-6 xl:pb-8">
-=======
+            
             <form
               onSubmit={signUpHandler}
               className="px-6 pb-4 space-y-6 lg:px-8 sm:pb-6 xl:pb-8"
             >
->>>>>>> 50e9355b0a2efcc5cbe731d1dffe40ddb580c182
               <div className="flex justify-center tracking-widest">
                 <h3 className="text-4xl font-light text-white dark:text-white pb-4">
                   SHAVE8
