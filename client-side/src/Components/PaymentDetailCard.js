@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Bounce from "react-reveal/Bounce";
 import {
   GetOrders,
@@ -12,6 +12,7 @@ function PaymentDetailCard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { userOrder } = useSelector((state) => state.data);
+  const { loading, error } = useSelector((state) => state.client);
 
   console.log(userOrder);
   const backHome = () => {
@@ -21,6 +22,14 @@ function PaymentDetailCard() {
   useEffect(() => {
     dispatch(GetOrders(localStorage.getItem("access_token")));
   }, []);
+
+  if (loading) {
+    return (
+      <>
+        <p>LOADING..</p>
+      </>
+    );
+  }
 
   return (
     <>
@@ -80,9 +89,12 @@ function PaymentDetailCard() {
               </button>
             </div>
             <div className="flex justify-center pt-2 space-x-2">
-              <Link className="pb-2 rounded bg-slate-300 hover:bg-slate-200 shadow-lg shadow-slate-500/50 px-4 pt-2 text-xs font-semibold">
+              <a
+                href={userOrder.orders[0].paymentUrl}
+                className="pb-2 rounded bg-slate-300 hover:bg-slate-200 shadow-lg shadow-slate-500/50 px-4 pt-2 text-xs font-semibold"
+              >
                 Pay Order
-              </Link>
+              </a>
               <button className="pb-2 rounded bg-red-400 hover:bg-red-300 shadow-lg shadow-red-700/50 px-2 pt-2 text-xs text-white font-semibold">
                 Cancel Order
               </button>

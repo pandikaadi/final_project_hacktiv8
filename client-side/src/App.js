@@ -9,13 +9,13 @@ import PaymentPage from "./Pages/PaymentPage";
 import PrivateRouter from "./Components/PrivateComponent/PrivateComponent";
 import BeforeBook from "./Components/PrivateComponent/BeforeBook";
 import ToSignGuard from "./Components/PrivateComponent/signInAndUpGuard";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
     <>
-    <ToastContainer
+      <ToastContainer
         position="top-center"
         autoClose={5000}
         hideProgressBar={false}
@@ -62,14 +62,14 @@ function App() {
           }
         />
         <Route path="/payment" element={<PaymentPage />} />
-        <Route
+        {/* <Route
           path="*"
           element={
             <main className="flex h-screen justify-center">
               <p className="text-5xl font-bold m-auto">NOT FOUND!!</p>
             </main>
           }
-        />
+        /> */}
       </Routes>
     </>
   );
