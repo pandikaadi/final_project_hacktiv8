@@ -1,3 +1,4 @@
+
 'use strict';
 const {
   Model
@@ -12,21 +13,24 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Vote.belongsTo(models.Barber,{foreignKey:'barberId'})
+      Vote.belongsTo(models.Barber, { foreignKey: "barberId" });
     }
   }
-  Vote.init({
-    userMonggoId: DataTypes.STRING,
-    barberId: { 
-      type: DataTypes.INTEGER ,
-      references:{
-        model:{tableName:'Barbers'},
-        key:'id'
-      }
+  Vote.init(
+    {
+      userMonggoId: DataTypes.STRING,
+      barberId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: { tableName: "Barbers" },
+          key: "id",
+        },
+      },
+    },
+    {
+      sequelize,
+      modelName: "Vote",
     }
-  }, {
-    sequelize,
-    modelName: 'Vote',
-  });
+  );
   return Vote;
 };

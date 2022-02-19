@@ -9,6 +9,7 @@ import {
   CLIENT_HASORDER,
   SHOW_ORDERDETAIL,
   GET_BARBER,
+  GET_SERVICES,
 } from "../actionTypes/actionType";
 const baseUrl = "http://localhost:4000";
 
@@ -79,6 +80,21 @@ export const doLogin = (payload) => {
   };
 };
 
+export const GetAllService = (payload) => {
+  return (dispatch) => {
+    axios({
+      method: "GET",
+      url: `${baseUrl}/services`,
+      data: payload,
+    })
+      .then((res) => {
+        dispatch(fetchServices(res.data));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+};
 export const fetchLocation = (payload) => {
   return dispatch => {
     return fetch(`${baseUrl}/coordinates`, {
@@ -191,6 +207,13 @@ export const setLocation = (payload) => {
 export const setBarber = (payload) => {
   return {
     type: SET_BARBER,
+    payload,
+  };
+};
+
+export const fetchServices = (payload) => {
+  return {
+    type: GET_SERVICES,
     payload,
   };
 };

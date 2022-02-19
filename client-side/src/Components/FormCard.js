@@ -1,15 +1,14 @@
-import React from "react";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setService,
   isServiceSelected,
 } from "../store/actionCreators/actionCreator";
-import pictures from "../assets/images.json";
+import { GetAllService } from "../store/actionCreators/actionCreator";
 
 function FormCard({ isLocated }) {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const { serviceDatas } = useSelector((state) => state.data);
 
   function toNavigate(value) {
     if (value && isLocated) {
@@ -17,11 +16,16 @@ function FormCard({ isLocated }) {
       dispatch(isServiceSelected(true));
     }
   }
+
+  useEffect(() => {
+    dispatch(GetAllService());
+  }, [dispatch]);
+
   return (
     <>
       <div className="flex justify-center">
         <div className="flex flex-col w-full">
-          {pictures.images.map((x) => (
+          {serviceDatas.map((x) => (
             <div
               key={x.id}
               className="mb-4 bg-no-repeat bg-cover h-48"
