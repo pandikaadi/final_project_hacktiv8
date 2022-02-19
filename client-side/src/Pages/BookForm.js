@@ -18,7 +18,9 @@ import dataReducer from "../store/reducers/data";
 import {
   hasOrder,
   isServiceSelected,
+  showRatingForm,
 } from "../store/actionCreators/actionCreator";
+import RatingModal from "../Components/RatingModal";
 
 const iconMarkup = renderToStaticMarkup(
   <i className="fa-solid fa-map-pin fa-4x"></i>
@@ -81,6 +83,7 @@ function BookForm() {
     console.log(payload);
     dispatch(hasOrder(true));
     dispatch(isServiceSelected(false));
+    dispatch(showRatingForm(true));
     navigate("/home");
   }
 

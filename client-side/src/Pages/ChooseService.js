@@ -12,15 +12,29 @@ function CardForm() {
   const navigate = useNavigate();
   const [selector, setSelector] = useState(false);
   const { showRating } = useSelector((state) => state.data);
-  const { isService } = useSelector((state) => state.client);
+  const { isService, hasOrder } = useSelector((state) => state.client);
 
+<<<<<<< HEAD
+=======
+  console.log(hasOrder);
+
+>>>>>>> 50e9355b0a2efcc5cbe731d1dffe40ddb580c182
   function handleSelector(e) {
     dispatch(setLocation(e.target.value));
     setSelector(true);
   }
 
   function handleShowRating() {
-    dispatch(showRatingForm(true));
+    if (!hasOrder) {
+      console.log("No order is available");
+    } else {
+      navigate("/payment");
+    }
+  }
+
+  function logoutHandler() {
+    localStorage.clear();
+    navigate("/");
   }
 
   return (
@@ -45,12 +59,18 @@ function CardForm() {
             </svg>
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="mt-4 mb-4 h-11 w-11 fill-white"
-              onClick={() => navigate("/")}
-              viewBox="0 0 20 20"
-              fill="currentColor"
+              className="mt-4 mb-4 h-11 w-11 stroke-white"
+              onClick={logoutHandler}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
             >
-              <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+              />
             </svg>
           </div>
           <p className="text-white text-3xl font-bold tracking-wider">
