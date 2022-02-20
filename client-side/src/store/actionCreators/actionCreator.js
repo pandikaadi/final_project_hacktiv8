@@ -72,14 +72,14 @@ export const GetOrders = (payload) => {
       headers: { access_token: payload },
     })
       .then((res) => {
-        // if (
-        //   res.data.orders[res.data.orders.length - 1].statusBarber ===
-        //     "Finished" &&
-        //   res.data.orders[res.data.orders.length - 1].statusPayment === true
-        // ) {
-        //   dispatch(hasOrder(true));
-        //   dispatch(getUserOrder(res.data));
-        // }
+        if (
+          res.data.orders[res.data.orders.length - 1].statusBarber ===
+            "Finished" &&
+          res.data.orders[res.data.orders.length - 1].statusPayment === true
+        ) {
+          dispatch(hasOrder(true));
+          dispatch(getUserOrder(res.data));
+        }
         dispatch(getUserOrder(res.data));
       })
       .catch((err) => {
