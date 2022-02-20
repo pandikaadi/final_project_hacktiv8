@@ -33,7 +33,8 @@ const getUserById = async (req, res) => {
 };
 
 const postUser = async (req, res) => {
-  const { username, email, password, phoneNumber } = req.body;
+  const { username, email, password, phoneNumber, isAdmin } = req.body;
+  // console.log(req.body);
   try {
     const { data: user } = await axios({
       method: "POST",
@@ -44,13 +45,14 @@ const postUser = async (req, res) => {
       res.status(201).json(user);
     }
   } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 };
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
-
+console.log(email,password);
   try {
     const { data: token } = await axios({
       method: "POST",

@@ -70,7 +70,7 @@ PORT 4000
 USER ( tinggal update user)
 
 [+] POST /users ( register ) => 4002 POST /users (register)
-[+] POST /login ( login )    => 4002 POST /users/login (login)
+[+] POST /users/login ( login )    => 4002 POST /users/login (login)
 [+] GET /users               => 4002 GET /users
 [+] GET /users/:id           => 4002 GET /users/:id
 [+] PUT /users/:id           => 4002 PUT /users/:id

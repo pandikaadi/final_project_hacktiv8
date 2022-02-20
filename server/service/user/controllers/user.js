@@ -30,17 +30,19 @@ const findUserById = async (req, res) => {
 };
 
 const postUser = async (req, res) => {
-  const { username, email, password, phoneNumber } = req.body;
+  const { username, email, password, phoneNumber, isAdmin } = req.body;
+  console.log(req.body,'<<<<< 4002');
   try {
     users = await User.find();
     const totalId = users.length;
+    const role = isAdmin ? 'Admin' : 'Customer';
     createdUser = await User.create({
       id: totalId + 1,
       username,
       email,
       password,
       phoneNumber,
-      role: 'Customer'
+      role: role
     });
     res.status(201).json(createdUser);
   } catch(err) {

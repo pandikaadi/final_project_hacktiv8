@@ -5,6 +5,7 @@ const sendMailOrder = require("../helpers/nodemailerOrder");
 const postOrder = async (req, res) => {
   const userMonggoId = req.currentUser.userMonggoId;
   const { barberId, date, hour, serviceId, city, price, address, lat, long } = req.body;
+  console.log(req.body,'<<<<<');
   try {
     const orderKey = `${barberId}-${userMonggoId}-${new Date()
       .toISOString()
@@ -61,6 +62,7 @@ const postOrder = async (req, res) => {
       }
     }
   } catch (err) {
+    console.log(err);
     if (err.name === "SequelizeForeignKeyConstraintError") {
       res.status(400).json({ message: "bad request" });
     } else if (err.errors) {
