@@ -5,12 +5,12 @@ const sendMailOrder = require("../helpers/nodemailerOrder");
 const postOrder = async (req, res) => {
   const userId = req.currentUser.id;
   const { barberId, date, hour, serviceId, price, address } = req.body;
-
   try {
     const orderKey = `${barberId}-${userId}-${new Date()
       .toISOString()
       .slice(5, 9)}${new Date().toISOString().slice(13, 20)}`;
     //order key barberId - userId - tanggal
+    console.log('post order before snap midtrans ---', req.body)
     const midtransClient = require("midtrans-client");
     // Create Snap API instance
     let snap = new midtransClient.Snap({
@@ -18,6 +18,7 @@ const postOrder = async (req, res) => {
       isProduction: false,
       serverKey: "SB-Mid-server-0f3s9hGBklmiZm7cVhZ9KBZO",
     });
+    console.log('post order ---', snap)
 
     let parameter = {
       transaction_details: {
@@ -59,7 +60,7 @@ const postOrder = async (req, res) => {
       }
     }
   } catch (err) {
-    console.log(err)
+    // console.log('order erorr ------', err)
     if (err.name === "SequelizeForeignKeyConstraintError") {
       res.status(400).json({ message: "bad request" });
     } else if(err.errors) {
@@ -72,10 +73,10 @@ const postOrder = async (req, res) => {
           res.status(400).json(el);
         } else if (el.message === "hour cant be null") {
           res.status(400).json(el);
-        } else {
         }
       });
     } else {
+      console.log(err.message)
       res.status(500).json({ message: "Internal Server Error"})
     }
   }
@@ -83,10 +84,10 @@ const postOrder = async (req, res) => {
 
 const getOrdersByUserId = async (req, res) => {
   // get all orders by user id
-  const { id } = req.currentUser;
+  const { id } = req.currentUser.userMonggoId;
   try {
     const orders = await Order.findAll({
-      where: { userId: id },
+      where: { userMonggoId: id },
       include: [{ model: Barber }, { model: Service }],
     });
     if (orders) {

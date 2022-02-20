@@ -25,10 +25,12 @@ const postLogin = async (req, res) => {
       role: result.role,
     };
     const token = createToken(payload);
+    
     res.status(200).json({
       access_token: token,
     });
   } catch (err) {
+    console.log(err);
     if(err.message === "Invalid email/password"){
       res.status(401).json(err);
     }else{

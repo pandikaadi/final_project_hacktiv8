@@ -3,6 +3,7 @@ const {
   Model
 } = require('sequelize');
 const { createHash } = require('../helpers/bcrypt')
+
 module.exports = (sequelize, DataTypes) => {
   class Barber extends Model {
     /**
@@ -16,6 +17,8 @@ module.exports = (sequelize, DataTypes) => {
       Barber.hasMany(models.Vote,{foreignKey:'barberId'})
     }
   }
+
+  
   Barber.init({
     name: {
       type: DataTypes.STRING,

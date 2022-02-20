@@ -2,7 +2,6 @@
 const {
   Model
 } = require('sequelize');
-const barberRouter = require('../routes/barberRouter');
 module.exports = (sequelize, DataTypes) => {
   class Vote extends Model {
     /**

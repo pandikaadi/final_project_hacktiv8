@@ -1,4 +1,4 @@
-const { Barber, Order } = require("../models/index");
+const { Barber, Order, User } = require("../models/index");
 const { compareHash } = require("../helpers/bcrypt");
 const { createToken } = require("../helpers/jwt");
 const e = require("cors");
@@ -6,6 +6,13 @@ const e = require("cors");
 const getBarbers = async (req, res) => {
   try {
     const barbers = await Barber.findAll();
+    // const coba = await User.create({
+    //   username: "anggorego",
+    //   email: "test@mail.com",
+    //   password: "testing",
+    //   phoneNumber: "0821232323",
+    // })
+    // console.log(coba);
     res.status(200).json(barbers);
   } catch (err) {
   

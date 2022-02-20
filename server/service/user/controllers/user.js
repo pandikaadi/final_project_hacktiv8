@@ -114,7 +114,7 @@ const deleteUser = (req, res) => {
 
 const postLogin = (req, res) => {
   const { email, password } = req.body;
-  console.log(email, password);
+  
 
   User.findOneCompare(email)
     .then((user) => {
