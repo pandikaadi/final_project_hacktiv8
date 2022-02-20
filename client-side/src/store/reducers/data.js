@@ -31,7 +31,7 @@ function dataReducer(state = initialState, action) {
     return {
       ...state,
       service: action.payload.id,
-      servicePrice: action.payload.price
+      servicePrice: action.payload.price,
     };
   } else if (action.type === SET_BARBER) {
     return {

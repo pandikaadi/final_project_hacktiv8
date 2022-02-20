@@ -13,6 +13,7 @@ import {
   GET_USER_ORDER,
   SET_LOADING,
   SET_ERROR,
+  SET_VOTE,
 } from "../actionTypes/actionType";
 const baseUrl = "http://localhost:4000";
 
@@ -45,6 +46,23 @@ export const GetBarberData = (payload) => {
   };
 };
 
+export const PostVote = (payload) => {
+  return (dispatch) => {
+    axios({
+      method: "POST",
+      url: `${baseUrl}/votes/${payload.barberId}`,
+      data: payload.star,
+      headers: { access_token: localStorage.getItem("access_token") },
+    })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+};
+
 export const GetOrders = (payload) => {
   return (dispatch) => {
     axios({
@@ -53,6 +71,14 @@ export const GetOrders = (payload) => {
       headers: { access_token: payload },
     })
       .then((res) => {
+        // if (
+        //   res.data.orders[res.data.orders.length - 1].statusBarber ===
+        //     "Finished" &&
+        //   res.data.orders[res.data.orders.length - 1].statusPayment === true
+        // ) {
+        //   dispatch(hasOrder(true));
+        //   dispatch(getUserOrder(res.data));
+        // }
         dispatch(getUserOrder(res.data));
       })
       .catch((err) => {
@@ -87,12 +113,12 @@ export const getTodayBooks = (payload) => {
       url: `${baseUrl}/dailyOrders`,
       headers: {
         "Content-Type": "application/json",
-        access_token: localStorage.access_token
+        access_token: localStorage.access_token,
       },
       params: payload,
     })
       .then((res) => {
-        return res.data.orders
+        return res.data.orders;
       })
       .catch((err) => {
         dispatch(setError(err));

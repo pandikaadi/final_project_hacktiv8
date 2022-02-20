@@ -15,18 +15,19 @@ function PaymentDetailCard() {
   const { userOrder } = useSelector((state) => state.data);
   const { loading, error } = useSelector((state) => state.client);
 
+  console.log(userOrder);
   const backHome = () => {
     navigate("/home");
   };
   console.log(userOrder.orders);
-  function handleCancelOrder(){
+  function handleCancelOrder() {
     dispatch(cancelOrder(userOrder.orders[userOrder.orders.length - 1].id))
-    .then(() => {
-      navigate("/home")
-    })
-    .catch((err) => {
-      console.log(err, `>>>>`);
-    })
+      .then(() => {
+        navigate("/home");
+      })
+      .catch((err) => {
+        console.log(err, `>>>>`);
+      });
   }
 
   useEffect(() => {
@@ -91,8 +92,12 @@ function PaymentDetailCard() {
             </p>
             <p>
               <span className="font-semibold">Payment Status: </span>
-              {!userOrder.orders[userOrder.orders.length - 1].statusPayment && <span>Not paid</span>}
-              {userOrder.orders[userOrder.orders.length - 1].statusPayment && <span>Paid</span>}
+              {!userOrder.orders[userOrder.orders.length - 1].statusPayment && (
+                <span>Not paid</span>
+              )}
+              {userOrder.orders[userOrder.orders.length - 1].statusPayment && (
+                <span>Paid</span>
+              )}
             </p>
             <p>
               <span className="font-semibold">Status Order: </span>
@@ -104,7 +109,10 @@ function PaymentDetailCard() {
             </p>
             <img src={image} alt="icon" />
             <div className="flex justify-center">
-              <p className="text-sm">Pandika is comming in 2 minutes</p>
+              <p className="text-sm">
+                {userOrder.orders[userOrder.orders.length - 1].Barber.name} is
+                comming in 2 minutes
+              </p>
             </div>
             <div className="flex justify-center">
               <button
@@ -115,22 +123,28 @@ function PaymentDetailCard() {
               </button>
             </div>
             <div className="flex justify-center pt-2 space-x-2">
-              { !loading && userOrder.orders[userOrder.orders.length - 1].statusPayment === false ?
+              {!loading &&
+              userOrder.orders[userOrder.orders.length - 1].statusPayment ===
+                false ? (
                 <a
-                  href={userOrder.orders[userOrder.orders.length - 1].paymentUrl}
+                  href={
+                    userOrder.orders[userOrder.orders.length - 1].paymentUrl
+                  }
                   className="pb-2 rounded bg-slate-300 hover:bg-slate-200 shadow-lg shadow-slate-500/50 px-4 pt-2 text-xs font-semibold"
                 >
                   Pay Order
-                </a> : null
-
-              }
-              { !loading && userOrder.orders[userOrder.orders.length - 1].statusPayment === false ?
-                <button onClick={handleCancelOrder} className="pb-2 rounded bg-red-400 hover:bg-red-300 shadow-lg shadow-red-700/50 px-2 pt-2 text-xs text-white font-semibold">
-                Cancel Order
-              </button> : null
-
-              }
-              
+                </a>
+              ) : null}
+              {!loading &&
+              userOrder.orders[userOrder.orders.length - 1].statusPayment ===
+                false ? (
+                <button
+                  onClick={handleCancelOrder}
+                  className="pb-2 rounded bg-red-400 hover:bg-red-300 shadow-lg shadow-red-700/50 px-2 pt-2 text-xs text-white font-semibold"
+                >
+                  Cancel Order
+                </button>
+              ) : null}
             </div>
           </div>
         </div>
