@@ -2,7 +2,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setRegister } from "../store/actionCreator/actionCreator";
+import {
+  setRegister,
+  setRegisterAdmin,
+} from "../store/actionCreator/actionCreator";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -57,12 +60,12 @@ function Navbar() {
                     </button>
                   </li>
                   <li className="nav-item">
-                    <Link
+                    <button
                       className="px-3 py-2 flex items-center text-sm uppercase font-light leading-snug text-slate-500 hover:opacity-75"
-                      to="/createadmin"
+                      onClick={() => dispatch(setRegisterAdmin(true))}
                     >
                       <p className="ml-2">New Admin</p>
-                    </Link>
+                    </button>
                   </li>
                 </ul>
                 <div>

@@ -1,4 +1,7 @@
-import { SET_REGISTER_BARBER } from "../actionTypes/actionType";
+import {
+  SET_REGISTER_BARBER,
+  SET_REGISTER_ADMIN,
+} from "../actionTypes/actionType";
 
 export const postBarber = (payload) => {
   return (dispatch) => {
@@ -27,6 +30,13 @@ export const postBarber = (payload) => {
 export const setRegister = (payload) => {
   return {
     type: SET_REGISTER_BARBER,
+    payload,
+  };
+};
+
+export const setRegisterAdmin = (payload) => {
+  return {
+    type: SET_REGISTER_ADMIN,
     payload,
   };
 };

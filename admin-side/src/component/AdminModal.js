@@ -1,6 +1,9 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { setRegisterAdmin } from "../store/actionCreator/actionCreator";
 
 function AdminModal() {
+  const dispatch = useDispatch();
   return (
     <>
       <div className="bg-black bg-opacity-50 absolute inset-0 flex justify-center items-center">
@@ -12,6 +15,7 @@ function AdminModal() {
                 className="h-5 w-5"
                 viewBox="0 0 20 20"
                 fill="currentColor"
+                onClick={() => dispatch(setRegisterAdmin(false))}
               >
                 <path
                   fillRule="evenodd"

@@ -5,12 +5,12 @@ import AdminModal from "../component/AdminModal";
 import BarberModal from "../component/BarberModal";
 
 function Home() {
-  const { registerBarber } = useSelector((state) => state.admin);
+  const { registerBarber, registerAdmin } = useSelector((state) => state.admin);
 
   return (
     <>
       <Navbar />
-      {/* <AdminModal /> */}
+      {registerAdmin && <AdminModal />}
       {registerBarber && <BarberModal />}
       <div className="container mx-auto px-4 sm:px-8">
         <div className="">
