@@ -4,6 +4,7 @@ import image1 from "../assets/image4.png";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Marquee from "react-fast-marquee";
+import { Parallax } from "react-parallax";
 
 function UpperBody() {
   const [isAuthen, setIsAuthen] = useState(false);
@@ -28,7 +29,7 @@ function UpperBody() {
           src={image1}
           alt="navbar"
           className="w-full h-3/4 object-cover absolute mix-blend-overlay filter
-          saturate-0"
+          "
         />
         <ul className="flex justify-center py-4 flex-row drop-shadow-md relative">
           <li>

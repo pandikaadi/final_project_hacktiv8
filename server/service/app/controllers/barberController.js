@@ -8,11 +8,9 @@ const getBarbers = async (req, res) => {
     const barbers = await Barber.findAll();
     res.status(200).json(barbers);
   } catch (err) {
-  
     res.status(500).json(err);
   }
 };
-
 
 const getBarberById = async (req, res) => {
   const { id } = req.params;
@@ -27,9 +25,15 @@ const getBarberById = async (req, res) => {
 };
 
 const postBarber = async (req, res) => {
-  const { name, email, password, phoneNumber } = req.body;
+  const { name, email, password, phoneNumber, city } = req.body;
   try {
-    const barber = await Barber.create({ name, email, password, phoneNumber });
+    const barber = await Barber.create({
+      name,
+      email,
+      password,
+      phoneNumber,
+      city,
+    });
     if (barber) {
       res.status(201).json(barber);
     }
@@ -60,21 +64,20 @@ const deleteBarber = async (req, res) => {
     });
     if (result) {
       await Order.destroy({
-        where:{barberId:id}
-      })
+        where: { barberId: id },
+      });
       await Barber.destroy({
         where: { id: id },
       });
       res.status(200).json({ message: "Barber success to delete" });
     } else {
       // res.status(404).json({ message: "Barber not found" });
-      res.status(500).json(new Error('error'));
+      res.status(500).json(new Error("error"));
     }
   } catch (err) {
     res.status(500).json(err);
   }
 };
-
 
 const updateBarber = async (req, res) => {
   const { name, email, password, phoneNumber } = req.body;
@@ -120,7 +123,7 @@ const barberLogin = async (req, res) => {
     } else {
     }
     if (!compareHash(password, result.password)) {
-      throw new Error( 'invalid password');
+      throw new Error("invalid password");
     }
 
     const payload = {
@@ -134,13 +137,12 @@ const barberLogin = async (req, res) => {
       access_token: token,
     });
   } catch (err) {
-    if(err.message === 'invalid password'){
-      res.status(401).json(err.message)
-    } else if (err.message === 'no result'){
-      res.status(404).json(err.message)
+    if (err.message === "invalid password") {
+      res.status(401).json(err.message);
+    } else if (err.message === "no result") {
+      res.status(404).json(err.message);
     } else {
-      res.status(500).json(err)
-
+      res.status(500).json(err);
     }
     // if(!err.errors){
     //   res.status(500).json(err)

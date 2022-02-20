@@ -34,7 +34,7 @@ const getBarberById = async (req, res) => {
 };
 
 const postBarber = async (req, res) => {
-  const { name, email, password, phoneNumber } = req.body;
+  const { name, email, password, phoneNumber, city } = req.body;
   try {
     const { data: barber } = await axios({
       method: "POST",

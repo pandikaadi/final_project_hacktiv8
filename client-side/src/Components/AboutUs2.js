@@ -1,5 +1,6 @@
 import React from "react";
 import Fade from "react-reveal/Fade";
+import image6 from "../assets/image6.png";
 
 function AboutUs2() {
   return (
@@ -10,11 +11,7 @@ function AboutUs2() {
             <ul className="flex flex-col m-auto">
               <Fade left cascade>
                 <li className="flex justify-center">
-                  <img
-                    className="w-10/12"
-                    alt="about us"
-                    src="https://images.unsplash.com/photo-1517832606299-7ae9b720a186?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=386&q=80"
-                  />
+                  <img className="w-10/12" alt="about us" src={image6} />
                 </li>
                 <li className="m-auto text-center mr-10 mt-4">
                   <p className="font-bold text-4xl tracking-wider ml-10 mb-4">

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { adminLogin } from "../store/actionCreator/actionCreator";
 
 function SignIn() {
   const navigate = useNavigate();
@@ -22,8 +23,10 @@ function SignIn() {
       email: email,
       password: password,
     };
-    localStorage.setItem("access_token", "access_token");
-    console.log(payload);
+    // localStorage.setItem("access_token", "access_token");
+    // console.log(payload);
+
+    dispatch(adminLogin(payload));
   }
   return (
     <>
