@@ -1,28 +1,43 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ReactStars from "react-rating-stars-component";
 import { useDispatch, useSelector } from "react-redux";
 import {
   showRatingForm,
   setRatingStar,
+  GetOrders,
+  PostVote,
 } from "../store/actionCreators/actionCreator";
 import { toast } from "react-toastify";
 
+let star = 0;
+
 function RatingModal() {
   const dispatch = useDispatch();
+  const { userOrder } = useSelector((state) => state.data);
 
   const ratingChanged = (newRating) => {
-    if (!newRating) {
-      toast.error("Vote is required");
-      // console.log("Vote is required"); //nanti ini di handle pake swal dan semacamnya gitu aja yaaa
+    dispatch(setRatingStar(newRating));
+    star = newRating;
+    return star;
+  };
+
+  const submitButtonHandler = () => {
+    if (!star) {
+      toast.error("Please vote");
     } else {
-      dispatch(setRatingStar(newRating));
-      setTimeout(() => {
-        dispatch(showRatingForm(false));
-      }, 2000);
+      const payload = {
+        star: star,
+        barberId: userOrder.orders[userOrder.orders.length - 1].Barber.id,
+      };
+      dispatch(PostVote(payload));
     }
   };
 
   const { hasOrder } = useSelector((state) => state.client);
+
+  useEffect(() => {
+    dispatch(GetOrders(localStorage.getItem("access_token")));
+  }, []);
 
   return (
     <>
@@ -54,7 +69,7 @@ function RatingModal() {
                   <div className="flex items-start"></div>
                 </div>
                 <button
-                  onClick={ratingChanged}
+                  onClick={submitButtonHandler}
                   type="submit"
                   className="mb-1 w-full text-white bg-black hover:bg-slate-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
@@ -65,11 +80,6 @@ function RatingModal() {
                   <span className="text-blue-600">next order!</span>
                 </div>
               </div>
-            </div>
-          )}
-          {!hasOrder && (
-            <div className="p-10">
-              <p className="text-md font-medium">SORRY NO ORDER IS AVAILABLE</p>
             </div>
           )}
         </div>

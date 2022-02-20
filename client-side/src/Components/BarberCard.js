@@ -9,28 +9,26 @@ function ChooseBarber() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { barberDatas, location } = useSelector((state) => state.data);
-  console.log(location, barberDatas);
-  const [filteredBarbers, setFiltered] = useState([])
+  const [filteredBarbers, setFiltered] = useState([]);
   function toNavigate(value) {
     dispatch(setBarber(value));
     navigate("/book");
   }
   useEffect(() => {
-    dispatch(GetBarberData())
+    dispatch(GetBarberData());
   }, [dispatch]);
   useEffect(() => {
-    if(barberDatas) {
-      console.log(barberDatas, `>>>> pas dispatch`);
-      let filtered = []
-      
-        filtered = barberDatas.filter(e => {
-          if(location === "1") {
-          return e.city === "Jakarta"
-          } else {
-            return e.city === "Bandung"
-          }
-        })
-        setFiltered(filtered)
+    if (barberDatas) {
+      let filtered = [];
+
+      filtered = barberDatas.filter((e) => {
+        if (location === "1") {
+          return e.city === "Jakarta";
+        } else {
+          return e.city === "Bandung";
+        }
+      });
+      setFiltered(filtered);
     }
   }, [barberDatas]);
 

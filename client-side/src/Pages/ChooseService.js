@@ -22,20 +22,16 @@ function CardForm() {
     dispatch(setLocation(e.target.value));
     setSelector(true);
   }
-  function handleShowRating() {
+
+  function handleShowDetailOrder() {
     if (
-      userOrder.orders[userOrder.orders.length-1].statusBarber !== "Finished" &&
-      userOrder.orders[userOrder.orders.length-1].statusBarber !== "Voted"
+      userOrder.orders[userOrder.orders.length - 1].statusBarber !==
+        "Finished" &&
+      userOrder.orders[userOrder.orders.length - 1].statusBarber !== "Voted"
     ) {
       navigate("/payment");
     } else {
       toast.error("No order is available");
-    }
-  }
-
-  function showingRating() {
-    if (userOrder.orders[0].statusPayment === true) {
-      dispatch(showRatingForm(true));
     }
   }
 
@@ -75,7 +71,7 @@ function CardForm() {
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="mt-4 mb-4 h-12 w-12 stroke-white"
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/home")}
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -138,7 +134,7 @@ function CardForm() {
           <div className="flex flex-row mt-2 border-2 w-fit px-2 py-1 rounded">
             <button
               className="bg-transparent font-semibold border-1 border-white text-white text-xs"
-              onClick={() => handleShowRating()}
+              onClick={() => handleShowDetailOrder()}
             >
               MY ORDER
             </button>
@@ -146,7 +142,7 @@ function CardForm() {
         </div>
         {!isService && <FormCard isLocated={selector} />}
         {isService && <ChooseBarber />}
-        {showRating && <RatingModal />}
+        {hasOrder && <RatingModal />}
       </div>
     </>
   );
