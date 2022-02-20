@@ -1,35 +1,106 @@
 import React, { useState } from "react";
-import {styles} from "../styling/";
-import { Alert, Image, Keyboard, KeyboardAvoidingView, Text, TextInput, TouchableWithoutFeedback, Pressable, View, ScrollView, } from "react-native";
-import { Button, SocialIcon } from "react-native-elements";
+import { Alert, Image, Keyboard, KeyboardAvoidingView, Text, TextInput, TouchableWithoutFeedback, Pressable, View, ScrollView, Button, StyleSheet, StatusBar } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios'
 
+export default function LoginScreen({ navigation }) {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [token, setToken] = useState(null)
+  console.log(email, password)
+  const baseUrl = `http://localhost:4000`
+  const onLoginPress = async () => {
+    try {
+      const response = await axios.post(`https://23ca-110-138-83-92.ngrok.io/barbers/login`, {
+        email,
+        password
+      })
+      // console.log(response.data)
+      await AsyncStorage.setItem('token', response.data.access_token)
+      setEmail('')
+      setPassword('')
+      navigation.navigate('Dashboard')
+    } catch (error) {
+      alert('Email or Password is invalid')
+      console.log(error)
+    }
+  }
 
-export default function LoginScreen({navigation}) {
-  const [username,setUsername] = useState('')
-  const [password,setPassword] = useState('')
- 
-  console.log(username,password)
-  const onLoginPress = () => {
-    setUsername('')
-    setPassword('')
-    navigation.navigate('Dashboard')
-  };
+  const tokenlogin = async () => {
+    const value = await AsyncStorage.getItem('token')
+    console.log(value)
+    if (value !== null) {
+      navigation.navigate("Dashboard")
+      console.log('masuké')
+    } else {
+      console.log('tidak masuk')
+    }
+  }
+
+  tokenlogin()
 
   return (
-    <ScrollView>
-    <KeyboardAvoidingView style={styles.containerView} behavior="padding">
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.loginScreenContainer}>
-          <View style={styles.loginFormView}>
-            <Text style={styles.logoText}>Shave8</Text>
-            <TextInput placeholder="Username" placeholderColor="#c4c3cb"   onChangeText={username => setUsername(username)} value={username} style={styles.loginFormTextInput} />
-            <TextInput placeholder="Password" placeholderColor="#c4c3cb" onChangeText={password => setPassword(password)} 
-            value={password} style={styles.loginFormTextInput} secureTextEntry={true} />
-            <Button buttonStyle={styles.loginButton} onPress={() => onLoginPress()} title="Login" />
+    <ScrollView >
+      <KeyboardAvoidingView style={styles.containerView} behavior="padding">
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+
+          <View style={styles.loginScreenContainer}>
+            <StatusBar style='auto' />
+            <View style={styles.loginFormView}>
+              <Text style={styles.logoText} >Shave8</Text>
+              <TextInput style={styles.loginFormTextInput} placeholder="Email" placeholderColor="#c4c3cb" onChangeText={email => setEmail(email)} value={email} />
+              <TextInput style={styles.loginFormTextInput} placeholder="Password" placeholderColor="#c4c3cb" onChangeText={password => setPassword(password)}
+                value={password} secureTextEntry={true} />
+              <Button buttonStyle={styles.loginButton} onPress={onLoginPress} title="Login" />
+            </View>
           </View>
-        </View>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  containerView: {
+    flex: 1,
+    alignItems: "center"
+  },
+  loginScreenContainer: {
+    flex: 1,
+  },
+  logoText: {
+    fontSize: 40,
+    fontWeight: "800",
+    marginTop: 150,
+    marginBottom: 30,
+    textAlign: "center",
+  },
+  loginFormView: {
+    flex: 1,
+  },
+  loginFormTextInput: {
+    height: 43,
+    fontSize: 14,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: "#eaeaea",
+    backgroundColor: "#fafafa",
+    paddingLeft: 10,
+    marginTop: 5,
+    marginBottom: 5,
+  },
+  loginButton: {
+    backgroundColor: "#3897f1",
+    borderRadius: 5,
+    height: 45,
+    marginTop: 10,
+    width: 350,
+    alignItems: "center"
+  }
+});
