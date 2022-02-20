@@ -1,4 +1,3 @@
-
 'use strict';
 const {
   Model
@@ -19,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   Vote.init(
     {
       userMonggoId: DataTypes.STRING,
+      value: DataTypes.INTEGER,
       barberId: {
         type: DataTypes.INTEGER,
         references: {

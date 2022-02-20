@@ -6,6 +6,8 @@ const postVote = async (req, res) => {
 
   const token = req.headers.access_token
 
+  console.log(req.body, `>>>>`);
+
   try {
     const { data: service } = await axios({
       method: "POST",

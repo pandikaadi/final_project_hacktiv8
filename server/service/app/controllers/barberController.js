@@ -27,9 +27,9 @@ const getBarberById = async (req, res) => {
 };
 
 const postBarber = async (req, res) => {
-  const { name, email, password, phoneNumber } = req.body;
+  const { name, email, password, phoneNumber, city } = req.body;
   try {
-    const barber = await Barber.create({ name, email, password, phoneNumber });
+    const barber = await Barber.create({ name, email, password, phoneNumber, city });
     if (barber) {
       res.status(201).json(barber);
     }
@@ -105,6 +105,36 @@ const updateBarber = async (req, res) => {
   }
 };
 
+const updateLocation = async(req, res) => {
+  // console.log(`>>> UPDATE LOC`);
+  // console.log(req.currentBarber, `>>>>>>>>>>>>WTFF`);
+  const {lat, long} = req.body
+  try {
+    // console.log(req.body);
+    // console.log(req);
+    const findBarber = await Barber.findOne({
+      where: { id: req.currentBarber.id },
+    });
+    if (findBarber) {
+      const updatedBarber = await Barber.update(
+        {
+          lat,
+          long
+        },
+        {
+          where: { id: req.currentBarber.id },
+          returning: true,
+        }
+      );
+      res.status(200).json({ result: updatedBarber[1][0] });
+    } else {
+      throw new Error(`error`)
+    }
+  } catch (error) {
+    res.status(500).json(`internal server error`)
+  }
+}
+
 const barberLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -156,4 +186,5 @@ module.exports = {
   deleteBarber,
   updateBarber,
   barberLogin,
+  updateLocation
 };

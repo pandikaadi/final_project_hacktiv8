@@ -33,6 +33,7 @@ app.patch("/ordersBarber/:id", orderController.updateStatusBarber);
 app.get("/barbers", barberController.getBarbers);
 app.get("/barbers/:id", barberController.getBarberById);
 app.post("/barbers", barberController.postBarber);
+app.patch("/barbers/location", barberController.updateLocationBarber);
 app.post("/barbers/login", barberController.loginBarber);
 app.delete("/barbers/:id", barberController.deleteBarber);
 
@@ -44,7 +45,7 @@ app.delete("/services/:id", serviceController.deleteService);
 app.post("/coordinates", coordinateController.translateCoordinate);
 
 app.get("/votes/:barberId", voteController.getVotes);
-app.post("/votes/", voteController.postVote);
+app.post("/votes", voteController.postVote);
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
