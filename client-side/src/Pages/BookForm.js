@@ -51,7 +51,7 @@ function BookForm() {
   const [centerLong, setCenterLong] = useState(107.5605011029984);
   const [distance, setDistance] = useState(null);
   const [price, setPrice] = useState(null);
-  const [bookedHour, setBookedHour] = useState({})
+  const [bookedHour, setBookedHour] = useState({});
   const [barberPosition, setBarberPosition] = useState({
     lat: centerLat,
     lng: centerLong,
@@ -69,14 +69,15 @@ function BookForm() {
       [e.target.name]: e.target.value,
     });
   }
-  const { location, service, barber, servicePrice } = useSelector((state) => state.data);
+  const { location, service, barber, servicePrice } = useSelector(
+    (state) => state.data
+  );
   console.log(bookedHour, `>>>BOOKED HOUR`);
   function handleNewOrder(e) {
     e.preventDefault();
     console.log(form.hour);
     console.log(position);
-    if(price && form.hour) {
-      
+    if (price && form.hour) {
       const payload = {
         date: new Date(form.date),
         hour: form.hour,
@@ -86,7 +87,7 @@ function BookForm() {
         long: +position.lng,
         serviceId: service,
         barberId: barber,
-        city: location
+        city: location,
       };
       console.log(payload);
       dispatch(postNewOrder(payload))
@@ -95,17 +96,16 @@ function BookForm() {
           dispatch(isServiceSelected(false));
           dispatch(showRatingForm(true));
           console.log("sebelum navigate ke home");
-          navigate("/home");
+          navigate("/payment");
         })
         .catch((err) => {
           console.log(err);
         });
     } else {
-      if(!price) {
-        toast.error("You must pick your place on the map")
-
+      if (!price) {
+        toast.error("You must pick your place on the map");
       } else {
-        toast.error("Select a schedule")
+        toast.error("Select a schedule");
       }
     }
   }
@@ -229,22 +229,20 @@ function BookForm() {
         });
     });
   }
-  
 
   useEffect(() => {
-    if(form.date) {
-      dispatch(getTodayBooks({date: new Date(form.date), barberId: barber}))
-      .then((data) => {
-        let obj = {}
+    if (form.date) {
+      dispatch(
+        getTodayBooks({ date: new Date(form.date), barberId: barber })
+      ).then((data) => {
+        let obj = {};
         data.forEach((e) => {
-          obj[e.hour] = true
-        })
-        setBookedHour(obj)
-  
-      })
+          obj[e.hour] = true;
+        });
+        setBookedHour(obj);
+      });
     }
-
-  }, [form.date])
+  }, [form.date]);
   return (
     <>
       <div className="flex justify-center bg-zinc-800 pt-10 min-h-screen">
@@ -262,7 +260,7 @@ function BookForm() {
 
             <div className="flex justify-center mb-2">
               <input
-                min={new Date().toISOString().split('T')[0]}
+                min={new Date().toISOString().split("T")[0]}
                 onChange={formHandler}
                 required
                 value={form.date}
@@ -280,12 +278,46 @@ function BookForm() {
                 name="hour"
                 className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
               >
-                <option  value="disable" disabled> -- SELECT SCHEDULE -- {bookedHour["08.00 - 10.00"] ? " -- booked --" : null}</option>
-                <option disabled = {bookedHour["08.00 - 10.00"] ? true : false} value="08.00 - 10.00">08.00 - 10.00 {bookedHour["08.00 - 10.00"] ? " -- booked --" : null}</option>
-                <option disabled = {bookedHour["10.00 - 12.00"] ? true : false} value="10.00 - 12.00">10.00 - 12.00 {bookedHour["10.00 - 12.00"] ? " -- booked --" : null}</option>
-                <option disabled = {bookedHour["13.00 - 15.00"] ? true : false} value="13.00 - 15.00">13.00 - 15.00 {bookedHour["13.00 - 15.00"] ? " -- booked --" : null}</option>
-                <option disabled = {bookedHour["15.00 - 17.00"] ? true : false} value="15.00 - 17.00">15.00 - 17.00 {bookedHour["15.00 - 17.00"] ? " -- booked --" : null}</option>
-                <option  disabled = {bookedHour["17.00 - 19.00"] ? true : false} value="17.00 - 19.00">17.00 - 19.00 {bookedHour["17.00 - 19.00"] ? " -- booked --" : null}</option>
+                <option value="disable" disabled>
+                  {" "}
+                  -- SELECT SCHEDULE --{" "}
+                  {bookedHour["08.00 - 10.00"] ? " -- booked --" : null}
+                </option>
+                <option
+                  disabled={bookedHour["08.00 - 10.00"] ? true : false}
+                  value="08.00 - 10.00"
+                >
+                  08.00 - 10.00{" "}
+                  {bookedHour["08.00 - 10.00"] ? " -- booked --" : null}
+                </option>
+                <option
+                  disabled={bookedHour["10.00 - 12.00"] ? true : false}
+                  value="10.00 - 12.00"
+                >
+                  10.00 - 12.00{" "}
+                  {bookedHour["10.00 - 12.00"] ? " -- booked --" : null}
+                </option>
+                <option
+                  disabled={bookedHour["13.00 - 15.00"] ? true : false}
+                  value="13.00 - 15.00"
+                >
+                  13.00 - 15.00{" "}
+                  {bookedHour["13.00 - 15.00"] ? " -- booked --" : null}
+                </option>
+                <option
+                  disabled={bookedHour["15.00 - 17.00"] ? true : false}
+                  value="15.00 - 17.00"
+                >
+                  15.00 - 17.00{" "}
+                  {bookedHour["15.00 - 17.00"] ? " -- booked --" : null}
+                </option>
+                <option
+                  disabled={bookedHour["17.00 - 19.00"] ? true : false}
+                  value="17.00 - 19.00"
+                >
+                  17.00 - 19.00{" "}
+                  {bookedHour["17.00 - 19.00"] ? " -- booked --" : null}
+                </option>
               </select>
             </div>
             <div className="flex justify-center">

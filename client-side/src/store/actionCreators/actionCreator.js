@@ -56,7 +56,7 @@ export const PostVote = (payload) => {
       headers: { access_token: localStorage.getItem("access_token") },
     })
       .then((res) => {
-        dispatch(GetOrders(localStorage.getItem("access_token")))
+        dispatch(GetOrders(localStorage.getItem("access_token")));
       })
       .catch((err) => {
         console.log(err);
@@ -180,6 +180,7 @@ export const GetAllService = (payload) => {
       data: payload,
     })
       .then((res) => {
+        console.log(res.data);
         dispatch(fetchServices(res.data));
       })
       .catch((err) => {
