@@ -5,13 +5,15 @@ import {
   showRatingForm,
   setRatingStar,
 } from "../store/actionCreators/actionCreator";
+import { toast } from "react-toastify";
 
 function RatingModal() {
   const dispatch = useDispatch();
 
   const ratingChanged = (newRating) => {
     if (!newRating) {
-      console.log("Vote is required"); //nanti ini di handle pake swal dan semacamnya gitu aja yaaa
+      toast.error("Vote is required");
+      // console.log("Vote is required"); //nanti ini di handle pake swal dan semacamnya gitu aja yaaa
     } else {
       dispatch(setRatingStar(newRating));
       setTimeout(() => {

@@ -31,11 +31,12 @@ const getServiceById = async (req, res) => {
   }
 };
 const postService = async (req, res) => {
-  const { name, price } = req.body;
+  const { name, price,image } = req.body;
   try {
     const service = await Service.create({
       name,
       price,
+      image
     });
     if (service) {
       res.status(201).json(service);
@@ -50,6 +51,9 @@ const postService = async (req, res) => {
         if(el.message === 'name is required'){
           res.status(400).json(el)
         } else if ( el.message === 'price is required'){
+          res.status(400).json(el)
+        }
+        else if ( el.message === 'image is required'){
           res.status(400).json(el)
         } 
       })
@@ -82,7 +86,7 @@ const deleteService = async (req, res) => {
 
 const updateService = async (req, res) => {
   const { id } = req.params
-  const { name , price } = req.body
+  const { name , price ,image} = req.body
   try {
     const service = await Service.findOne({
       where: {
@@ -92,7 +96,8 @@ const updateService = async (req, res) => {
     if( service){
       await Service.update({
         name:name,
-        price:price
+        price:price,
+        image:image
       },{
         where:{id:id}
       })

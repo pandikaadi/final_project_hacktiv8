@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setLocation } from "../store/actionCreators/actionCreator";
@@ -6,32 +6,65 @@ import FormCard from "../Components/FormCard";
 import ChooseBarber from "../Components/BarberCard";
 import RatingModal from "../Components/RatingModal";
 import { showRatingForm } from "../store/actionCreators/actionCreator";
+import { toast } from "react-toastify";
+import { GetOrders } from "../store/actionCreators/actionCreator";
 
 function CardForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [selector, setSelector] = useState(false);
-  const { showRating } = useSelector((state) => state.data);
-  const { isService, hasOrder } = useSelector((state) => state.client);
-
-  console.log(hasOrder);
+  const { showRating, userOrder } = useSelector((state) => state.data);
+  const { isService, hasOrder, loading, error } = useSelector(
+    (state) => state.client
+  );
 
   function handleSelector(e) {
     dispatch(setLocation(e.target.value));
     setSelector(true);
   }
-
   function handleShowRating() {
-    if (!hasOrder) {
-      console.log("No order is available");
-    } else {
+    if (
+      userOrder.orders[userOrder.orders.length-1].statusBarber !== "Finished" &&
+      userOrder.orders[userOrder.orders.length-1].statusBarber !== "Voted"
+    ) {
       navigate("/payment");
+    } else {
+      toast.error("No order is available");
+    }
+  }
+
+  function showingRating() {
+    if (userOrder.orders[0].statusPayment === true) {
+      dispatch(showRatingForm(true));
     }
   }
 
   function logoutHandler() {
     localStorage.clear();
     navigate("/");
+  }
+
+  useEffect(() => {
+    dispatch(GetOrders(localStorage.getItem("access_token")));
+  }, [dispatch]);
+
+  if (loading) {
+    return (
+      <>
+        <p>LOADING..</p>
+      </>
+    );
+  }
+  if (error) {
+    return (
+      <>
+        <div className="flex justify-center">
+          <p className="font-bold text-white m-auto text-xl">
+            SOMETHING WENT WRONG
+          </p>
+        </div>
+      </>
+    );
   }
 
   return (
@@ -74,14 +107,16 @@ function CardForm() {
             Hello User
           </p>
           <p className="text-white">Find your personality now!</p>
-          <select
-            onChange={handleSelector}
-            className="flex font-semibold bg-white mt-4 px-2 pb-1 rounded"
-          >
-            <option>Your Location</option>
-            <option value="1">Jakarta</option>
-            <option value="2">Bandung</option>
-          </select>
+          {!isService && (
+            <select
+              onChange={handleSelector}
+              className="flex font-semibold bg-white mt-4 px-2 pb-1 rounded"
+            >
+              <option>Your Location</option>
+              <option value="1">Jakarta</option>
+              <option value="2">Bandung</option>
+            </select>
+          )}
         </div>
 
         <div className="mx-4 mt-4 flex justify-center flex-row mb-4">

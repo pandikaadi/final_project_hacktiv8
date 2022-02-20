@@ -1,18 +1,11 @@
-const { Barber, Order, User } = require("../models/index");
+const { Barber, Order, Vote } = require("../models/index");
 const { compareHash } = require("../helpers/bcrypt");
 const { createToken } = require("../helpers/jwt");
-const e = require("cors");
+// const e = require("cors");
 
 const getBarbers = async (req, res) => {
   try {
     const barbers = await Barber.findAll();
-    // const coba = await User.create({
-    //   username: "anggorego",
-    //   email: "test@mail.com",
-    //   password: "testing",
-    //   phoneNumber: "0821232323",
-    // })
-    // console.log(coba);
     res.status(200).json(barbers);
   } catch (err) {
   
@@ -66,6 +59,9 @@ const deleteBarber = async (req, res) => {
       where: { id: id },
     });
     if (result) {
+      await Vote.destroy({
+        where: {barberId: id}
+      })
       await Order.destroy({
         where:{barberId:id}
       })
@@ -78,6 +74,7 @@ const deleteBarber = async (req, res) => {
       res.status(500).json(new Error('error'));
     }
   } catch (err) {
+    console.log('delete barber error -----', err)
     res.status(500).json(err);
   }
 };
@@ -123,7 +120,7 @@ const barberLogin = async (req, res) => {
     });
 
     if (!result) {
-      throw new Error ('no result');
+      throw { message: "Invalid email/password" };
     } else {
     }
     if (!compareHash(password, result.password)) {
@@ -141,7 +138,6 @@ const barberLogin = async (req, res) => {
       access_token: token,
     });
   } catch (err) {
-
     if(err.message === 'invalid password'){
       res.status(401).json(err.message)
     } else if (err.message === 'no result'){
@@ -155,7 +151,6 @@ const barberLogin = async (req, res) => {
     // }else if (err === ) {
     //     res.status(401).json(err);
     // }
-  
   }
 };
 module.exports = {

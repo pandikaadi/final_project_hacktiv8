@@ -8,8 +8,7 @@ const authentication = async (req, res, next) => {
     const payload = verifyToken(access_token);
     if (process.env.NODE_ENV === 'test' && payload) {
       req.currentUser = {
-        id: payload.id,
-        userMonggoId: payload.userMonggoId || null,
+        userMonggoId: payload.id,
         role: payload.role,
         username: payload.username,
         email: payload.email,
@@ -22,8 +21,7 @@ const authentication = async (req, res, next) => {
           url: `http://localhost:4002/users/${payload.id}`,
         });
         req.currentUser = {
-          id: user.data.id,
-          userMonggoId: payload.userMonggoId || null,
+          userMonggoId: user.id,
           role: user.data.role,
           username: user.data.username,
           email: user.data.email,

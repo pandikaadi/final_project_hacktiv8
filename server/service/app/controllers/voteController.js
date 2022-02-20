@@ -1,14 +1,16 @@
 const { Vote } = require("../models");
 
 const upVote = async (req, res) => {
-  const { id } = req.currentUser
-  const { barberId } = req.params
+  const { userMonggoId } = req.currentUser
+  const  barberId = Number(req.params.barberId)
+  const {value} = req.body 
   try {
-    const vote = await Vote.create({ barberId,userId:id });
+    const vote = await Vote.create({ barberId, userMonggoId, value });
     if (vote) {
       res.status(201).json(vote);
     }
   } catch (err) { 
+    console.log(err,'<<<<<< ERRR VOTES');
     res.status(500).json(err);
   }
 };

@@ -21,6 +21,7 @@ app.post("/login", userController.loginUser);
 app.put("/users/:id", userController.updateUser);
 
 app.get("/orders", orderController.getOrders);
+app.get("/dailyOrders", orderController.getOrdersByDate);
 app.post("/orders", orderController.postOrder);
 app.delete("/orders/:id", orderController.deleteOrder);
 
@@ -47,4 +48,4 @@ app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
 
-module.exports = app;
+// module.exports = app;
