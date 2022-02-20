@@ -67,6 +67,7 @@ const postOrder = async (req, res) => {
         access_token: token,
       },
     });
+    console.log(orders, "order");
     if (orders) {
       const { data: location } = await axios({
         method: "PUT",

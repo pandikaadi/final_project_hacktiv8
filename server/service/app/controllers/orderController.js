@@ -5,7 +5,8 @@ const sendMailOrder = require("../helpers/nodemailerOrder");
 const postOrder = async (req, res) => {
   console.log(`sadadas`);
   const userId = req.currentUser.id;
-  const { barberId, date, hour, serviceId, city, price, address, lat, long } = req.body;
+  const { barberId, date, hour, serviceId, city, price, address, lat, long } =
+    req.body;
 
   try {
     const orderKey = `${barberId}-${userId}-${new Date()
@@ -19,7 +20,7 @@ const postOrder = async (req, res) => {
       isProduction: false,
       serverKey: "SB-Mid-server-0f3s9hGBklmiZm7cVhZ9KBZO",
     });
-    console.log(req.body, `>>>>>>>`);
+    // console.log(req.body, `>>>>>>>`);
     let parameter = {
       transaction_details: {
         order_id: orderKey,
@@ -63,6 +64,7 @@ const postOrder = async (req, res) => {
       }
     }
   } catch (err) {
+    console.log(err);
     if (err.name === "SequelizeForeignKeyConstraintError") {
       res.status(400).json({ message: "bad request" });
     } else if (err.errors) {
@@ -96,7 +98,7 @@ const getOrdersByUserId = async (req, res) => {
       res.status(200).json(orders);
     }
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     res.status(500).json(err);
   }
 };
