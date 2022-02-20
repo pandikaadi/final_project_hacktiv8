@@ -66,6 +66,22 @@ const loginBarber = async (req, res) => {
   }
 };
 
+const updateLocationBarber = async (req, res) => {
+  try {
+    const { data: message } = await axios({
+      headers: {access_token: req.headers.access_token},
+      method: "PATCH",
+      url: "http://localhost:4001/barbers/location",
+      data: req.body,
+    });
+    if (message) {
+      res.status(200).json(req.body);
+    }
+  } catch (err) {
+    res.status(500).json(err.message);
+  }
+};
+
 const deleteBarber = async (req, res) => {
   const { id } = req.params;
   try {
@@ -84,5 +100,6 @@ module.exports = {
   getBarberById,
   postBarber,
   loginBarber,
+  updateLocationBarber,
   deleteBarber,
 };

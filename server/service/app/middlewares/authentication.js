@@ -6,7 +6,6 @@ const authentication = async (req, res, next) => {
   try {
     const { access_token } = req.headers;
     const payload = verifyToken(access_token);
-    console.log(payload,'ini payload');
     if (payload.role === "Customer") {
       const user = await axios({
         method: "GET",
@@ -34,6 +33,8 @@ const authentication = async (req, res, next) => {
       };
 
       if (access_token && barber) {
+        console.log(`authorized yhaaaaaaaaaaaaaaaaaaaa`);
+        console.log(req.currentBarber, `>>>>>>>>>>>>`);
         next();
       } else {
         res.status(401).json({ message: "Unauthorized" });

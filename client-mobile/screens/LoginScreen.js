@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Alert, Image, Keyboard, KeyboardAvoidingView, Text, TextInput, TouchableWithoutFeedback, Pressable, View, ScrollView, Button, StyleSheet, StatusBar } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios'
@@ -11,7 +11,7 @@ export default function LoginScreen({ navigation }) {
   const baseUrl = `http://localhost:4000`
   const onLoginPress = async () => {
     try {
-      const response = await axios.post(`https://23ca-110-138-83-92.ngrok.io/barbers/login`, {
+      const response = await axios.post(`http://8038-123-253-232-109.ngrok.io/barbers/login`, {
         email,
         password
       })
@@ -27,17 +27,27 @@ export default function LoginScreen({ navigation }) {
   }
 
   const tokenlogin = async () => {
-    const value = await AsyncStorage.getItem('token')
-    console.log(value)
-    if (value !== null) {
-      navigation.navigate("Dashboard")
-      console.log('masuké')
-    } else {
-      console.log('tidak masuk')
+    try {
+      const value = await AsyncStorage.getItem('token')
+      if (value !== null) {
+        setToken(value)
+        navigation.navigate("Dashboard")
+        console.log('masuké')
+      } else {
+        console.log('tidak masuk')
+      }
+      
+    } catch (error) {
+      console.log(error);
     }
   }
+  useEffect(async() => {
+    await tokenlogin()
+  }, [])
 
-  tokenlogin()
+  
+
+  
 
   return (
     <ScrollView >
