@@ -14,6 +14,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+console.log("app");
+
 app.get("/users", userController.getUsers);
 app.get("/users/:id", userController.getUserById);
 app.post("/users", userController.postUser);
@@ -41,8 +43,8 @@ app.delete("/services/:id", serviceController.deleteService);
 
 app.post("/coordinates", coordinateController.translateCoordinate);
 
-app.get("/votes/:barberId", voteController.getVotes)
-app.post("/votes/:barberId", voteController.postVote )
+app.get("/votes/:barberId", voteController.getVotes);
+app.post("/votes/:barberId", voteController.postVote);
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
