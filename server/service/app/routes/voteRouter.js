@@ -7,7 +7,7 @@ const authentication = require('../middlewares/authentication')
 voteRouter.get("/:barberId", voteController.getVotes)
 
 voteRouter.use(authentication)
-voteRouter.post("/:barberId",voteController.upVote )
+voteRouter.post("/",voteController.upVote )
 
 
 module.exports = voteRouter;

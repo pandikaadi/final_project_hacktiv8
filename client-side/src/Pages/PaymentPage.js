@@ -9,12 +9,11 @@ import {
   Marker,
   Popup,
 } from "react-leaflet";
-import { showTheDetail } from "../store/actionCreators/actionCreator";
+import { GetOrders, showTheDetail } from "../store/actionCreators/actionCreator";
 import Bounce from "react-reveal/Bounce";
 import { renderToStaticMarkup } from "react-dom/server";
 import { divIcon } from "leaflet";
 import proj4 from "proj4";
-
 function PaymentPage() {
   proj4.defs(
     "EPSG:32748",
@@ -22,18 +21,41 @@ function PaymentPage() {
   );
   const firstProjection = new proj4.Proj("WGS84");
   const secondProjection = new proj4.Proj("EPSG:32748");
+  const { userOrder } = useSelector((state) => state.data);
+  ;
 
   const dispatch = useDispatch();
   const [distance, setDistance] = useState(null);
   const { showDetail } = useSelector((state) => state.client);
   const [centerLat, setCenterLat] = useState(-6.940116143023617);
   const [centerLong, setCenterLong] = useState(107.5605011029984);
+  const [position, setPosition] = useState({
+    lat: -6.9421162,
+    lng: 107.560501,
+  });
   const [barberPosition, setBarberPosition] = useState({
-    lat: centerLat,
-    lng: centerLong,
+    lat: -6.940116,
+    lng: 107.56084,
   });
   useEffect(() => {
-    if (position) {
+    dispatch(GetOrders(localStorage.getItem("access_token")))
+  }, [])
+  useEffect(() => {
+    if(userOrder.orders) {
+      console.log(userOrder.orders[userOrder.orders.length - 1], ">>>")
+      if(userOrder.orders.length > 0) {
+        setPosition({
+          lat: +userOrder.orders[userOrder.orders.length - 1].lat,
+          lng: +userOrder.orders[userOrder.orders.length - 1].long
+        })
+        
+      }
+    }
+  }, [userOrder.orders])
+  useEffect(() => {
+    ;
+    // 
+    if (position.lat && position.lng) {
       let utmCust = proj4(firstProjection, secondProjection, [
         position.lng,
         position.lat,
@@ -49,11 +71,8 @@ function PaymentPage() {
 
       setDistance((distance / 1000).toFixed(1));
     }
-  }, []);
-  const [position, setPosition] = useState({
-    lat: -6.9421162,
-    lng: centerLong,
-  });
+  }, [position]);
+  
   const iconMarkupBarber = renderToStaticMarkup(
     // <i class="fa-solid text-rose-600 fa-motorcycle fa-4x"></i>
     <i class="fa-solid text-rose-600 fa-location-pin fa-4x"></i>
@@ -70,7 +89,7 @@ function PaymentPage() {
   function LocationMarker() {
     return barberPosition === null ? null : (
       <Marker icon={customMarkerIcon} position={position}>
-        <Popup>Barber Name</Popup>
+        <Popup>You</Popup>
       </Marker>
     );
   }

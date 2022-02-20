@@ -20,11 +20,11 @@ const postOrder = async (req, res) => {
       isProduction: false,
       serverKey: "SB-Mid-server-0f3s9hGBklmiZm7cVhZ9KBZO",
     });
-    // console.log(req.body, `>>>>>>>`);
+    console.log(price, `>>>>>>>`);
     let parameter = {
       transaction_details: {
         order_id: orderKey,
-        gross_amount: price,
+        gross_amount: +price,
       },
       customer_details: {
         email: req.currentUser.email,
@@ -213,6 +213,7 @@ const updateStatus = async (req, res) => {
 };
 
 const paymentHandler = async (req, res) => {
+  console.log(`>>>>>>>MASUK PAYMENTHANDLER`);
   try {
     if (
       req.body.transaction_status == "settlement" ||

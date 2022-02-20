@@ -24,6 +24,7 @@ import {
   showRatingForm,
 } from "../store/actionCreators/actionCreator";
 import RatingModal from "../Components/RatingModal";
+import { toast } from "react-toastify";
 
 const iconMarkup = renderToStaticMarkup(
   <i className="fa-solid fa-map-pin fa-4x"></i>
@@ -37,7 +38,6 @@ const iconMarkupBarber = renderToStaticMarkup(
 const customMarkerIconBarber = divIcon({
   html: iconMarkupBarber,
 });
-
 function BookForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -73,28 +73,41 @@ function BookForm() {
   console.log(bookedHour, `>>>BOOKED HOUR`);
   function handleNewOrder(e) {
     e.preventDefault();
-    const payload = {
-      date: new Date(form.date),
-      hour: form.hour,
-      address: form.address,
-      price: price,
-      lat: +position.lat,
-      long: +position.lng,
-      serviceId: service,
-      barberId: barber,
-      city: location
-    };
-    dispatch(postNewOrder(payload))
-      .then((data) => {
-        dispatch(hasOrder(true));
-        dispatch(isServiceSelected(false));
-        dispatch(showRatingForm(true));
-        console.log("sebelum navigate ke home");
-        navigate("/home");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    console.log(form.hour);
+    console.log(position);
+    if(price && form.hour) {
+      
+      const payload = {
+        date: new Date(form.date),
+        hour: form.hour,
+        address: form.address,
+        price: price,
+        lat: +position.lat,
+        long: +position.lng,
+        serviceId: service,
+        barberId: barber,
+        city: location
+      };
+      console.log(payload);
+      dispatch(postNewOrder(payload))
+        .then((data) => {
+          dispatch(hasOrder(true));
+          dispatch(isServiceSelected(false));
+          dispatch(showRatingForm(true));
+          console.log("sebelum navigate ke home");
+          navigate("/home");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      if(!price) {
+        toast.error("You must pick your place on the map")
+
+      } else {
+        toast.error("Select a schedule")
+      }
+    }
   }
 
   function priceFormatter(price) {
@@ -249,6 +262,7 @@ function BookForm() {
 
             <div className="flex justify-center mb-2">
               <input
+                min={new Date().toISOString().split('T')[0]}
                 onChange={formHandler}
                 required
                 value={form.date}
@@ -262,14 +276,16 @@ function BookForm() {
                 defaultValue={"DEFAULT"}
                 onChange={formHandler}
                 required
+                defaultValue={"disable"}
                 name="hour"
                 className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
               >
-                <option disabled = {bookedHour["08.00 - 10.00"] ? true : false} value="08.00 - 10.00">08.00 - 10.00</option>
-                <option disabled = {bookedHour["10.00 - 12.00"] ? true : false} value="10.00 - 12.00">10.00 - 12.00</option>
-                <option disabled = {bookedHour["13.00 - 15.00"] ? true : false} value="13.00 - 15.00">13.00 - 15.00</option>
-                <option disabled = {bookedHour["15.00 - 17.00"] ? true : false} value="15.00 - 17.00">15.00 - 17.00</option>
-                <option  disabled = {bookedHour["17.00 - 19.00"] ? true : false} value="17.00 - 19.00">17.00 - 19.00</option>
+                <option  value="disable" disabled> -- SELECT SCHEDULE -- {bookedHour["08.00 - 10.00"] ? " -- booked --" : null}</option>
+                <option disabled = {bookedHour["08.00 - 10.00"] ? true : false} value="08.00 - 10.00">08.00 - 10.00 {bookedHour["08.00 - 10.00"] ? " -- booked --" : null}</option>
+                <option disabled = {bookedHour["10.00 - 12.00"] ? true : false} value="10.00 - 12.00">10.00 - 12.00 {bookedHour["10.00 - 12.00"] ? " -- booked --" : null}</option>
+                <option disabled = {bookedHour["13.00 - 15.00"] ? true : false} value="13.00 - 15.00">13.00 - 15.00 {bookedHour["13.00 - 15.00"] ? " -- booked --" : null}</option>
+                <option disabled = {bookedHour["15.00 - 17.00"] ? true : false} value="15.00 - 17.00">15.00 - 17.00 {bookedHour["15.00 - 17.00"] ? " -- booked --" : null}</option>
+                <option  disabled = {bookedHour["17.00 - 19.00"] ? true : false} value="17.00 - 19.00">17.00 - 19.00 {bookedHour["17.00 - 19.00"] ? " -- booked --" : null}</option>
               </select>
             </div>
             <div className="flex justify-center">

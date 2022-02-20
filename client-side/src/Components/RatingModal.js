@@ -27,13 +27,13 @@ function RatingModal() {
     } else {
       const payload = {
         star: star,
-        barberId: userOrder.orders[userOrder.orders.length - 1].Barber.id,
+        orderData: userOrder.orders[userOrder.orders.length - 1],
       };
       dispatch(PostVote(payload));
     }
   };
-
   const { hasOrder } = useSelector((state) => state.client);
+  console.log(hasOrder);
 
   useEffect(() => {
     dispatch(GetOrders(localStorage.getItem("access_token")));
@@ -43,7 +43,7 @@ function RatingModal() {
     <>
       <div className="bg-black bg-opacity-50 absolute inset-0 flex justify-center items-center">
         <div className="bg-gray-200 max-w-sm py-4 px-3 rounded shadow-xl">
-          {hasOrder && (
+          
             <div className="flex justify-center m-2">
               <div className="flex flex-col space-y-2">
                 <h3 className="text-xl font-medium text-gray-900 dark:text-white">
@@ -81,7 +81,7 @@ function RatingModal() {
                 </div>
               </div>
             </div>
-          )}
+          
         </div>
       </div>
     </>
