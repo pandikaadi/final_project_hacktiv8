@@ -35,11 +35,11 @@ function ChooseBarber() {
   return (
     <>
       <div className="flex justify-center">
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col w-11/12">
           {filteredBarbers.map((x) => (
             <div
               key={x.id}
-              className="mb-4 bg-no-repeat bg-cover h-48"
+              className="mb-4 bg-no-repeat bg-cover h-48 rounded"
               style={{
                 backgroundImage: `url('https://images.unsplash.com/photo-1543965170-4c01a586684e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1149&q=80')`,
               }}
