@@ -48,14 +48,15 @@ export const GetBarberData = (payload) => {
 
 export const PostVote = (payload) => {
   return (dispatch) => {
-    axios({
+    console.log(payload);
+    return axios({
       method: "POST",
-      url: `${baseUrl}/votes/${payload.barberId}`,
-      data: payload.star,
+      url: `${baseUrl}/votes`,
+      data: payload,
       headers: { access_token: localStorage.getItem("access_token") },
     })
       .then((res) => {
-        console.log(res.data);
+        dispatch(GetOrders(localStorage.getItem("access_token")))
       })
       .catch((err) => {
         console.log(err);

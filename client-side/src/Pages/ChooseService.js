@@ -17,6 +17,11 @@ function CardForm() {
   const { isService, hasOrder, loading, error } = useSelector(
     (state) => state.client
   );
+  console.log(hasOrder);
+  if(userOrder.orders) {
+    console.log(userOrder.orders[userOrder.orders.length - 1].statusBarber);
+
+  }
 
   function handleSelector(e) {
     dispatch(setLocation(e.target.value));
@@ -24,12 +29,14 @@ function CardForm() {
   }
 
   function handleShowDetailOrder() {
-    if (
-      userOrder.orders[userOrder.orders.length - 1].statusBarber !==
+    if ( userOrder.orders.length !== 0) {
+      if(userOrder.orders[userOrder.orders.length - 1].statusBarber !==
         "Finished" &&
-      userOrder.orders[userOrder.orders.length - 1].statusBarber !== "Voted"
-    ) {
-      navigate("/payment");
+      userOrder.orders[userOrder.orders.length - 1].statusBarber !== "Voted") {
+        navigate("/payment");
+      } else {
+        toast.error("No order is available");
+      }
     } else {
       toast.error("No order is available");
     }
@@ -140,9 +147,9 @@ function CardForm() {
             </button>
           </div>
         </div>
-        {!isService && <FormCard isLocated={selector} />}
+        {!isService && (userOrder.orders.length === 0 || userOrder.orders[userOrder.orders.length - 1].statusBarber === "Voted") && <FormCard isLocated={selector} />}
         {isService && <ChooseBarber />}
-        {hasOrder && <RatingModal />}
+        {userOrder.orders[userOrder.orders.length - 1].statusBarber === "Finished" && <RatingModal />}
       </div>
     </>
   );

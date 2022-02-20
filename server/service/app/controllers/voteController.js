@@ -1,14 +1,25 @@
-const { Vote } = require("../models");
+const { Vote, Order, sequelize } = require("../models");
 
 const upVote = async (req, res) => {
-  const { id } = req.currentUser
-  const { barberId } = req.params
+  // const { id } = req.currentUser
+  // const { barberId } = req.params
+  const {orderData, star } = req.body
+  const t = await sequelize.transaction();
   try {
-    const vote = await Vote.create({ barberId,userId:id });
-    if (vote) {
-      res.status(201).json(vote);
+    const vote = await Vote.create({ barberId: orderData.barberId, userId:req.currentUser.userMonggoId, value: star }, {transaction: t});
+    if(vote) {
+      const updateStatOrder = await Order.update({statusBarber: "Voted"}, {where: {
+        id: orderData.id
+      }}, {transaction: t})
+
+      if(updateStatOrder) {
+        res.status(201).json({updateStatOrder, vote})
+      }
+
     }
   } catch (err) { 
+    console.log(err);
+    await t.rollback();
     res.status(500).json(err);
   }
 };

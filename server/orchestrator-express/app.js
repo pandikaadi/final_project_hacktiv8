@@ -44,7 +44,7 @@ app.delete("/services/:id", serviceController.deleteService);
 app.post("/coordinates", coordinateController.translateCoordinate);
 
 app.get("/votes/:barberId", voteController.getVotes);
-app.post("/votes/:barberId", voteController.postVote);
+app.post("/votes/", voteController.postVote);
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
