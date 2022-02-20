@@ -9,7 +9,7 @@ import { GetAllService } from "../store/actionCreators/actionCreator";
 function FormCard({ isLocated }) {
   const dispatch = useDispatch();
   const { serviceDatas } = useSelector((state) => state.data);
-  
+
   function toNavigate(value) {
     if (value && isLocated) {
       dispatch(setService(value));
@@ -18,17 +18,17 @@ function FormCard({ isLocated }) {
   }
 
   useEffect(() => {
-    dispatch(GetAllService());
+    dispatch(GetAllService(localStorage.getItem("access_token")));
   }, [dispatch]);
 
   return (
     <>
       <div className="flex justify-center">
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col w-11/12">
           {serviceDatas.map((x) => (
             <div
               key={x.id}
-              className="mb-4 bg-no-repeat bg-cover h-48"
+              className="mb-4 bg-no-repeat bg-cover h-48 rounded-md"
               style={{ backgroundImage: `url(${x.image})` }}
               onClick={() => toNavigate(x)}
             >

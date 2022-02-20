@@ -13,15 +13,8 @@ function CardForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [selector, setSelector] = useState(false);
-  const { showRating, userOrder } = useSelector((state) => state.data);
-  const { isService, hasOrder, loading, error } = useSelector(
-    (state) => state.client
-  );
-  console.log(hasOrder);
-  if(userOrder.orders) {
-    console.log(userOrder.orders[userOrder.orders.length - 1].statusBarber);
-
-  }
+  const { userOrder } = useSelector((state) => state.data);
+  const { isService, loading, error } = useSelector((state) => state.client);
 
   function handleSelector(e) {
     dispatch(setLocation(e.target.value));
@@ -29,10 +22,12 @@ function CardForm() {
   }
 
   function handleShowDetailOrder() {
-    if ( userOrder.orders.length !== 0) {
-      if(userOrder.orders[userOrder.orders.length - 1].statusBarber !==
-        "Finished" &&
-      userOrder.orders[userOrder.orders.length - 1].statusBarber !== "Voted") {
+    if (userOrder.orders.length !== 0) {
+      if (
+        userOrder.orders[userOrder.orders.length - 1].statusBarber !==
+          "Finished" &&
+        userOrder.orders[userOrder.orders.length - 1].statusBarber !== "Voted"
+      ) {
         navigate("/payment");
       } else {
         toast.error("No order is available");
@@ -122,7 +117,7 @@ function CardForm() {
           )}
         </div>
 
-        <div className="mx-4 mt-4 flex justify-center flex-row mb-4">
+        <div className="mx-4 mt-4 flex justify-between flex-row mb-4">
           <div className="mr-2 flex flex-col mt-2 border-2 w-fit px-2 py-1 rounded">
             <button className="bg-transparent font-semibold border-1 border-white text-white text-xs">
               DISCOUNTS
@@ -147,9 +142,13 @@ function CardForm() {
             </button>
           </div>
         </div>
-        {!isService && (userOrder.orders.length === 0 || userOrder.orders[userOrder.orders.length - 1].statusBarber === "Voted") && <FormCard isLocated={selector} />}
+        {!isService &&
+          (userOrder.orders.length === 0 ||
+            userOrder.orders[userOrder.orders.length - 1].statusBarber ===
+              "Voted") && <FormCard isLocated={selector} />}
         {isService && <ChooseBarber />}
-        {userOrder.orders[userOrder.orders.length - 1].statusBarber === "Finished" && <RatingModal />}
+        {userOrder.orders[userOrder.orders.length - 1].statusBarber ===
+          "Finished" && <RatingModal />}
       </div>
     </>
   );
