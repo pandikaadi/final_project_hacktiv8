@@ -9,7 +9,7 @@ import { GetAllService } from "../store/actionCreators/actionCreator";
 function FormCard({ isLocated }) {
   const dispatch = useDispatch();
   const { serviceDatas } = useSelector((state) => state.data);
-
+  
   function toNavigate(value) {
     if (value && isLocated) {
       dispatch(setService(value));
@@ -30,7 +30,7 @@ function FormCard({ isLocated }) {
               key={x.id}
               className="mb-4 bg-no-repeat bg-cover h-48"
               style={{ backgroundImage: `url(${x.image})` }}
-              onClick={() => toNavigate(x.id)}
+              onClick={() => toNavigate(x)}
             >
               <div className="flex justify-center mt-20">
                 <p className="text-white text-2xl font-semibold">{x.name}</p>

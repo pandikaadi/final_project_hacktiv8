@@ -63,6 +63,45 @@ export const GetOrders = (payload) => {
       });
   };
 };
+export const cancelOrder = (payload) => {
+  console.log(payload);
+  return (dispatch) => {
+    return axios({
+      method: "DELETE",
+      url: `${baseUrl}/orders/${payload}`,
+      headers: { access_token: localStorage.access_token },
+    })
+      .catch((err) => {
+        dispatch(setError(err));
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
+      });
+  };
+};
+
+export const getTodayBooks = (payload) => {
+  return (dispatch) => {
+    return axios({
+      method: "GET",
+      url: `${baseUrl}/dailyOrders`,
+      headers: {
+        "Content-Type": "application/json",
+        access_token: localStorage.access_token
+      },
+      params: payload,
+    })
+      .then((res) => {
+        return res.data.orders
+      })
+      .catch((err) => {
+        dispatch(setError(err));
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
+      });
+  };
+};
 
 export const setService = (payload) => {
   return {

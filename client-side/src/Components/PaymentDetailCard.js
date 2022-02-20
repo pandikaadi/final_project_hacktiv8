@@ -3,22 +3,31 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Bounce from "react-reveal/Bounce";
 import {
+  cancelOrder,
   GetOrders,
   showTheDetail,
 } from "../store/actionCreators/actionCreator";
 import { formatDate, currency } from "../helper/helper";
 import image from "../assets/image3.png";
-
 function PaymentDetailCard() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { userOrder } = useSelector((state) => state.data);
   const { loading, error } = useSelector((state) => state.client);
 
-  console.log(userOrder);
   const backHome = () => {
     navigate("/home");
   };
+  console.log(userOrder.orders);
+  function handleCancelOrder(){
+    dispatch(cancelOrder(userOrder.orders[userOrder.orders.length - 1].id))
+    .then(() => {
+      navigate("/home")
+    })
+    .catch((err) => {
+      console.log(err, `>>>>`);
+    })
+  }
 
   useEffect(() => {
     dispatch(GetOrders(localStorage.getItem("access_token")));
@@ -70,28 +79,28 @@ function PaymentDetailCard() {
           <div className="space-y-2">
             <p>
               <span className="font-semibold">Service: </span>
-              {userOrder.orders[0].Service.name}
+              {userOrder.orders[userOrder.orders.length - 1].Service.name}
             </p>
             <p>
               <span className="font-semibold">Date: </span>
-              {formatDate(userOrder.orders[0].date)}
+              {formatDate(userOrder.orders[userOrder.orders.length - 1].date)}
             </p>
             <p>
               <span className="font-semibold">Time: </span>
-              {userOrder.orders[0].hour}
+              {userOrder.orders[userOrder.orders.length - 1].hour}
             </p>
             <p>
               <span className="font-semibold">Payment Status: </span>
-              {!userOrder.orders[0].statusPayment && <span>Not paid</span>}
-              {userOrder.orders[0].statusPayment && <span>Paid</span>}
+              {!userOrder.orders[userOrder.orders.length - 1].statusPayment && <span>Not paid</span>}
+              {userOrder.orders[userOrder.orders.length - 1].statusPayment && <span>Paid</span>}
             </p>
             <p>
               <span className="font-semibold">Status Order: </span>
-              {userOrder.orders[0].statusBarber}
+              {userOrder.orders[userOrder.orders.length - 1].statusBarber}
             </p>
             <p>
               <span className="font-semibold">Price: </span>
-              {currency(userOrder.orders[0].price)}
+              {currency(userOrder.orders[userOrder.orders.length - 1].price)}
             </p>
             <img src={image} alt="icon" />
             <div className="flex justify-center">
@@ -106,15 +115,22 @@ function PaymentDetailCard() {
               </button>
             </div>
             <div className="flex justify-center pt-2 space-x-2">
-              <a
-                href={userOrder.orders[0].paymentUrl}
-                className="pb-2 rounded bg-slate-300 hover:bg-slate-200 shadow-lg shadow-slate-500/50 px-4 pt-2 text-xs font-semibold"
-              >
-                Pay Order
-              </a>
-              <button className="pb-2 rounded bg-red-400 hover:bg-red-300 shadow-lg shadow-red-700/50 px-2 pt-2 text-xs text-white font-semibold">
+              { !loading && userOrder.orders[userOrder.orders.length - 1].statusPayment === false ?
+                <a
+                  href={userOrder.orders[userOrder.orders.length - 1].paymentUrl}
+                  className="pb-2 rounded bg-slate-300 hover:bg-slate-200 shadow-lg shadow-slate-500/50 px-4 pt-2 text-xs font-semibold"
+                >
+                  Pay Order
+                </a> : null
+
+              }
+              { !loading && userOrder.orders[userOrder.orders.length - 1].statusPayment === false ?
+                <button onClick={handleCancelOrder} className="pb-2 rounded bg-red-400 hover:bg-red-300 shadow-lg shadow-red-700/50 px-2 pt-2 text-xs text-white font-semibold">
                 Cancel Order
-              </button>
+              </button> : null
+
+              }
+              
             </div>
           </div>
         </div>

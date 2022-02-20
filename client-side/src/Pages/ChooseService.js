@@ -24,9 +24,8 @@ function CardForm() {
   }
   function handleShowRating() {
     if (
-      userOrder.orders[userOrder.orders.length - 1].statusBarber ===
-        "Pending" &&
-      userOrder.orders[userOrder.orders.length - 1].statusPayment === false
+      userOrder.orders[userOrder.orders.length-1].statusBarber !== "Finished" &&
+      userOrder.orders[userOrder.orders.length-1].statusBarber !== "Voted"
     ) {
       navigate("/payment");
     } else {

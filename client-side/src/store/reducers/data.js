@@ -12,6 +12,7 @@ import {
 const initialState = {
   location: "",
   service: 0,
+  servicePrice: null,
   barber: 0,
   showRating: false,
   rating: 0,
@@ -29,7 +30,8 @@ function dataReducer(state = initialState, action) {
   } else if (action.type === SET_SERVICE) {
     return {
       ...state,
-      service: action.payload,
+      service: action.payload.id,
+      servicePrice: action.payload.price
     };
   } else if (action.type === SET_BARBER) {
     return {
