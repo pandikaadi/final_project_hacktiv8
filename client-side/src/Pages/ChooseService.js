@@ -5,9 +5,9 @@ import { setLocation } from "../store/actionCreators/actionCreator";
 import FormCard from "../Components/FormCard";
 import ChooseBarber from "../Components/BarberCard";
 import RatingModal from "../Components/RatingModal";
-import { showRatingForm } from "../store/actionCreators/actionCreator";
 import { toast } from "react-toastify";
 import { GetOrders } from "../store/actionCreators/actionCreator";
+import BottomNav from "../Components/BottomNav";
 
 function CardForm() {
   const dispatch = useDispatch();
@@ -15,6 +15,8 @@ function CardForm() {
   const [selector, setSelector] = useState(false);
   const { userOrder } = useSelector((state) => state.data);
   const { isService, loading, error } = useSelector((state) => state.client);
+
+  console.log(isService);
 
   function handleSelector(e) {
     dispatch(setLocation(e.target.value));
@@ -35,11 +37,6 @@ function CardForm() {
     } else {
       toast.error("No order is available");
     }
-  }
-
-  function logoutHandler() {
-    localStorage.clear();
-    navigate("/");
   }
 
   useEffect(() => {
@@ -67,75 +64,54 @@ function CardForm() {
 
   return (
     <>
-      <div className="flex bg-zinc-800 w-full min-h-screen flex-col">
-        <div className="mx-4 mt-4">
-          <div className="flex flex-row justify-between">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="mt-4 mb-4 h-12 w-12 stroke-white"
-              onClick={() => navigate("/home")}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z"
-              />
-            </svg>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="mt-4 mb-4 h-11 w-11 stroke-white"
-              onClick={logoutHandler}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-              />
-            </svg>
-          </div>
-          <p className="text-white text-3xl font-bold tracking-wider">
-            Hello User
-          </p>
-          <p className="text-white">Find your personality now!</p>
-          {!isService && (
-            <select
-              onChange={handleSelector}
-              className="flex font-semibold bg-white mt-4 px-2 pb-1 rounded"
-            >
-              <option>Your Location</option>
-              <option value="1">Jakarta</option>
-              <option value="2">Bandung</option>
-            </select>
-          )}
+      <div className="flex bg-white w-full min-h-screen flex-col">
+        <div className="mx-6 mt-16">
+          <ul className="flex flex-row justify-between">
+            <li>
+              <p className="text-zinc-900 text-3xl font-bold tracking-wider">
+                Hello, User!
+              </p>
+              {!isService && (
+                <p className="text-zinc-900">Find your personality now!</p>
+              )}
+              {isService && (
+                <p className="text-zinc-900">Find your personal hairdresser!</p>
+              )}
+            </li>
+            <li className="pb-4">
+              {!isService && (
+                <select
+                  onChange={handleSelector}
+                  className="flex font-semibold text-white bg-zinc-900 mt-4 px-2 py-1 rounded-lg"
+                >
+                  <option>My Location</option>
+                  <option value="1">Jakarta</option>
+                  <option value="2">Bandung</option>
+                </select>
+              )}
+            </li>
+          </ul>
         </div>
 
         <div className="mx-4 mt-4 flex justify-between flex-row mb-4">
           <div className="mr-2 flex flex-col mt-2 border-2 w-fit px-2 py-1 rounded">
-            <button className="bg-transparent font-semibold border-1 border-white text-white text-xs">
+            <button className="bg-transparent font-semibold border-1 border-zinc-900 text-zinc-900 text-xs">
               DISCOUNTS
             </button>
           </div>
           <div className="mr-2 flex flex-row mt-2 border-2 w-fit px-2 py-1 rounded">
-            <button className="bg-transparent font-semibold border-1 border-white text-white text-xs">
+            <button className="bg-transparent font-semibold border-1 border-zinc-900 text-zinc-900 text-xs">
               MISSIONS
             </button>
           </div>
           <div className="mr-2 flex flex-row mt-2 border-2 w-fit px-2 py-1 rounded">
-            <button className="bg-transparent font-semibold border-1 border-white text-white text-xs">
+            <button className="bg-transparent font-semibold border-1 border-zinc-900 text-zinc-900 text-xs">
               VOUCHERS
             </button>
           </div>
           <div className="flex flex-row mt-2 border-2 w-fit px-2 py-1 rounded">
             <button
-              className="bg-transparent font-semibold border-1 border-white text-white text-xs"
+              className="bg-transparent font-semibold border-1 border-zinc-900 text-zinc-900 text-xs"
               onClick={() => handleShowDetailOrder()}
             >
               MY ORDER
@@ -149,6 +125,7 @@ function CardForm() {
         {isService && <ChooseBarber />}
         {userOrder.orders[userOrder.orders.length - 1].statusBarber ===
           "Finished" && <RatingModal />}
+        <BottomNav />
       </div>
     </>
   );
