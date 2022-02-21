@@ -1,12 +1,18 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Navbar from "../component/Navbar";
 import AdminModal from "../component/AdminModal";
 import BarberModal from "../component/BarberModal";
 import BarChart from "../component/Chart";
+import { fetchBarber } from "../store/actionCreator/actionCreator";
 
 function Home() {
+  const dispatch = useDispatch();
   const { registerBarber, registerAdmin } = useSelector((state) => state.admin);
+
+  useEffect(() => {
+    dispatch(fetchBarber());
+  }, []);
 
   return (
     <>

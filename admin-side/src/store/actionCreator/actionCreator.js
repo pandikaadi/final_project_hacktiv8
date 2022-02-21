@@ -27,6 +27,26 @@ export const postBarber = (payload) => {
   };
 };
 
+export const fetchBarber = (payload) => {
+  return (dispatch) => {
+    fetch("http://localhost:4000/admin/all", {
+      method: "GET",
+    })
+      .then((res) => {
+        return res.json().then((data) => {
+          if (res.ok) {
+            console.log(data);
+          } else {
+            return Promise.reject(data);
+          }
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+};
+
 export const postAdmin = (payload) => {
   return (dispatch) => {
     fetch("http://localhost:4000/users", {
