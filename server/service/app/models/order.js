@@ -70,7 +70,6 @@ module.exports = (sequelize, DataTypes) => {
       beforeCreate(instance,option){
         instance.statusPayment = false
         instance.statusBarber = 'Pending'
-        instance.orderKey = randomString(10, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
         // instance.orderKey = 'orderkey'
       },
     },

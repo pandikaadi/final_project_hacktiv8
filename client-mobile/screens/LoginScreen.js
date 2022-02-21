@@ -9,7 +9,7 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState('')
   const [token, setToken] = useState(null)
   console.log(email, password)
-  const baseUrl = `https://4574-110-138-83-92.ngrok.io`
+  const baseUrl = `https://0c30-123-253-232-109.ngrok.io`
   const onLoginPress = async () => {
     try {
 
@@ -41,7 +41,7 @@ export default function LoginScreen({ navigation }) {
       }
       
     } catch (error) {
-      console.log(error);
+      console.log(error, `>>>>>>>`);
     }
   }
   useEffect(async() => {
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: "75%",
     height: "100%",
-    marginTop: 100
+    marginTop: 150
   },
   logoText: {
   },

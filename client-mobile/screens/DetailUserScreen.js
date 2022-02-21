@@ -8,9 +8,7 @@ export default function DetailUserScreen({ route }) {
   const { orderId } = route.params
   const [order, setOrder] = useState({})
   const [loading, setLoading] = useState(true)
-  console.log(loading)
-  console.log(route.params)
-  const baseUrl = `https://4574-110-138-83-92.ngrok.io`
+  const baseUrl = `https://0c30-123-253-232-109.ngrok.io`
   const getOrderById = async () => {
     console.log(`${baseUrl}/orders/${orderId}`)
     try {

@@ -108,20 +108,25 @@ function PaymentDetailCard() {
               {currency(userOrder.orders[userOrder.orders.length - 1].price)}
             </p>
             <img src={image} alt="icon" />
-            <div className="flex justify-center">
-              <p className="text-sm">
-                {userOrder.orders[userOrder.orders.length - 1].Barber.name} is
-                comming in 2 minutes
-              </p>
-            </div>
-            <div className="flex justify-center">
-              <button
-                onClick={() => dispatch(showTheDetail(false))}
-                className="bg-green-400 hover:bg-green-200 shadow-lg shadow-green-500/50 px-4 py-2 text-white text-sm font-semibold tracking-wider rounded"
-              >
-                SHOW ME THE MAP!
-              </button>
-            </div>
+            {userOrder.orders[userOrder.orders.length - 1].statusBarber ===
+            "OTW" ? (
+              <>
+                <div className="flex justify-center">
+                  <p className="text-sm">
+                    {userOrder.orders[userOrder.orders.length - 1].Barber.name}{" "}
+                    is on the way!
+                  </p>
+                </div>
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => dispatch(showTheDetail(false))}
+                    className="bg-green-400 hover:bg-green-200 shadow-lg shadow-green-500/50 px-4 py-2 text-white text-sm font-semibold tracking-wider rounded"
+                  >
+                    SHOW ME THE MAP!
+                  </button>
+                </div>
+              </>
+            ) : null}
             <div className="flex justify-center pt-2 space-x-2">
               {!loading &&
               userOrder.orders[userOrder.orders.length - 1].statusPayment ===

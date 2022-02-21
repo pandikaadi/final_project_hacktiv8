@@ -1,14 +1,45 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
-import { Button, FlatList, Linking, Dimensions, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
+import { Button, FlatList, TouchableOpacity, Image, Linking, Dimensions, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker'
 import axios from "axios";
 import * as Location from "expo-location";
+import * as TaskManager from 'expo-task-manager';
+const LOCATION_TASK_NAME = 'background-location-task';
 
-const baseUrl = `https://4574-110-138-83-92.ngrok.io`
+const baseUrl = `https://0c30-123-253-232-109.ngrok.io`
+
+const requestPermissions = async () => {
+  console.log('hereee');
+  try {
+    const { status } = await Location.requestBackgroundPermissionsAsync();
+    const { status: statusForeground } =
+      await Location.requestForegroundPermissionsAsync();
+    console.log('here', status, statusForeground);
+    if (status === 'granted' && statusForeground === 'granted') {
+      await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+        accuracy: Location.Accuracy.Balanced,
+        // distanceInterval: 1, // minimum change (in meters) betweens updates
+        distanceInterval: 0,
+        timeInterval: 20000, // minimum interval (in milliseconds) between updates
+        // foregroundService is how you get the task to be updated as often as would be if the app was open
+        foregroundService: {
+          notificationTitle: 'Using your location',
+          notificationBody:
+            'To turn off, go back to the app and switch something off.',
+        },
+      });
+    }
+  } catch (error) {
+    console.log(error, '<-=-=-=-=-=');
+  }
+};
+
+
 
 export default function DashboardScreen({ navigation }) {
-
+  // const route = useRoute()
+  
 
   const [date, setDate] = useState(new Date())
   const [mode, setMode] = useState('date')
@@ -69,7 +100,6 @@ export default function DashboardScreen({ navigation }) {
           access_token: token
         }
       })
-      console.log(responseVotes.data, 'dari axios')
       setVotes(responseVotes.data)
       setOrders(response.data)
       setLoading(false)
@@ -89,56 +119,66 @@ export default function DashboardScreen({ navigation }) {
       }
 
     } catch (error) {
-      console.log(error);
+      console.log(error, `>>>>>>`);
     }
   }
   useEffect(async () => {
-    if (isMounted) {
-      const intervalId = setInterval(() => {  //assign interval to a variable to clear it.
-        (async () => {
-          try {
-            await tokenlogin()
-            // console.log(token, `<<<< ini tokenys`);
-            if (token) {
-              let { status } = await Location.requestForegroundPermissionsAsync();
-              if (status !== "granted") {
-                setErrorMsg("Permission to access location was denied");
-                return;
-              }
-
-              let getLocation = await Location.getCurrentPositionAsync({});
-              setLocation({
-                lat: getLocation.coords.latitude,
-                long: getLocation.coords.longitude,
-              });
-              const response = await axios({
-                url: `${baseUrl}/barbers/location`,
-                method: "PATCH",
-                headers: { access_token: token },
-                data: {
-                  lat: getLocation.coords.latitude,
-                  long: getLocation.coords.longitude,
-                },
-              });
-            }
-          } catch (error) {
-            console.log(`kalo error`);
-            console.log(error);
-          }
-        })();
-      }, 90000)
-
-      return () => clearInterval(intervalId);
-    }
+    requestPermissions()
   }, [token]);
 
+  function priceFormatter(price) {
+    let formattedPrice = price.toString().split("");
+
+    for (
+      let i = (formattedPrice.length % 3) - 1;
+      i < formattedPrice.length;
+      i += 3
+    ) {
+      if (i !== formattedPrice.length - 1) formattedPrice[i] += `.`;
+    }
+
+    return `Rp. ${formattedPrice.join("")}`;
+  }
+  console.log(ordersByDate[0]);
+
   useEffect(() => {
+    console.log(`useEffect mounted`);
     setIsMounted(true)
     getOrders()
       .then(() => {
         setOrdersByDate(orders)
       })
   }, [])
+  const list = ({ item }) => {
+    return (
+      <View style={[styles.cardDashboard, {Width: 340}]} key={item.id}>
+        <View style={{flexDirection:"row", paddingHorizontal: 20, marginBottom: 5}}>
+        <Text style={{ color: "white", flex: 1 }}>Schedule        : </Text>
+        <Text style={{ color: "white", flex: 1, textAlign:"center" }}>{item.hour}</Text>
+        </View>
+        <View style={{flexDirection:"row", paddingHorizontal: 20, marginBottom: 5}}>
+        <Text style={{ color: "white", flex: 1, textAlign: "justify" }}>Price               : </Text>
+        <Text style={{ color: "white", flex: 1, textAlign:"center" }}>{priceFormatter(item.price)}</Text>
+        </View>
+        <View style={{flexDirection:"row", paddingHorizontal: 20, marginBottom: 5}}>
+        <Text style={{ color: "white", flex: 1 }}>Service           : </Text>
+        <View style={{flex: 1, textAlign:"center"}}>
+          <Text style={{ color: "white"}}>{item.Service.name}</Text>
+        </View>
+        </View>
+        <TouchableOpacity onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${item.lat}%2C${item.long}`)}>
+          <Text style={{color: "#282c34", backgroundColor:"white", width:150, marginTop: 5, fontWeight:"bold", borderRadius:10, paddingHorizontal: 30, borderWidth: 2, borderColor:"black", textAlignVertical:"center",textAlign:"center", padding: 5}}>NAVIGATE</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => toDetail(item.id)}>
+          <Text style={{color: "#282c34", backgroundColor:"white" , width:150, marginTop: 10, fontWeight:"bold", borderRadius:10, paddingHorizontal: 30, borderWidth: 2, borderColor:"white", textAlignVertical:"center",textAlign:"center", padding: 5}}>DETAIL</Text>
+        </TouchableOpacity>
+                    {/* <Button title="Location" onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${item.lat}%2C${item.long}`)} /> */}
+                    {/* <Button title="Detail" onPress={() => toDetail(item.id)} /> */}
+                    
+                    {/* <Text style={{ color: "white" }}>{item.address}</Text> */}
+                  </View>
+    );
+  };
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -163,14 +203,21 @@ export default function DashboardScreen({ navigation }) {
         selectedOrders.push(e)
       }
     })
+    selectedOrders.sort((a, b) => {
+      if(a.hour < b.hour) {
+        return -1
+      }
+      if(a. hour > b.hour) {
+        return 1
+      }
+      return 0
+    })
 
     setOrdersByDate(selectedOrders)
 
     setText(fDate)
-
-    // console.log(fDate + '(' + fTime + ') ')
   }
-
+  const windowHeight = Dimensions.get('window').height;
   const showMode = (currentMode) => {
     setShow(true)
     setMode(currentMode)
@@ -196,16 +243,15 @@ export default function DashboardScreen({ navigation }) {
 
 
   return (
-    <ScrollView>
-      <View>
+      <View style={{minHeight: windowHeight}}>
         <StatusBar style='auto' />
         <SafeAreaView>
-          <View style={[styles.cardDashboard, styles.flexDirDashboard]}>
+          <View style={[styles.cardDashboard, styles.flexDirDashboard, {marginTop: 0, marginHorizontal: 0, borderRadius: 0, paddingTop: 0}]}>
 
-            <View style={{ flex: 2 }}>
-              <Text >Gambar</Text>
+            <View style={{ flex: 2, }}>
+            <Image style={[{width: "100%", height: "100%"}]} source={require('../assets/thumb.png')} />
             </View>
-            <View style={{ flex: 3 }}>
+            <View style={{ flex: 3, paddingLeft: 20 }}>
               <View style={{ flexDirection: "row", width: "100%" }} >
                 <View style={[{ flex: 1 }]}>
                   <Text style={[styles.textDashboard]}>Total Cuts        :</Text>
@@ -224,7 +270,7 @@ export default function DashboardScreen({ navigation }) {
 
                 </View>
                 <View style={[{ flex: 1 }]}>
-                  <Text style={[styles.textDashboard]}>Rp.{statistic.totalIncome}</Text>
+                  <Text style={[styles.textDashboard]}>{priceFormatter(statistic.totalIncome)}</Text>
 
                 </View>
 
@@ -236,7 +282,7 @@ export default function DashboardScreen({ navigation }) {
 
                 </View>
                 <View style={[{ flex: 1 }]}>
-                  <Text style={[styles.textDashboard]}>Rp.{statistic.avgRating}</Text>
+                  <Text style={[styles.textDashboard]}>{statistic.avgRating}</Text>
 
                 </View>
 
@@ -266,30 +312,55 @@ export default function DashboardScreen({ navigation }) {
               onChange={onChange}
             />)}
           </View>
-          <View>
-            <Text>Table untuk list order</Text>
-            {
-              ordersByDate.length > 0 && ordersByDate.map((item) => {
-                return (
+          <View style={{marginBottom: 20}}>
+            <FlatList
+                data={ordersByDate}
+                renderItem={list}
+                horizontal
+                keyExtractor={(e) => e.id}
 
-                  <View style={styles.cardDashboard} key={item.id}>
-                    <Text style={{ color: "white" }}>{item.id}</Text>
-                    <Text style={{ color: "white" }}>{item.hour}</Text>
-                    <Text style={{ color: "white" }}>{item.price}</Text>
-                    <Text style={{ color: "white" }}>{item.address}</Text>
-                    <Button title="Location" onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${item.lat}%2C${item.long}`)} />
-                    <Button title="Detail" onPress={() => toDetail(item.id)} />
-                  </View>
-                )
-              })
-            }
+              />
           </View>
           <Button onPress={logout} title="Log Out" />
         </SafeAreaView>
       </View>
-    </ScrollView>
   )
 }
+
+TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
+  try {
+      if (error) {
+        console.log(error);
+        // Error occurred - check `error.message` for more details.
+        return;
+      }
+      if (data) {
+        const { locations } = data;
+        const token = await AsyncStorage.getItem('token')
+          if (token !== null) {
+            // console.log('masukÃ©s')
+            console.log(locations[0].coords.latitude, locations[0].coords.longitude);
+            const response = await axios({
+                          url: `${baseUrl}/barbers/location`,
+                          method: "PATCH",
+                          headers: { access_token: token },
+                          data: {
+                            lat: locations[0].coords.latitude,
+                            long: locations[0].coords.longitude,
+                          },
+                        });
+          } else {
+            console.log('tidak masuks')
+          }
+        // console.log(locations, new Date(), value, '<---- cara kirim ini ke komponen?');
+      
+    }
+  } catch (error) {
+    console.log(error);
+    // ngirim ke server data locations
+    // do something with the locations captured in the background
+  }
+});
 
 const styles = StyleSheet.create({
   container: {
