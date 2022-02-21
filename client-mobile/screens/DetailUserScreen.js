@@ -2,7 +2,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { SafeAreaView, StatusBar, StyleSheet, Text, View,Picker,TouchableOpacity } from "react-native";
+import { SafeAreaView, StatusBar, StyleSheet, Text, View, Picker, TouchableOpacity } from "react-native";
 
 export default function DetailUserScreen({ route }) {
   const { orderId } = route.params
@@ -26,6 +26,27 @@ export default function DetailUserScreen({ route }) {
       alert(err)
     }
   }
+
+  const changeStatus = async (params) => {
+    try {
+      console.log(params)
+      console.log(`${baseUrl}/ordersBarber/${orderId}`)
+      const value = await AsyncStorage.getItem('token')
+      const response = await axios.patch(`${baseUrl}/ordersBarber/${orderId}`, {
+        statusBarber: params
+      }, {
+        headers: {
+          access_token: value
+        }
+      })
+      // console.log(response.data)
+      getOrderById()
+    } catch (err) {
+      alert(err)
+    }
+  }
+
+
 
   useEffect(() => {
     getOrderById()
@@ -51,12 +72,15 @@ export default function DetailUserScreen({ route }) {
           <Text>coordinat </Text>
           <Text>Status Cukur</Text>
           <View style={styles.container}>
-          {
-            order.order.statusBarber === 'Paid' ? <TouchableOpacity><Text>On My Way !</Text></TouchableOpacity> : null
-          }
-          {
-            order.order.statusBarber === 'OTW' ? <TouchableOpacity title='Finished'/> : null
-          }
+            {
+              order.order.statusBarber === 'Paid' ? <TouchableOpacity onPress={() => changeStatus('OTW')}><Text>On My Way !</Text></TouchableOpacity> : null
+            }
+            {
+              order.order.statusBarber === 'OTW' ? <TouchableOpacity onPress={() => changeStatus('Finished')}><Text>Finish</Text></TouchableOpacity> : null
+            }
+            {
+              
+            }
           </View>
         </View>
       </SafeAreaView>
