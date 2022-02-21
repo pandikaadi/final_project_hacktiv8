@@ -3,8 +3,11 @@ const { Order, Barber, Service, User } = require("../models/index");
 const sendMailOrder = require("../helpers/nodemailerOrder");
 
 const postOrder = async (req, res) => {
+  console.log(`sadadas`);
   const userId = req.currentUser.id;
-  const { barberId, date, hour, serviceId, price, address } = req.body;
+  const { barberId, date, hour, serviceId, city, price, address, lat, long } =
+    req.body;
+
   try {
     const orderKey = `${barberId}-${userId}-${new Date()
       .toISOString()
@@ -18,12 +21,10 @@ const postOrder = async (req, res) => {
       isProduction: false,
       serverKey: "SB-Mid-server-0f3s9hGBklmiZm7cVhZ9KBZO",
     });
-    console.log('post order ---', snap)
-
     let parameter = {
       transaction_details: {
         order_id: orderKey,
-        gross_amount: price,
+        gross_amount: +price,
       },
       customer_details: {
         email: req.currentUser.email,
@@ -36,13 +37,16 @@ const postOrder = async (req, res) => {
     const order = await Order.create({
       userMonggoId: req.currentUser.userMonggoId,
       barberId,
-      address: address,
-      date: new Date(),
+      address,
+      date,
       hour,
+      city,
+      lat: +lat,
+      long: +long,
       serviceId,
       orderKey,
       price,
-      paymentUrl: transaction.redirect_url
+      paymentUrl: transaction.redirect_url,
     });
     if (order) {
       const findOrder = await Order.findOne({
@@ -60,10 +64,9 @@ const postOrder = async (req, res) => {
       }
     }
   } catch (err) {
-    // console.log('order erorr ------', err)
     if (err.name === "SequelizeForeignKeyConstraintError") {
       res.status(400).json({ message: "bad request" });
-    } else if(err.errors) {
+    } else if (err.errors) {
       err.errors.map((el) => {
         if (el.message === "date is required") {
           res.status(400).json(el);
@@ -73,27 +76,62 @@ const postOrder = async (req, res) => {
           res.status(400).json(el);
         } else if (el.message === "hour cant be null") {
           res.status(400).json(el);
+        } else {
         }
       });
     } else {
-      console.log(err.message)
-      res.status(500).json({ message: "Internal Server Error"})
+      res.status(500).json({ message: "Internal Server Error" });
     }
   }
 };
 
 const getOrdersByUserId = async (req, res) => {
   // get all orders by user id
-  const { id } = req.currentUser.userMonggoId;
+  const { userMonggoId } = req.currentUser;
   try {
     const orders = await Order.findAll({
-      where: { userMonggoId: id },
+      order: ['id'],
+      where: { userMonggoId },
       include: [{ model: Barber }, { model: Service }],
     });
     if (orders) {
       res.status(200).json(orders);
     }
   } catch (err) {
+    // console.log(err);
+    res.status(500).json(err);
+  }
+};
+const getDailyOrders = async (req, res) => {
+  // get all orders by user id
+  const { userMonggoId } = req.currentUser;
+  const { date, barberId } = req.query
+  try {
+    const orders = await Order.findAll({
+      where: { date, barberId },
+      include: [{ model: Barber }, { model: Service }],
+    });
+    if (orders) {
+      console.log(orders);
+      res.status(200).json(orders);
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+};
+
+const getBarbers = async (req, res) => {
+  // get all orders by user id
+  console.log(">>>>>>");
+  const { userMonggoId } = req.currentUser;
+  try {
+    const barbers = await Barber.findAll();
+    if (barbers) {
+      res.status(200).json(barbers);
+    }
+  } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 };
@@ -173,24 +211,30 @@ const updateStatus = async (req, res) => {
   }
 };
 
-const paymentHandler = async(req, res) => {
+const paymentHandler = async (req, res) => {
+  console.log(`>>>>>>>MASUK PAYMENTHANDLER`);
   try {
-    if(req.body.transaction_status == "settlement" || req.body.transaction_status == "capture") {
-      const updatedPayment = await Order.update({
-        statusPayment: true,
-        statusBarber: "Paid"
-      },{
-        where: {
-          orderKey: req.body.order_id,
+    if (
+      req.body.transaction_status == "settlement" ||
+      req.body.transaction_status == "capture"
+    ) {
+      const updatedPayment = await Order.update(
+        {
+          statusPayment: true,
+          statusBarber: "Paid",
+        },
+        {
+          where: {
+            orderKey: req.body.order_id,
+          },
         }
-      })
+      );
     }
-    res.status(200).json("ok")
-    
+    res.status(200).json("ok");
   } catch (error) {
-    res.status(500).json({message: "Internal Server Error"})
+    res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 module.exports = {
   postOrder,
   getOrdersByUserId,
@@ -198,5 +242,6 @@ module.exports = {
   deleteOrder,
   getOrdersByBarberId,
   updateStatus,
-  paymentHandler
+  paymentHandler,
+  getDailyOrders
 };

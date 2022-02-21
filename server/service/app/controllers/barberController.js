@@ -1,7 +1,7 @@
+
 const { Barber, Order, User } = require("../models/index");
 const { compareHash } = require("../helpers/bcrypt");
 const { createToken } = require("../helpers/jwt");
-const e = require("cors");
 
 const getBarbers = async (req, res) => {
   try {
@@ -20,7 +20,6 @@ const getBarbers = async (req, res) => {
   }
 };
 
-
 const getBarberById = async (req, res) => {
   const { id } = req.params;
   try {
@@ -34,9 +33,15 @@ const getBarberById = async (req, res) => {
 };
 
 const postBarber = async (req, res) => {
-  const { name, email, password, phoneNumber } = req.body;
+  const { name, email, password, phoneNumber, city } = req.body;
   try {
-    const barber = await Barber.create({ name, email, password, phoneNumber });
+    const barber = await Barber.create({
+      name,
+      email,
+      password,
+      phoneNumber,
+      city,
+    });
     if (barber) {
       res.status(201).json(barber);
     }
@@ -67,22 +72,20 @@ const deleteBarber = async (req, res) => {
     });
     if (result) {
       await Order.destroy({
-        where:{barberId:id}
-      })
+        where: { barberId: id },
+      });
       await Barber.destroy({
         where: { id: id },
       });
       res.status(200).json({ message: "Barber success to delete" });
     } else {
       // res.status(404).json({ message: "Barber not found" });
-      res.status(500).json(new Error('error'));
+      res.status(500).json(new Error("error"));
     }
   } catch (err) {
     res.status(500).json(err);
   }
 };
-
-
 const updateBarber = async (req, res) => {
   const { name, email, password, phoneNumber } = req.body;
   const { id } = req.params;
@@ -112,6 +115,36 @@ const updateBarber = async (req, res) => {
   }
 };
 
+const updateLocation = async(req, res) => {
+  // console.log(`>>> UPDATE LOC`);
+  // console.log(req.currentBarber, `>>>>>>>>>>>>WTFF`);
+  const {lat, long} = req.body
+  try {
+    // console.log(req.body);
+    // console.log(req);
+    const findBarber = await Barber.findOne({
+      where: { id: req.currentBarber.id },
+    });
+    if (findBarber) {
+      const updatedBarber = await Barber.update(
+        {
+          lat,
+          long
+        },
+        {
+          where: { id: req.currentBarber.id },
+          returning: true,
+        }
+      );
+      res.status(200).json({ result: updatedBarber[1][0] });
+    } else {
+      throw new Error(`error`)
+    }
+  } catch (error) {
+    res.status(500).json(`internal server error`)
+  }
+}
+
 const barberLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -123,11 +156,11 @@ const barberLogin = async (req, res) => {
     });
 
     if (!result) {
-      throw new Error ('no result');
+      throw { message: "Invalid email/password" };
     } else {
     }
     if (!compareHash(password, result.password)) {
-      throw new Error( 'invalid password');
+      throw { message: "Invalid email/password" };
     }
 
     const payload = {
@@ -141,21 +174,18 @@ const barberLogin = async (req, res) => {
       access_token: token,
     });
   } catch (err) {
-
-    if(err.message === 'invalid password'){
-      res.status(401).json(err.message)
-    } else if (err.message === 'no result'){
-      res.status(404).json(err.message)
+    if (err.message === "Invalid email/password") {
+      res.status(401).json(err.message);
+    } else if (err.message === "no result") {
+      res.status(404).json(err.message);
     } else {
-      res.status(500).json(err)
-
+      res.status(500).json(err);
     }
     // if(!err.errors){
     //   res.status(500).json(err)
     // }else if (err === ) {
     //     res.status(401).json(err);
     // }
-  
   }
 };
 module.exports = {
@@ -165,4 +195,5 @@ module.exports = {
   deleteBarber,
   updateBarber,
   barberLogin,
+  updateLocation
 };

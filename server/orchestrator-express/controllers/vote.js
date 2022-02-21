@@ -3,14 +3,15 @@ const { verifyToken } = require("../helpers/jwt");
 
 
 const postVote = async (req, res) => {
-  const { barberId } = req.params
 
   const token = req.headers.access_token
+
+  console.log(req.body, `>>>>`);
 
   try {
     const { data: service } = await axios({
       method: "POST",
-      url: `http://localhost:4001/votes/${barberId}`,
+      url: `http://localhost:4001/votes`,
       data: req.body,
       headers:{
         access_token:token

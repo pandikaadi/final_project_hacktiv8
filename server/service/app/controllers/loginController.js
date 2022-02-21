@@ -5,7 +5,7 @@ const { createToken } = require("../helpers/jwt");
 const postLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
-    
+
     const result = await User.findOne({
       where: {
         email: email,
@@ -14,7 +14,7 @@ const postLogin = async (req, res) => {
 
     if (!result) {
       throw { message: "Invalid email/password" };
-    } 
+    }
     if (!compareHash(password, result.password)) {
       throw { message: "Invalid email/password" };
     }
@@ -30,13 +30,11 @@ const postLogin = async (req, res) => {
       access_token: token,
     });
   } catch (err) {
-    console.log(err);
-    if(err.message === "Invalid email/password"){
+    if (err.message === "Invalid email/password") {
       res.status(401).json(err);
-    }else{
-      res.status(500).json(err)
+    } else {
+      res.status(500).json(err);
     }
-    
   }
 };
 

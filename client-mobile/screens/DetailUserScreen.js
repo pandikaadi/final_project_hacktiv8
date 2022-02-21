@@ -1,6 +1,5 @@
-import React from "react";
-import { styles } from "../styling";
-import { SafeAreaView, StatusBar, Text, View } from "react-native";
+
+import { SafeAreaView, StatusBar, StyleSheet, Text, View } from "react-native";
 
 export default function DetailUserScreen() {
   return (
@@ -20,3 +19,18 @@ export default function DetailUserScreen() {
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  cardUserDetail: {
+    margin: 10,
+    backgroundColor: '#282c34',
+    borderRadius: 20,
+    height: '95%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
+    shadowColor: '#000000',
+    shadowRadius: 5,
+    shadowOpacity: 4,
+  },
+});

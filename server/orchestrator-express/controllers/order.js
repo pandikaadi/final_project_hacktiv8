@@ -22,6 +22,30 @@ const getOrders = async (req, res) => {
       res.status(404).json({ message: "orders not found" });
     }
   } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+};
+
+const getOrdersByDate = async (req, res) => {
+  const token = req.headers.access_token;
+  const payload = verifyToken(token);
+  try {
+    const { data: orders } = await axios({
+      method: "GET",
+      url: "http://localhost:4001/orders/dailyOrders",
+      headers: {
+        access_token: token,
+      },
+      params: req.query
+    });
+    if (orders) {
+      res.status(200).json({ orders });
+    } else {
+      res.status(404).json({ message: "orders not found" });
+    }
+  } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 };
@@ -66,6 +90,7 @@ const postOrder = async (req, res) => {
         access_token: token,
       },
     });
+    console.log(orders, "order");
     if (orders) {
       const { data: location } = await axios({
         method: "PUT",
@@ -149,4 +174,5 @@ module.exports = {
   deleteOrder,
   getOrdersByBarber,
   updateStatusBarber,
+  getOrdersByDate
 };

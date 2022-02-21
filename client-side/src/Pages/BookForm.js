@@ -17,11 +17,14 @@ import { useSelector } from "react-redux";
 import dataReducer from "../store/reducers/data";
 import {
   fetchLocation,
+  getTodayBooks,
   hasOrder,
   isServiceSelected,
+  postNewOrder,
   showRatingForm,
 } from "../store/actionCreators/actionCreator";
 import RatingModal from "../Components/RatingModal";
+import { toast } from "react-toastify";
 
 const iconMarkup = renderToStaticMarkup(
   <i className="fa-solid fa-map-pin fa-4x"></i>
@@ -35,7 +38,6 @@ const iconMarkupBarber = renderToStaticMarkup(
 const customMarkerIconBarber = divIcon({
   html: iconMarkupBarber,
 });
-
 function BookForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -49,6 +51,7 @@ function BookForm() {
   const [centerLong, setCenterLong] = useState(107.5605011029984);
   const [distance, setDistance] = useState(null);
   const [price, setPrice] = useState(null);
+  const [bookedHour, setBookedHour] = useState({});
   const [barberPosition, setBarberPosition] = useState({
     lat: centerLat,
     lng: centerLong,
@@ -66,25 +69,45 @@ function BookForm() {
       [e.target.name]: e.target.value,
     });
   }
-  const { location, service, barber } = useSelector((state) => state.data);
-  console.log(location, service, barber) //
+  const { location, service, barber, servicePrice } = useSelector(
+    (state) => state.data
+  );
+  console.log(bookedHour, `>>>BOOKED HOUR`);
   function handleNewOrder(e) {
     e.preventDefault();
-
-    const payload = {
-      date: form.date,
-      hour: form.hour,
-      address: form.address,
-      orderKey: service,
-      barberId: barber,
-      statusPayment: false,
-      statusOrder: false,
-    };
-
-    dispatch(hasOrder(true));
-    dispatch(isServiceSelected(false));
-    dispatch(showRatingForm(true));
-    navigate("/home");
+    console.log(form.hour);
+    console.log(position);
+    if (price && form.hour) {
+      const payload = {
+        date: new Date(form.date),
+        hour: form.hour,
+        address: form.address,
+        price: price,
+        lat: +position.lat,
+        long: +position.lng,
+        serviceId: service,
+        barberId: barber,
+        city: location,
+      };
+      console.log(payload);
+      dispatch(postNewOrder(payload))
+        .then((data) => {
+          dispatch(hasOrder(true));
+          dispatch(isServiceSelected(false));
+          dispatch(showRatingForm(true));
+          console.log("sebelum navigate ke home");
+          navigate("/payment");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      if (!price) {
+        toast.error("You must pick your place on the map");
+      } else {
+        toast.error("Select a schedule");
+      }
+    }
   }
 
   function priceFormatter(price) {
@@ -119,29 +142,33 @@ function BookForm() {
       setDistance((distance / 1000).toFixed(1));
       // console.log(distance)
       if (distance) {
-        setPrice(Math.round((50_000 + distance * 5) / 1000) * 1000);
+        setPrice(Math.round((servicePrice + distance * 5) / 1000) * 1000);
       }
     }
   }, [position]);
 
   useEffect(() => {
-    if (location === '1') {
+    if (location === "1") {
       setBarberPosition({
-        lat: -6.250970, lng: 106.839584
-      })
+        lat: -6.25097,
+        lng: 106.839584,
+      });
       setPosition({
-        lat: -6.250970, lng: 106.839584
-      })
-    } else if(location === '2') {
+        lat: -6.25097,
+        lng: 106.839584,
+      });
+    } else if (location === "2") {
       setBarberPosition({
-        lat: -6.917359, lng: 107.606478
-      })
+        lat: -6.917359,
+        lng: 107.606478,
+      });
       setPosition({
-        lat: -6.917359, lng: 107.606478
-      })
+        lat: -6.917359,
+        lng: 107.606478,
+      });
     }
   }, []);
-console.log(form)
+  // console.log(form);
   function LocationMarker() {
     const map = useMapEvents({
       click(e) {
@@ -150,16 +177,15 @@ console.log(form)
           setCenterLat(position.lat);
           setCenterLong(position.lng);
           dispatch(fetchLocation(position))
-          .then((data) => {
-            setForm({
-              ...form,
-              address: data
+            .then((data) => {
+              setForm({
+                ...form,
+                address: data,
+              });
             })
-          })
-          .catch((err) => {
-            console.log(err);
-          })
-          
+            .catch((err) => {
+              console.log(err);
+            });
         }
       },
     });
@@ -184,8 +210,6 @@ console.log(form)
     if (position) map.setView(mapCenter);
     return null;
   }
-  console.log(typeof new Date(form.date), form.date)
-  console.log(new Date(form.date));
   function handleLocateButton(e) {
     e.preventDefault();
 
@@ -194,19 +218,31 @@ console.log(form)
       // Show a map centered at latitude / longitude.
       await setPosition({ lat: latitude, lng: longitude });
       dispatch(fetchLocation({ lat: latitude, lng: longitude }))
-          .then((data) => {
-            setForm({
-              ...form,
-              address: data
-            })
-          })
-          .catch((err) => {
-            console.log(err);
-          })
-
+        .then((data) => {
+          setForm({
+            ...form,
+            address: data,
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     });
   }
-  
+
+  useEffect(() => {
+    if (form.date) {
+      dispatch(
+        getTodayBooks({ date: new Date(form.date), barberId: barber })
+      ).then((data) => {
+        let obj = {};
+        data.forEach((e) => {
+          obj[e.hour] = true;
+        });
+        setBookedHour(obj);
+      });
+    }
+  }, [form.date]);
   return (
     <>
       <div className="flex justify-center bg-zinc-800 pt-10 min-h-screen">
@@ -224,7 +260,9 @@ console.log(form)
 
             <div className="flex justify-center mb-2">
               <input
+                min={new Date().toISOString().split("T")[0]}
                 onChange={formHandler}
+                required
                 value={form.date}
                 name="date"
                 type="date"
@@ -235,14 +273,51 @@ console.log(form)
               <select
                 defaultValue={"DEFAULT"}
                 onChange={formHandler}
+                required
+                defaultValue={"disable"}
                 name="hour"
                 className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
               >
-                <option value="08.00 - 10.00">08.00 - 10.00</option>
-                <option value="10.00 - 12.00">10.00 - 12.00</option>
-                <option value="13.00 - 15.00">13.00 - 15.00</option>
-                <option value="15.00 - 17.00">15.00 - 17.00</option>
-                <option value="17.00 - 19.00">17.00 - 19.00</option>
+                <option value="disable" disabled>
+                  {" "}
+                  -- SELECT SCHEDULE --{" "}
+                  {bookedHour["08.00 - 10.00"] ? " -- booked --" : null}
+                </option>
+                <option
+                  disabled={bookedHour["08.00 - 10.00"] ? true : false}
+                  value="08.00 - 10.00"
+                >
+                  08.00 - 10.00{" "}
+                  {bookedHour["08.00 - 10.00"] ? " -- booked --" : null}
+                </option>
+                <option
+                  disabled={bookedHour["10.00 - 12.00"] ? true : false}
+                  value="10.00 - 12.00"
+                >
+                  10.00 - 12.00{" "}
+                  {bookedHour["10.00 - 12.00"] ? " -- booked --" : null}
+                </option>
+                <option
+                  disabled={bookedHour["13.00 - 15.00"] ? true : false}
+                  value="13.00 - 15.00"
+                >
+                  13.00 - 15.00{" "}
+                  {bookedHour["13.00 - 15.00"] ? " -- booked --" : null}
+                </option>
+                <option
+                  disabled={bookedHour["15.00 - 17.00"] ? true : false}
+                  value="15.00 - 17.00"
+                >
+                  15.00 - 17.00{" "}
+                  {bookedHour["15.00 - 17.00"] ? " -- booked --" : null}
+                </option>
+                <option
+                  disabled={bookedHour["17.00 - 19.00"] ? true : false}
+                  value="17.00 - 19.00"
+                >
+                  17.00 - 19.00{" "}
+                  {bookedHour["17.00 - 19.00"] ? " -- booked --" : null}
+                </option>
               </select>
             </div>
             <div className="flex justify-center">

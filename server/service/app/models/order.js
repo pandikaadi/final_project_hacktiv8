@@ -25,8 +25,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   Order.init({
     userMonggoId: DataTypes.STRING,
-    lat: DataTypes.INTEGER,
-    long: DataTypes.INTEGER,
+    lat: DataTypes.DECIMAL,
+    long: DataTypes.DECIMAL,
     barberId: {
       type: DataTypes.INTEGER,
       allowNull: false,

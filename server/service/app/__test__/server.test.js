@@ -24,6 +24,7 @@ const orderTest = {
   barberId: 1,
   serviceId: 1,
   address: 'fake address',
+
   date: "22/12/2022",
   hour: "19.00",
   price: 20000,
@@ -35,6 +36,11 @@ const serviceTest = {
   name: "basic cut",
   price: 1000,
 };
+
+const serviceTest = {
+  name: 'basic cut',
+  price:1000
+}
 
 const barberTest = {
   name: "lebron james",
@@ -58,6 +64,7 @@ beforeAll((done) => {
       
       Order.create(orderTest)
       done();
+
     })
     .catch((err) => {
       done(err);
@@ -836,7 +843,6 @@ describe("barber routes test", () => {
           return done();
         });
     });
-
     test("200 Success get barbers by id", (done) => {
       request(app)
         .get("/barbers/1")
