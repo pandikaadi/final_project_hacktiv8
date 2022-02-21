@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+
     }
   }
   User.init({
@@ -73,8 +74,11 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'User',
   });
   User.beforeCreate((instanceUser, options)=>{
-    const hashPassword = createHash(instanceUser.password);
+    console.log(instanceUser.password,'hook user ------------------');
+    const hashPassword = createHash(instanceUser.password)
     instanceUser.password = hashPassword
+    console.log(instanceUser.password,'hook user after hashing ------------------');
   })
+  console.log(User,'yessssssssss');
   return User;
 };

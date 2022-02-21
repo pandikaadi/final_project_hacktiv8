@@ -13,6 +13,7 @@ const postOrder = async (req, res) => {
       .toISOString()
       .slice(5, 9)}${new Date().toISOString().slice(13, 20)}`;
     //order key barberId - userId - tanggal
+    console.log('post order before snap midtrans ---', req.body)
     const midtransClient = require("midtrans-client");
     // Create Snap API instance
     let snap = new midtransClient.Snap({
@@ -20,7 +21,6 @@ const postOrder = async (req, res) => {
       isProduction: false,
       serverKey: "SB-Mid-server-0f3s9hGBklmiZm7cVhZ9KBZO",
     });
-    console.log(price, `>>>>>>>`);
     let parameter = {
       transaction_details: {
         order_id: orderKey,
@@ -64,7 +64,6 @@ const postOrder = async (req, res) => {
       }
     }
   } catch (err) {
-    console.log(err);
     if (err.name === "SequelizeForeignKeyConstraintError") {
       res.status(400).json({ message: "bad request" });
     } else if (err.errors) {
