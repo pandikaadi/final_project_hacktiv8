@@ -123,30 +123,32 @@ const postOrder = async (req, res) => {
       },
     });
     console.log(orders, "order");
-    if (orders) {
-      const { data: location } = await axios({
-        method: "PUT",
-        url: `http://localhost:4002/users/location/${payload.id}`,
-        data: {
-          lat,
-          long,
-        },
-        headers: {
-          access_token: token,
-        },
-      });
-      if (location) {
-        const { data: user } = await axios({
-          method: "GET",
-          url: `http://localhost:4002/users/${payload.id}`,
-        });
-        if (user) {
-          res.status(201).json({ orders, userMongo: user });
-        }
-      }
-    } else {
-    }
+    res.status(201).json(orders)
+    // if (orders) {
+    //   const { data: location } = await axios({
+    //     method: "PUT",
+    //     url: `http://localhost:4002/users/location/${payload.id}`,
+    //     data: {
+    //       lat,
+    //       long,
+    //     },
+    //     headers: {
+    //       access_token: token,
+    //     },
+    //   });
+    //   if (location) {
+    //     const { data: user } = await axios({
+    //       method: "GET",
+    //       url: `http://localhost:4002/users/${payload.id}`,
+    //     });
+    //     if (user) {
+    //       res.status(201).json({ orders, userMongo: user });
+    //     }
+    //   }
+    // } else {
+    // }
   } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 };

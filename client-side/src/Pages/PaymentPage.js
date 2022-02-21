@@ -23,6 +23,7 @@ function PaymentPage() {
   const secondProjection = new proj4.Proj("EPSG:32748");
   const { userOrder } = useSelector((state) => state.data);
   ;
+  
 
   const dispatch = useDispatch();
   const [distance, setDistance] = useState(null);
@@ -38,7 +39,17 @@ function PaymentPage() {
     lng: 107.56084,
   });
   useEffect(() => {
-    dispatch(GetOrders(localStorage.getItem("access_token")))
+       const intervalId = setInterval(() => {  //assign interval to a variable to clear it.
+        (async () => {
+          try {
+            dispatch(GetOrders(localStorage.getItem("access_token")))
+          } catch (error) {
+          }
+        })();
+      },20000)
+
+      return () => clearInterval(intervalId);
+    
   }, [])
   useEffect(() => {
     if(userOrder.orders) {
@@ -47,6 +58,10 @@ function PaymentPage() {
         setPosition({
           lat: +userOrder.orders[userOrder.orders.length - 1].lat,
           lng: +userOrder.orders[userOrder.orders.length - 1].long
+        })
+        setBarberPosition({
+          lat: +userOrder.orders[userOrder.orders.length - 1].Barber.lat,
+          lng: +userOrder.orders[userOrder.orders.length - 1].Barber.long
         })
         
       }
@@ -70,9 +85,14 @@ function PaymentPage() {
       const distance = Math.pow(powerDistance, 0.5);
 
       setDistance((distance / 1000).toFixed(1));
+      // setDistance(distance)
     }
   }, [position]);
-  
+  function HandleCenter({ mapCenter }) {
+    const map = useMap();
+    if (position) map.setView(mapCenter);
+    return null;
+  }
   const iconMarkupBarber = renderToStaticMarkup(
     // <i class="fa-solid text-rose-600 fa-motorcycle fa-4x"></i>
     <i class="fa-solid text-rose-600 fa-location-pin fa-4x"></i>
@@ -96,7 +116,7 @@ function PaymentPage() {
   function BarberMarker() {
     return barberPosition === null ? null : (
       <Marker icon={customMarkerIconBarber} position={barberPosition}>
-        <Popup>Barber Name</Popup>
+        <Popup>Barber { userOrder.orders[userOrder.orders.length - 1].Barber.name|| ""}</Popup>
       </Marker>
     );
   }
@@ -106,7 +126,7 @@ function PaymentPage() {
         {showDetail && <PaymentDetailCard />}
         {!showDetail && (
           <Bounce top>
-            <div className="flex flex-col m-auto bg-white px-2 py-4 rounded">
+            <div className="flex flex-col m-auto bg-white px-3 py-4 rounded content-center items-center">
               <MapContainer
                 center={[centerLat, centerLong]}
                 style={{ height: 350, width: 350 }}
@@ -118,6 +138,7 @@ function PaymentPage() {
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
+                <HandleCenter mapCenter={barberPosition} />
                 <LocationMarker />
                 <BarberMarker />
               </MapContainer>

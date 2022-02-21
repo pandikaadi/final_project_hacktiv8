@@ -1,7 +1,7 @@
 const axios = require("axios");
 
 const getBarbers = async (req, res) => {
-  console.log(`isiisisisi`);
+  
   try {
     const { data: barbers } = await axios({
       method: "GET",

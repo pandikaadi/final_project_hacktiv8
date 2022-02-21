@@ -4,7 +4,6 @@ const sendMailOrder = require("../helpers/nodemailerOrder");
 const e = require("cors");
 
 const postOrder = async (req, res) => {
-  console.log(`sadadas`);
   const userId = req.currentUser.id;
   const { barberId, date, hour, serviceId, city, price, address, lat, long } =
     req.body;
@@ -49,6 +48,7 @@ const postOrder = async (req, res) => {
       price,
       paymentUrl: transaction.redirect_url,
     });
+    console.log(orderKey, `>>>>>`);
     if (order) {
       const findOrder = await Order.findOne({
         where: { id: order.id },
@@ -61,10 +61,12 @@ const postOrder = async (req, res) => {
         //   findOrder.Barber.name,
         //   findOrder.Service.name
         // );
+        console.log(`order was found`);
         res.status(201).json({ findOrder });
       }
     }
   } catch (err) {
+    console.log(err, `>>>>>`);
     if (err.name === "SequelizeForeignKeyConstraintError") {
       res.status(400).json({ message: "bad request" });
     } else if (err.errors) {
