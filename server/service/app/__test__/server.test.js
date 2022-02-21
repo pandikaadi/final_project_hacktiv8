@@ -103,6 +103,7 @@ const assertOrder = (received, expected) => {
 
 let token ;
 
+
 const invalidToken =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBtYWlsLmNvbSIsImlkIjoxLCJpYXQiOjE2MjI2MDk2NTF9.gShAB2qaCUjlnvNuM1MBWfBVEjDGdqjWSJNMEScXIeE";
 
@@ -134,6 +135,7 @@ afterAll((done) => {
       done(err);
     });
 });
+
 
 
 describe("order rouets test", () => {
@@ -250,26 +252,6 @@ describe("order rouets test", () => {
             return done();
           });
       });
-      // test("400 failed create order - should return error if hour is null", (done) => {
-      //   token = createToken(userTest)
-      //   request(app)
-      //     .post("/orders")
-      //     .set("access_token", token)
-      //     .send({
-      //       userId: 1,
-      //       barberId: 1,
-      //       date: "22/12/2022",
-      //     })
-      //     .end((err, res) => {
-      //       if (err) return done(err);
-      //       const { body, status } = res;
-
-      //       expect(status).toBe(400);
-      //       expect(body).toEqual(expect.any(Object));
-
-      //       return done();
-      //     });
-      // });
       test("400 failed create order - should return error if date is null", (done) => {
         token = createToken(userTest)
         request(app)
@@ -368,7 +350,7 @@ describe("order rouets test", () => {
           return done();
         });
     });
-
+    
   });
   describe("GET /orders/:id", () => {
     test("200 Success get order by id", (done) => {
@@ -386,7 +368,6 @@ describe("order rouets test", () => {
           done(err);
         });
     });
-
     test("500 Failed getOrdersByid - should return error ", (done) => {
       jest.spyOn(Order, "findOne").mockRejectedValue(new Error("test error"));
 
@@ -400,7 +381,6 @@ describe("order rouets test", () => {
         });
     });
   });
-
   describe('GET /orders/dailyOrders',()=>{
     test("200 Success get daily order", (done) => {
       token = createToken({
@@ -498,6 +478,7 @@ describe("order rouets test", () => {
           .send({
             name: "basic cut",
             image: "https://images.unsplash.com/photo-1634302104565-cc698ee83144?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
+
           })
           .end((err, res) => {
             if (err) return done(err);
@@ -513,6 +494,7 @@ describe("order rouets test", () => {
             name: "",
             price: 1000,
             image: "https://images.unsplash.com/photo-1634302104565-cc698ee83144?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
+
           })
           .end((err, res) => {
             if (err) return done(err);
@@ -979,7 +961,6 @@ describe("order rouets test", () => {
       });
       test("500 Failed getBarbers - should return error ", (done) => {
         jest.spyOn(Barber, "findOne").mockRejectedValue(new Error("test error"));
-
         request(app)
           .get("/barbers/1")
           .end((err, res) => {
@@ -1083,4 +1064,5 @@ describe("order rouets test", () => {
       });
     });
   });
+
 

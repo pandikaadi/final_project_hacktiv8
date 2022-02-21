@@ -95,25 +95,36 @@ const deleteUser = async (req, res) => {
 const postLogin = async (req, res) => {
   console.log('jalan');
   const { email, password } = req.body;
-  try {
-    const foundUser = await User.findOne({email: email});
-    if (!foundUser) {
-      throw new Error('InvalidEmail');
-    }
+  
 
-    if (!compareHash(password, foundUser.password)) {
-      throw new Error('InvalidPassword');
-    }
-    const payload = {
-      id: foundUser.id,
-      userMonggoId: foundUser.id,
-      username: foundUser.username,
-      role: foundUser.role,
-    };
-    const token = createToken(payload);
-    res.status(200).json({
-      access_token: token,
-      role: foundUser.role
+  User.findOneCompare(email)
+    .then((user) => {
+      if (!user) {
+        console.log(`nullified`);
+        res.status(401).json({ message: "Invalid email/password" });
+      } else {
+        if (!compareHash(password, user.password)) {
+          res.status(401).json({ message: "Invalid email/password" });
+        } else {
+          const payload = {
+            id: user.id,
+            userMonggoId: user._id,
+            username: user.username,
+            role: user.role,
+          };
+          const token = createToken(payload);
+          res.status(200).json({
+            access_token: token,
+            role: user.role
+          });
+        }
+
+      }
+
+    })
+    .catch((err) => {
+      console.log(err)
+      res.status(500).json(err);
     });
 
 

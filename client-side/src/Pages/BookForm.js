@@ -245,109 +245,17 @@ function BookForm() {
   }, [form.date]);
   return (
     <>
-      <div className="flex justify-center bg-zinc-800 pt-10 min-h-screen">
+      <div className="flex justify-center bg-zinc-900 pt-2 min-h-screen">
         {/* <Fade> */}
-        <div className="m-auto">
-          <form
-            className="pb-4  space-y-2 lg:px-2 sm:pb-6 xl:pb-8"
-            onSubmit={handleNewOrder}
-          >
-            <div className="flex justify-center tracking-widest">
-              <h3 className="text-4xl font-light text-white dark:text-white pb-4">
-                BOOK NOW
-              </h3>
-            </div>
-
-            <div className="flex justify-center mb-2">
-              <input
-                min={new Date().toISOString().split("T")[0]}
-                onChange={formHandler}
-                required
-                value={form.date}
-                name="date"
-                type="date"
-                className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-              />
-            </div>
-            <div className="flex justify-center mb-2">
-              <select
-                defaultValue={"DEFAULT"}
-                onChange={formHandler}
-                required
-                defaultValue={"disable"}
-                name="hour"
-                className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-              >
-                <option value="disable" disabled>
-                  {" "}
-                  -- SELECT SCHEDULE --{" "}
-                  {bookedHour["08.00 - 10.00"] ? " -- booked --" : null}
-                </option>
-                <option
-                  disabled={bookedHour["08.00 - 10.00"] ? true : false}
-                  value="08.00 - 10.00"
-                >
-                  08.00 - 10.00{" "}
-                  {bookedHour["08.00 - 10.00"] ? " -- booked --" : null}
-                </option>
-                <option
-                  disabled={bookedHour["10.00 - 12.00"] ? true : false}
-                  value="10.00 - 12.00"
-                >
-                  10.00 - 12.00{" "}
-                  {bookedHour["10.00 - 12.00"] ? " -- booked --" : null}
-                </option>
-                <option
-                  disabled={bookedHour["13.00 - 15.00"] ? true : false}
-                  value="13.00 - 15.00"
-                >
-                  13.00 - 15.00{" "}
-                  {bookedHour["13.00 - 15.00"] ? " -- booked --" : null}
-                </option>
-                <option
-                  disabled={bookedHour["15.00 - 17.00"] ? true : false}
-                  value="15.00 - 17.00"
-                >
-                  15.00 - 17.00{" "}
-                  {bookedHour["15.00 - 17.00"] ? " -- booked --" : null}
-                </option>
-                <option
-                  disabled={bookedHour["17.00 - 19.00"] ? true : false}
-                  value="17.00 - 19.00"
-                >
-                  17.00 - 19.00{" "}
-                  {bookedHour["17.00 - 19.00"] ? " -- booked --" : null}
-                </option>
-              </select>
-            </div>
-            <div className="flex justify-center">
-              <textarea
-                type="text"
-                name="address"
-                onChange={formHandler}
-                value={form.address}
-                id="address"
-                className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                placeholder="address"
-                required
-              />
-            </div>
-
-            <div className="justify-center mb-2 rounded-sm-2">
-              <div className="flex content-center my-3">
-                <button
-                  onClick={handleLocateButton}
-                  className=" self-center content-center mx-auto text-white bg-transparent border-white border-2 hover:bg-slate-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                >
-                  Locate Yourself
-                </button>
-              </div>
+        <div className="">
+          <form className="pb-2 space-y-2" onSubmit={handleNewOrder}>
+            <div className="flex justify-center mb-2 rounded-sm-2">
               <MapContainer
                 center={[centerLat, centerLong]}
-                style={{ height: 350 }}
+                style={{ height: 500 }}
                 id="mapid"
                 zoom={13}
-                className="max-w-7/8 rounded"
+                className="max-w-2xl rounded"
               >
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -359,22 +267,125 @@ function BookForm() {
                 <HandleCenter mapCenter={position} />
               </MapContainer>
             </div>
-            <div className="text-white flex justify-center mb-2">
-              {distance ? <span>Distance : {distance} KM</span> : ""}
-            </div>
-            <div className="text-white flex justify-center mb-2">
-              <span>
-                {price ? <span>Price : {priceFormatter(price)} </span> : ""}
-              </span>
-            </div>
 
-            <div className="flex justify-center mb-2">
-              <button
-                type="submit"
-                className="w-3/4 mx-auto mt-2 text-white bg-transparent border-white border-2 hover:bg-slate-600 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              >
-                Order
-              </button>
+            <div className="bg-white h-full py-4 space-y-4 rounded-md">
+              <p className="font-semibold text-2xl mx-10 my-6">
+                Set your schedule!
+              </p>
+
+              <div className="flex justify-center mb-2">
+                <input
+                  min={new Date().toISOString().split("T")[0]}
+                  onChange={formHandler}
+                  required
+                  value={form.date}
+                  name="date"
+                  type="date"
+                  className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                />
+              </div>
+              <div className="flex justify-center mb-2">
+                <select
+                  defaultValue={"DEFAULT"}
+                  onChange={formHandler}
+                  required
+                  defaultValue={"disable"}
+                  name="hour"
+                  className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                >
+                  <option value="disable" disabled>
+                    Select schedule
+                    {bookedHour["08.00 - 10.00"] ? " -- booked --" : null}
+                  </option>
+                  <option
+                    disabled={bookedHour["08.00 - 10.00"] ? true : false}
+                    value="08.00 - 10.00"
+                  >
+                    08.00 - 10.00{" "}
+                    {bookedHour["08.00 - 10.00"] ? " -- booked --" : null}
+                  </option>
+                  <option
+                    disabled={bookedHour["10.00 - 12.00"] ? true : false}
+                    value="10.00 - 12.00"
+                  >
+                    10.00 - 12.00{" "}
+                    {bookedHour["10.00 - 12.00"] ? " -- booked --" : null}
+                  </option>
+                  <option
+                    disabled={bookedHour["13.00 - 15.00"] ? true : false}
+                    value="13.00 - 15.00"
+                  >
+                    13.00 - 15.00{" "}
+                    {bookedHour["13.00 - 15.00"] ? " -- booked --" : null}
+                  </option>
+                  <option
+                    disabled={bookedHour["15.00 - 17.00"] ? true : false}
+                    value="15.00 - 17.00"
+                  >
+                    15.00 - 17.00{" "}
+                    {bookedHour["15.00 - 17.00"] ? " -- booked --" : null}
+                  </option>
+                  <option
+                    disabled={bookedHour["17.00 - 19.00"] ? true : false}
+                    value="17.00 - 19.00"
+                  >
+                    17.00 - 19.00{" "}
+                    {bookedHour["17.00 - 19.00"] ? " -- booked --" : null}
+                  </option>
+                </select>
+              </div>
+              <div className="flex justify-center">
+                <textarea
+                  type="text"
+                  name="address"
+                  onChange={formHandler}
+                  value={form.address}
+                  id="address"
+                  className="bg-gray-50 border w-80 border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 bloc p-2.5 dkark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                  placeholder="Address"
+                  required
+                />
+              </div>
+
+              <div className="flex content-center mt-2">
+                <button
+                  onClick={handleLocateButton}
+                  className="self-center content-start mx-10 text-zinc-600 bg-transparent border-slate-300 border-2 focus:ring-4 focus:ring-blue-300 font-medium rounded-md text-sm px-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                >
+                  Find me!
+                </button>
+              </div>
+
+              <div className="text-zinc-900 flex justify-center mb-2">
+                {distance ? (
+                  <span>
+                    <span className="font-bold">Distance</span> : {distance} KM
+                  </span>
+                ) : (
+                  ""
+                )}
+              </div>
+              <div className="text-zinc-900 flex justify-center mb-2">
+                <span>
+                  {price ? (
+                    <span>
+                      <span className="font-bold">Price</span> :{" "}
+                      {priceFormatter(price)}{" "}
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                </span>
+              </div>
+
+              <div className="flex justify-center mb-2">
+                <button
+                  type="submit"
+                  className="w-3/4 mx-auto mt-2 text-white shadow-lg shadow-green-500/50 bg-green-300 hover:bg-green-400 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                >
+                  Order
+                </button>
+              </div>
             </div>
           </form>
         </div>

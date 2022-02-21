@@ -2,7 +2,7 @@ import React from "react";
 import Fade from "react-reveal/Fade";
 import { useNavigate } from "react-router-dom";
 import Footer from "./Footer";
-import image2 from "../assets/image2.png";
+import image7 from "../assets/image7.png";
 
 function LocationForm() {
   const navigate = useNavigate();
@@ -11,29 +11,35 @@ function LocationForm() {
     <>
       <div className=" w-full relative">
         <img
-          src={image2}
+          src={image7}
           alt="form"
           className="w-full h-full object-cover absolute mix-blend-overlay"
         />
         <div className="flex h-screen">
           <Fade top cascade>
-            <form className="m-auto relative">
-              <p className="text-2xl font-bold text-white mb-6">
-                SHAVE <span className="text-yellow-500">WITH US !</span>
-              </p>
-              <div className="flex flex-col">
-                <select className="px-4 border-2 rounded border-yellow-900">
-                  <option value={"jakarta"}>Jakarta</option>
-                  <option value={"bandung"}>Bandung</option>
-                </select>
-                <button
-                  onClick={() => navigate("/book")}
-                  className="bg-yellow-600 hover:bg-yellow-700 text-white rounded mt-4"
-                >
-                  SHAVE IT
-                </button>
+            <div className="flex">
+              <div className="flex flex-1 items-center mx-4">
+                <ul>
+                  <li>
+                    <p className="text-white text-3xl font-medium">
+                      Barbershop is not a{" "}
+                      <span className="text-red-500 italic">hobby</span>
+                    </p>
+                  </li>
+                  <li className="pb-2">
+                    <p className="text-white text-3xl font-medium">
+                      it's a
+                      <span className="text-red-500 italic"> lifestyle</span>
+                    </p>
+                  </li>
+                  <li className="tracking-wider bg-red-500 w-fit px-2 py-0.5">
+                    <p className="text-white text-sm font-medium mb-0.5">
+                      SHAVE8
+                    </p>
+                  </li>
+                </ul>
               </div>
-            </form>
+            </div>
           </Fade>
         </div>
         <Footer />
