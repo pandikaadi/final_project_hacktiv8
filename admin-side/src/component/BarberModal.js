@@ -31,6 +31,7 @@ function BarberModal() {
     };
 
     dispatch(postBarber(payload));
+    // console.log(payload);
   };
 
   return (
