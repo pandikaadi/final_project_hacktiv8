@@ -4,6 +4,7 @@ const app = express();
 const port = 4000;
 const userController = require("./controllers/user");
 const orderController = require("./controllers/order");
+const adminController = require("./controllers/admin")
 const barberController = require("./controllers/barber");
 const coordinateController = require("./controllers/coordinate");
 const serviceController = require("./controllers/service");
@@ -47,6 +48,7 @@ app.post("/coordinates", coordinateController.translateCoordinate);
 app.get("/votes/:barberId", voteController.getVotes);
 app.post("/votes", voteController.postVote);
 
+app.get("/admin/all", adminController.getAll)
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
