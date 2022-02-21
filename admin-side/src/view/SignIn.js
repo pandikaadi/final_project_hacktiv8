@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { adminLogin } from "../store/actionCreator/actionCreator";
 
 function SignIn() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -22,7 +24,22 @@ function SignIn() {
       password: password,
     };
 
-    dispatch(adminLogin(payload));
+    dispatch(adminLogin(payload)).then((res) => {
+      return res
+        .json()
+        .then((data) => {
+          if (res.ok) {
+            localStorage.setItem("access_token", data.access_token);
+            localStorage.setItem("role", data.role);
+            navigate("/home");
+          } else {
+            return Promise.reject(data);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
   }
   return (
     <>

@@ -41,6 +41,7 @@ const postUser = async (req, res) => {
       data: req.body,
     });
     if (user) {
+      console.log(user, ">>>>>>>>");
       res.status(201).json(user);
     }
   } catch (err) {
@@ -61,7 +62,8 @@ const loginUser = async (req, res) => {
       res.status(200).json(token);
     }
   } catch (err) {
-    res.status(500).json(err.response.data);
+    // console.log(err);
+    res.status(500).json(err);
   }
 };
 
