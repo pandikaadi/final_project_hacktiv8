@@ -55,7 +55,7 @@ export default function DetailUserScreen({ route }) {
             order.order.statusBarber === 'Paid' ? <TouchableOpacity><Text>On My Way !</Text></TouchableOpacity> : null
           }
           {
-            order.order.statusBarber === 'OTW' ? <TouchableOpacity title='Finished'/> : null
+            order.order.statusBarber === 'OTW' ? <TouchableOpacity><Text>Finished</Text></TouchableOpacity> : null
           }
           </View>
         </View>
