@@ -1,9 +1,41 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { setRegisterAdmin } from "../store/actionCreator/actionCreator";
+import {
+  setRegisterAdmin,
+  postAdmin,
+} from "../store/actionCreator/actionCreator";
 
 function AdminModal() {
   const dispatch = useDispatch();
+  const [newAdmin, setNewAdmin] = useState({
+    username: "",
+    email: "",
+    password: "",
+    phoneNumber: "",
+  });
+
+  const handleChangeInput = (e) => {
+    setNewAdmin({
+      ...newAdmin,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handlePostAdmin = (e) => {
+    e.preventDefault();
+
+    const payload = {
+      username: newAdmin.username,
+      email: newAdmin.email,
+      password: newAdmin.password,
+      phoneNumber: newAdmin.phoneNumber,
+      isAdmin: true,
+    };
+
+    // console.log(payload);
+    dispatch(postAdmin(payload));
+  };
+
   return (
     <>
       <div className="bg-black bg-opacity-50 absolute inset-0 flex justify-center items-center">
@@ -29,7 +61,7 @@ function AdminModal() {
           <div>
             <form
               className="px-6 pb-4 space-y-6 lg:px-8 sm:pb-6 xl:pb-8"
-              action="#"
+              onSubmit={handlePostAdmin}
             >
               <h3 className="text-xl font-medium text-gray-900 dark:text-white">
                 REGISTER NEW ADMIN
@@ -43,6 +75,8 @@ function AdminModal() {
                   type="text"
                   name="username"
                   id="username"
+                  onChange={handleChangeInput}
+                  value={newAdmin.username}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                   placeholder="username"
                   required
@@ -56,6 +90,8 @@ function AdminModal() {
                   type="email"
                   name="email"
                   id="email"
+                  onChange={handleChangeInput}
+                  value={newAdmin.email}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                   placeholder="name@company.com"
                   required
@@ -70,6 +106,8 @@ function AdminModal() {
                   name="password"
                   id="password"
                   placeholder="••••••••"
+                  onChange={handleChangeInput}
+                  value={newAdmin.password}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                   required
                 />
@@ -82,6 +120,8 @@ function AdminModal() {
                   type="number"
                   name="phoneNumber"
                   id="phoneNumber"
+                  onChange={handleChangeInput}
+                  value={newAdmin.phoneNumber}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                   placeholder="xxx-xxx-xxx"
                   required

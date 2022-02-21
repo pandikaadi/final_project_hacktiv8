@@ -41,6 +41,7 @@ const postUser = async (req, res) => {
       data: req.body,
     });
     if (user) {
+      console.log(user, ">>>>>>>>");
       res.status(201).json(user);
     }
   } catch (err) {

@@ -27,6 +27,30 @@ export const postBarber = (payload) => {
   };
 };
 
+export const postAdmin = (payload) => {
+  return (dispatch) => {
+    fetch("http://localhost:4000/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((res) => {
+        return res.json().then((data) => {
+          if (res.ok) {
+            dispatch(setRegisterAdmin(false));
+          } else {
+            return Promise.reject(data);
+          }
+        });
+      })
+      .catch((err) => {
+        console.log(err, ">>>>>>>>>error");
+      });
+  };
+};
+
 export const adminLogin = (payload) => {
   return (dispatch) => {
     fetch("http://localhost:4000/login", {
