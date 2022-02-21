@@ -1,11 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
-import { Button, FlatList, Linking, SafeAreaView, StatusBar, StyleSheet, Text, View } from "react-native";
+import { Button, FlatList, Linking, Dimensions, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker'
 import axios from "axios";
 import * as Location from "expo-location";
+const baseUrl = `https://6c28-123-253-232-109.ngrok.io`
 
 export default function DashboardScreen({ navigation }) {
+  
   const [date, setDate] = useState(new Date())
   const [mode, setMode] = useState('date')
   const [show, setShow] = useState(false)
@@ -15,6 +17,9 @@ export default function DashboardScreen({ navigation }) {
   const [votes, setVotes] = useState([])
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [loading, setLoading] = useState(true)
+  const [token, setToken] = useState(null)
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
   const [statistic, setStatistic] = useState({
     totalIncome: 0,
     totalCukur: 0,
@@ -27,8 +32,6 @@ export default function DashboardScreen({ navigation }) {
       votes.forEach((e) => {
         avg += e.value
       })
-      console.log(avg, votes.length,`>>>`);
-      console.log(statistic);
     }
 
     if(orders.length > 0) {
@@ -46,18 +49,18 @@ export default function DashboardScreen({ navigation }) {
         totalIncome,
         avgRating: 0 || +(avg/votes.length).toFixed(1)
       })
-      console.log(totalCukur, totalIncome, `>>>>`);
     }
   }, [orders, votes])
   const getOrders = async () => {
     try {
       const token = await AsyncStorage.getItem('token')
-      const response = await axios.get('http://8038-123-253-232-109.ngrok.io/ordersBarber', {
+      setToken(token)
+      const response = await axios.get(`${baseUrl}/ordersBarber`, {
         headers: {
           access_token: token
         }
       })
-      const responseVotes = await axios.get(`http://8038-123-253-232-109.ngrok.io/votes/${response.data[0].barberId}`, {
+      const responseVotes = await axios.get(`${baseUrl}/votes/${response.data[0].barberId}`, {
         headers: {
           access_token: token
         }
@@ -70,9 +73,7 @@ export default function DashboardScreen({ navigation }) {
     }
   }
   
-  const [token, setToken] = useState(null)
-  const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
+
   const tokenlogin = async () => {
     try {
       const value = await AsyncStorage.getItem('token')
@@ -88,13 +89,15 @@ export default function DashboardScreen({ navigation }) {
       console.log(error);
     }
   }
-  useEffect(() => {
+  console.log(token);
+  useEffect(async () => {
     const intervalId = setInterval(() => {  //assign interval to a variable to clear it.
       (async () => {
         try {
           await tokenlogin()
           // console.log(token, `<<<< ini tokenys`);
           if(token) {
+
             let { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== "granted") {
               setErrorMsg("Permission to access location was denied");
@@ -107,7 +110,7 @@ export default function DashboardScreen({ navigation }) {
               long: getLocation.coords.longitude,
             });
             const response = await axios({
-              url: `http://8038-123-253-232-109.ngrok.io/barbers/location`,
+              url: `${baseUrl}/barbers/location`,
               method: "PATCH",
               headers: { access_token: token },
               data: {
@@ -115,9 +118,10 @@ export default function DashboardScreen({ navigation }) {
                 long: getLocation.coords.longitude,
               },
             });
-            // console.log(response,`>>> ini reasdssp`);
+            console.log(response,`>>> ini ga error`);
           }
         } catch (error) {
+          console.log(`kalo error`);
           console.log(error);
         }
       })();
@@ -133,7 +137,6 @@ export default function DashboardScreen({ navigation }) {
       setOrdersByDate(orders)
     })
   }, [])
-  console.log(date);
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShow(Platform.OS === 'ios')
@@ -144,7 +147,6 @@ export default function DashboardScreen({ navigation }) {
     let fDate = tempDate.getDate() + '-' + (tempDate.getMonth() + 1) + '-' + tempDate.getFullYear();
     let splitReverse = fDate.split('-').reverse()
     let fTime = 'Hours: ' + (tempDate.getHours()) + '| Minutes: ' + tempDate.getMinutes();
-    console.log(orders[0].date.split('T')[0].split('-').reverse().join('-'), `sadsad`);
     let splitted = fDate.split("-")
     let formatted = [null,null,null]
     if (splitted[0].length === 1) formatted[0] = "0" + splitted[0]
@@ -154,7 +156,6 @@ export default function DashboardScreen({ navigation }) {
     formatted[2] = splitted[2]
     let selectedOrders = []
     orders.forEach(e => {
-        console.log(e.date.split('T')[0].split('-').reverse().join('-') === formatted.join("-"), "loop");
         if(e.date.split('T')[0].split('-').reverse().join('-') === formatted.join("-")) {
           selectedOrders.push(e)
         }
@@ -187,56 +188,98 @@ export default function DashboardScreen({ navigation }) {
 
 
   return (
-    
-    <View>
-      <StatusBar style='auto' />
-      <SafeAreaView>
-        <View style={[styles.cardDashboard, styles.flexDirDashboard]}>
-          <View>
-            <Text >Gambar</Text>
-          </View>
-          <View>
-            <Text style={styles.textDashboard}>Total Cuts    : {statistic.totalCukur}</Text>
-            <Text style={styles.textDashboard}>Total Income  : Rp. {statistic.totalIncome}</Text>
-            <Text style={styles.textDashboard}>Average Rating   : {statistic.avgRating}</Text>
-          </View>
-        </View>
-        <View style={styles.cardDashboard}>
-          <Text>{text}</Text>
-          <View >
-            <Button title='DatePicker' onPress={() => showMode('date')} />
-          </View>
-          <View>
-          </View>
-          {show && (<DateTimePicker
-            testID="dateTimePicker"
-            value={date}
-            mode={mode}
-            is24Hour={true}
-            display='default'
-            onChange={onChange}
-          />)}
-        </View>
-        <View style={styles.cardDashboard}>
-          <Text>Table untuk list order</Text>
-          {
-            ordersByDate.length > 0 && ordersByDate.map((item) => {
-              return (
-              <View key={item.id}>
-                <Text>{item.id}</Text>
-                <Text>{item.hour}</Text>
-                <Text>{item.price}</Text>
-                <Text>{item.address}</Text>
-                <Button title="Location" onPress={ ()=> Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${item.lat}%2C${item.long}`) }/>
-                
+    <ScrollView>
+      <View>
+        <StatusBar style='auto' />
+        <SafeAreaView>
+          <View style={[styles.cardDashboard, styles.flexDirDashboard]}>
+            <View style={{flex:2}}>
+              <Text >Gambar</Text>
+            </View>
+            <View style={{flex: 3}}>
+            <View style={{flexDirection: "row", width:"100%"}} >
+              <View style={[{flex:1}]}>
+                <Text style={[styles.textDashboard]}>Total Cuts        :</Text>
+
               </View>
-              )
-            })
-          }
-        </View>
-        <Button onPress={logout} title="Log Out" />
-      </SafeAreaView>
-    </View>
+              <View style={[{flex: 1}]}>
+                <Text style={[styles.textDashboard]}>{statistic.totalCukur}</Text>
+
+              </View>
+              
+                    
+            </View>
+            <View style={{flexDirection: "row", width:"100%"}} >
+              <View style={[{flex: 1}]}>
+                <Text style={[styles.textDashboard]}>Total Income   :</Text>
+
+              </View>
+              <View style={[{flex: 1}]}>
+                <Text style={[styles.textDashboard]}>Rp.{statistic.totalIncome}</Text>
+
+              </View>
+              
+                    
+            </View>
+            <View style={{flexDirection: "row", width:"100%"}} >
+              <View style={[{flex: 1}]}>
+                <Text style={[styles.textDashboard]}>Rating              :</Text>
+
+              </View>
+              <View style={[{flex: 1}]}>
+                <Text style={[styles.textDashboard]}>Rp.{statistic.avgRating}</Text>
+
+              </View>
+              
+                    
+            </View>
+
+            {/* <View style={{flexDirection: "row"}} >
+              <Text style={[styles.textDashboard, {flex: 1}]}>Total Cuts    :</Text>
+              <Text style={[styles.textDashboard, {flex: 1}]}>{statistic.totalCukur}</Text>
+                    
+                    </View> */}
+            </View>
+          </View>
+          <View style={styles.cardDashboard}>
+            <Text>{text}</Text>
+            <View >
+              <Button title='DatePicker' onPress={() => showMode('date')} />
+            </View>
+            <View>
+            </View>
+            {show && (<DateTimePicker
+              testID="dateTimePicker"
+              value={date}
+              mode={mode}
+              is24Hour={true}
+              display='default'
+              onChange={onChange}
+            />)}
+          </View>
+          <View>
+            <Text>Table untuk list order</Text>
+            {
+              ordersByDate.length > 0 && ordersByDate.map((item) => {
+                return (
+                <View  style={styles.cardDashboard} key={item.id}>
+                  
+                  <Text style={{color: "white"}}>{item.id}</Text>
+                  <Text style={{color: "white"}}>{item.hour}</Text>
+                  <Text style={{color: "white"}}>{item.price}</Text>
+                  <Text style={{color: "white"}}>{item.address}</Text>
+                  <Button title="Location" onPress={ ()=> Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${item.lat}%2C${item.long}`) }/>
+                  
+                </View>
+                )
+              })
+            }
+          </View>
+          <Button onPress={logout} title="Log Out" />
+        </SafeAreaView>
+      </View>
+    </ScrollView>
+    
   )
 }
 
