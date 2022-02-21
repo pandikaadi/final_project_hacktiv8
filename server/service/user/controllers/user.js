@@ -126,16 +126,6 @@ const postLogin = async (req, res) => {
       console.log(err)
       res.status(500).json(err);
     });
-
-
-  } catch (err) {
-    console.log(err,'<<<<<<<<');
-    if (err.message === 'InvalidEmail' || err.message === 'InvalidPassword') {
-      res.status(401).json({ message: "Invalid email/password" });
-    } else {
-      res.status(500).json(err.message);
-    }
-  }
 };
 
 
