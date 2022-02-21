@@ -1,6 +1,7 @@
 const { Order, Barber, Service, User } = require("../models/index");
 
 const sendMailOrder = require("../helpers/nodemailerOrder");
+const e = require("cors");
 
 const postOrder = async (req, res) => {
   console.log(`sadadas`);
@@ -87,18 +88,29 @@ const postOrder = async (req, res) => {
 
 const getOrdersByUserId = async (req, res) => {
   // get all orders by user id
-  const { userMonggoId } = req.currentUser;
+  console.log(req.currentUser, `>>>>>`);
   try {
-    const orders = await Order.findAll({
-      order: ['id'],
-      where: { userMonggoId },
-      include: [{ model: Barber }, { model: Service }],
-    });
-    if (orders) {
-      res.status(200).json(orders);
+    const { userMonggoId } = req.currentUser;
+    if(req.currentUser.role === "Barber") {
+      const orders = await Order.findAll({
+        order: ['id'],
+        where: { userMonggoId },
+        include: [{ model: Barber }, { model: Service }],
+      });
+      if (orders) {
+        res.status(200).json(orders);
+      }
+    } else {
+      const orders = await Order.findAll({
+        order: ['id'],
+        include: [{ model: Barber }, { model: Service }],
+      });
+      if (orders) {
+        res.status(200).json(orders);
+      }
     }
   } catch (err) {
-    // console.log(err);
+    console.log(err);
     res.status(500).json(err);
   }
 };

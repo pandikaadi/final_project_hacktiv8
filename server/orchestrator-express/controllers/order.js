@@ -3,7 +3,9 @@ const { verifyToken } = require("../helpers/jwt");
 
 const getOrders = async (req, res) => {
   const token = req.headers.access_token;
+  console.log(`isiisisisi`);
   const payload = verifyToken(token);
+  console.log(payload);
   try {
     const { data: orders } = await axios({
       method: "GET",
@@ -12,14 +14,22 @@ const getOrders = async (req, res) => {
         access_token: token,
       },
     });
-    if (orders) {
+    if (orders && payload.role !== `Admin`) {
       const { data: user } = await axios({
         method: "GET",
         url: `http://localhost:4002/users/${payload.id}`,
       });
       res.status(200).json({ orders, user });
     } else {
-      res.status(404).json({ message: "orders not found" });
+      if(payload.role === 'Admin') {
+        const { data: user } = await axios({
+          method: "GET",
+          url: `http://localhost:4002/users/`,
+        });
+        res.status(200).json({orders, user})
+      } else {
+        res.status(404).json({ message: "orders not found" });
+      }
     }
   } catch (err) {
     console.log(err);
@@ -62,10 +72,6 @@ const getOrdersByBarber = async (req, res) => {
       },
     });
     if (orders) {
-      const { data: barber } = await axios({
-        method: "GET",
-        url: `http://localhost:4001/barbers/${payload.id}`,
-      });
       res.status(200).json(orders);
     } else {
       res.status(404).json({ message: "orders not found" });

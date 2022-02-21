@@ -48,6 +48,19 @@ const authentication = async (req, res, next) => {
           res.status(401).json({ message: "Unauthorized" });
         }
       }
+    } else if(payload.role === "Admin") {
+      const user = await axios({
+        method: "GET",
+        url: `http://localhost:4002/users/${payload.id}`,
+      });
+      req.currentUser = {
+        id: user.data.id,
+        userMonggoId: payload.userMonggoId || null,
+        role: user.data.role,
+        username: user.data.username,
+        email: user.data.email,
+      };
+      next()
     }
   } catch (err) {
     if (err.name === "JsonWebTokenError") {
