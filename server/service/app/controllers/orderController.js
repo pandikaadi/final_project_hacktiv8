@@ -1,6 +1,7 @@
 const { Order, Barber, Service, User } = require("../models/index");
 
 const sendMailOrder = require("../helpers/nodemailerOrder");
+const e = require("cors");
 
 const postOrder = async (req, res) => {
   console.log(`sadadas`);
@@ -13,6 +14,7 @@ const postOrder = async (req, res) => {
       .toISOString()
       .slice(5, 9)}${new Date().toISOString().slice(13, 20)}`;
     //order key barberId - userId - tanggal
+    console.log('post order before snap midtrans ---', req.body)
     const midtransClient = require("midtrans-client");
     // Create Snap API instance
     let snap = new midtransClient.Snap({
@@ -20,7 +22,6 @@ const postOrder = async (req, res) => {
       isProduction: false,
       serverKey: "SB-Mid-server-0f3s9hGBklmiZm7cVhZ9KBZO",
     });
-    console.log(price, `>>>>>>>`);
     let parameter = {
       transaction_details: {
         order_id: orderKey,
@@ -64,7 +65,6 @@ const postOrder = async (req, res) => {
       }
     }
   } catch (err) {
-    console.log(err);
     if (err.name === "SequelizeForeignKeyConstraintError") {
       res.status(400).json({ message: "bad request" });
     } else if (err.errors) {
@@ -88,18 +88,29 @@ const postOrder = async (req, res) => {
 
 const getOrdersByUserId = async (req, res) => {
   // get all orders by user id
-  const { userMonggoId } = req.currentUser;
+  console.log(req.currentUser, `>>>>>`);
   try {
-    const orders = await Order.findAll({
-      order: ['id'],
-      where: { userMonggoId },
-      include: [{ model: Barber }, { model: Service }],
-    });
-    if (orders) {
-      res.status(200).json(orders);
+    const { userMonggoId } = req.currentUser;
+    if(req.currentUser.role === "Barber") {
+      const orders = await Order.findAll({
+        order: ['id'],
+        where: { userMonggoId },
+        include: [{ model: Barber }, { model: Service }],
+      });
+      if (orders) {
+        res.status(200).json(orders);
+      }
+    } else {
+      const orders = await Order.findAll({
+        order: ['id'],
+        include: [{ model: Barber }, { model: Service }],
+      });
+      if (orders) {
+        res.status(200).json(orders);
+      }
     }
   } catch (err) {
-    // console.log(err);
+    console.log(err);
     res.status(500).json(err);
   }
 };

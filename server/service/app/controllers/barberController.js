@@ -1,13 +1,21 @@
-const { Barber, Order } = require("../models/index");
+
+const { Barber, Order, User } = require("../models/index");
 const { compareHash } = require("../helpers/bcrypt");
 const { createToken } = require("../helpers/jwt");
-// const e = require("cors");
 
 const getBarbers = async (req, res) => {
   try {
     const barbers = await Barber.findAll();
+    // const coba = await User.create({
+    //   username: "anggorego",
+    //   email: "test@mail.com",
+    //   password: "testing",
+    //   phoneNumber: "0821232323",
+    // })
+    // console.log(coba);
     res.status(200).json(barbers);
   } catch (err) {
+  
     res.status(500).json(err);
   }
 };
@@ -78,7 +86,6 @@ const deleteBarber = async (req, res) => {
     res.status(500).json(err);
   }
 };
-
 const updateBarber = async (req, res) => {
   const { name, email, password, phoneNumber } = req.body;
   const { id } = req.params;
@@ -153,7 +160,7 @@ const barberLogin = async (req, res) => {
     } else {
     }
     if (!compareHash(password, result.password)) {
-      throw new Error("invalid password");
+      throw { message: "Invalid email/password" };
     }
 
     const payload = {
@@ -167,7 +174,7 @@ const barberLogin = async (req, res) => {
       access_token: token,
     });
   } catch (err) {
-    if (err.message === "invalid password") {
+    if (err.message === "Invalid email/password") {
       res.status(401).json(err.message);
     } else if (err.message === "no result") {
       res.status(404).json(err.message);

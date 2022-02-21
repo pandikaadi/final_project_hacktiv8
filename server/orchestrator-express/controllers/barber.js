@@ -1,6 +1,7 @@
 const axios = require("axios");
 
 const getBarbers = async (req, res) => {
+  console.log(`isiisisisi`);
   try {
     const { data: barbers } = await axios({
       method: "GET",
@@ -67,6 +68,7 @@ const loginBarber = async (req, res) => {
 };
 
 const updateLocationBarber = async (req, res) => {
+  console.log(`>>> update loc mashok`);
   try {
     const { data: message } = await axios({
       headers: {access_token: req.headers.access_token},

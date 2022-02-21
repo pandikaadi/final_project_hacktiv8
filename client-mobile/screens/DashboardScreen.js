@@ -4,9 +4,11 @@ import { Button, FlatList, Linking, Dimensions, SafeAreaView, ScrollView, Status
 import DateTimePicker from '@react-native-community/datetimepicker'
 import axios from "axios";
 import * as Location from "expo-location";
-const baseUrl = `https://4574-110-138-83-92.ngrok.io`
+
+const baseUrl = `https://6c28-123-253-232-109.ngrok.io`
 
 export default function DashboardScreen({ navigation }) {
+  
 
   const [date, setDate] = useState(new Date())
   const [mode, setMode] = useState('date')
@@ -27,6 +29,31 @@ export default function DashboardScreen({ navigation }) {
   })
   // console.log(orders);
 
+  useEffect(() => {
+    let avg = null
+    if(votes.length > 0) {
+      votes.forEach((e) => {
+        avg += e.value
+      })
+    }
+
+    if(orders.length > 0) {
+    let totalCukur = 0
+    let totalIncome = 0
+      orders.forEach((e) => {
+        if(e.statusBarber === "Finished" || e.statusBarber === "Voted") {
+          totalCukur += 1
+          totalIncome += e.price
+        }
+      })
+      setStatistic({
+        ...statistic,
+        totalCukur,
+        totalIncome,
+        avgRating: 0 || +(avg/votes.length).toFixed(1)
+      })
+    }
+  }, [orders, votes])
   const getOrders = async () => {
     try {
       const token = await AsyncStorage.getItem('token')
@@ -36,7 +63,6 @@ export default function DashboardScreen({ navigation }) {
           access_token: token
         }
       })
-      console.log(response.data,'ini response.data')
       const responseVotes = await axios.get(`${baseUrl}/votes/${response.data[0].barberId}`, {
         headers: {
           access_token: token
@@ -65,84 +91,15 @@ export default function DashboardScreen({ navigation }) {
       console.log(error);
     }
   }
-
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShow(Platform.OS === 'ios')
-    setDate(currentDate)
-
-
-    let tempDate = new Date(currentDate)
-    let fDate = tempDate.getDate() + '-' + (tempDate.getMonth() + 1) + '-' + tempDate.getFullYear();
-    let splitReverse = fDate.split('-').reverse()
-    let fTime = 'Hours: ' + (tempDate.getHours()) + '| Minutes: ' + tempDate.getMinutes();
-    let splitted = fDate.split("-")
-    let formatted = [null, null, null]
-    if (splitted[0].length === 1) formatted[0] = "0" + splitted[0]
-    else formatted[0] = splitted[0]
-    if (splitted[1].length === 1) formatted[1] = "0" + splitted[1]
-    else formatted[1] = splitted[1]
-    formatted[2] = splitted[2]
-    let selectedOrders = []
-    orders.forEach(e => {
-      if (e.date.split('T')[0].split('-').reverse().join('-') === formatted.join("-")) {
-        selectedOrders.push(e)
-      }
-    })
-
-    setOrdersByDate(selectedOrders)
-
-    setText(fDate)
-
-    // console.log(fDate + '(' + fTime + ') ')
-  }
-  const showMode = (currentMode) => {
-    setShow(true)
-    setMode(currentMode)
-  }
-
-  const logout = async () => {
-    await AsyncStorage.removeItem('token')
-    navigation.navigate('Login')
-  }
-  const toDetail = (id) => {
-    navigation.navigate('Detail', { orderId: id })
-  }
-
-  useEffect(() => {
-    console.log(votes)
-    let avg = null
-    if (votes.length > 0) {
-      votes.forEach((e) => {
-        avg += e.value
-      })
-    }
-
-    if (orders.length > 0) {
-      let totalCukur = 0
-      let totalIncome = 0
-      orders.forEach((e) => {
-        if (e.statusBarber === "Finished" || e.statusBarber === "Voted") {
-          totalCukur += 1
-          totalIncome += e.price
-        }
-      })
-      setStatistic({
-        ...statistic,
-        totalCukur,
-        totalIncome,
-        avgRating: 0 || +(avg / votes.length).toFixed(1)
-      })
-    }
-  }, [orders, votes])
-
   useEffect(async () => {
     const intervalId = setInterval(() => {  //assign interval to a variable to clear it.
       (async () => {
         try {
           await tokenlogin()
           // console.log(token, `<<<< ini tokenys`);
+
           if (token) {
+
 
             let { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== "granted") {
@@ -164,7 +121,6 @@ export default function DashboardScreen({ navigation }) {
                 long: getLocation.coords.longitude,
               },
             });
-            console.log(response, `>>> ini ga error`);
           }
         } catch (error) {
           console.log(`kalo error`);
@@ -184,6 +140,46 @@ export default function DashboardScreen({ navigation }) {
       })
   }, [])
 
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === 'ios')
+    setDate(currentDate)
+    
+
+    let tempDate = new Date(currentDate)
+    let fDate = tempDate.getDate() + '-' + (tempDate.getMonth() + 1) + '-' + tempDate.getFullYear();
+    let splitReverse = fDate.split('-').reverse()
+    let fTime = 'Hours: ' + (tempDate.getHours()) + '| Minutes: ' + tempDate.getMinutes();
+    let splitted = fDate.split("-")
+    let formatted = [null,null,null]
+    if (splitted[0].length === 1) formatted[0] = "0" + splitted[0]
+    else formatted[0] = splitted[0]
+    if (splitted[1].length === 1) formatted[1] = "0" + splitted[1]
+    else formatted[1] = splitted[1]
+    formatted[2] = splitted[2]
+    let selectedOrders = []
+    orders.forEach(e => {
+        if(e.date.split('T')[0].split('-').reverse().join('-') === formatted.join("-")) {
+          selectedOrders.push(e)
+        }
+    })
+
+    setOrdersByDate(selectedOrders)
+    
+    setText(fDate)
+    
+    // console.log(fDate + '(' + fTime + ') ')
+  }
+
+  const showMode = (currentMode) => {
+    setShow(true)
+    setMode(currentMode)
+  }
+
+  const logout = async () => {
+    await AsyncStorage.removeItem('token')
+    navigation.navigate('Login')
+  }
 
   if (loading) {
     return (
@@ -200,13 +196,53 @@ export default function DashboardScreen({ navigation }) {
         <StatusBar style='auto' />
         <SafeAreaView>
           <View style={[styles.cardDashboard, styles.flexDirDashboard]}>
-            <View>
+
+            <View style={{flex:2}}>
               <Text >Gambar</Text>
             </View>
-            <View>
-              <Text style={styles.textDashboard}>Total Cuts    : {statistic.totalCukur}</Text>
-              <Text style={styles.textDashboard}>Total Income  : Rp. {statistic.totalIncome}</Text>
-              <Text style={styles.textDashboard}>Average Rating   : {statistic.avgRating}</Text>
+            <View style={{flex: 3}}>
+            <View style={{flexDirection: "row", width:"100%"}} >
+              <View style={[{flex:1}]}>
+                <Text style={[styles.textDashboard]}>Total Cuts        :</Text>
+
+              </View>
+              <View style={[{flex: 1}]}>
+                <Text style={[styles.textDashboard]}>{statistic.totalCukur}</Text>
+
+              </View>
+              
+                    
+            </View>
+            <View style={{flexDirection: "row", width:"100%"}} >
+              <View style={[{flex: 1}]}>
+                <Text style={[styles.textDashboard]}>Total Income   :</Text>
+
+              </View>
+              <View style={[{flex: 1}]}>
+                <Text style={[styles.textDashboard]}>Rp.{statistic.totalIncome}</Text>
+
+              </View>
+              
+                    
+            </View>
+            <View style={{flexDirection: "row", width:"100%"}} >
+              <View style={[{flex: 1}]}>
+                <Text style={[styles.textDashboard]}>Rating              :</Text>
+
+              </View>
+              <View style={[{flex: 1}]}>
+                <Text style={[styles.textDashboard]}>Rp.{statistic.avgRating}</Text>
+
+              </View>
+              
+                    
+            </View>
+
+            {/* <View style={{flexDirection: "row"}} >
+              <Text style={[styles.textDashboard, {flex: 1}]}>Total Cuts    :</Text>
+              <Text style={[styles.textDashboard, {flex: 1}]}>{statistic.totalCukur}</Text>
+                    
+                    </View> */}
             </View>
           </View>
           <View style={styles.cardDashboard}>
@@ -230,6 +266,7 @@ export default function DashboardScreen({ navigation }) {
             {
               ordersByDate.length > 0 && ordersByDate.map((item) => {
                 return (
+
                   <View style={styles.cardDashboard} key={item.id}>
                     <Text style={{ color: "white" }}>{item.id}</Text>
                     <Text style={{ color: "white" }}>{item.hour}</Text>
@@ -246,7 +283,6 @@ export default function DashboardScreen({ navigation }) {
         </SafeAreaView>
       </View>
     </ScrollView>
-
   )
 }
 

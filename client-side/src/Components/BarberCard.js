@@ -34,7 +34,7 @@ function ChooseBarber() {
 
   return (
     <>
-      <div className="flex justify-center">
+      <div className="flex justify-center  mb-16">
         <div className="flex flex-col w-11/12">
           {filteredBarbers.map((x) => (
             <div

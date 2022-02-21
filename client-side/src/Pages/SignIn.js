@@ -1,7 +1,7 @@
 import React from "react";
 import Fade from "react-reveal/Fade";
-import { Link, useNavigate, } from "react-router-dom";
-import { useState, } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { doLogin } from "../store/actionCreators/actionCreator";
 import { toast } from "react-toastify";
@@ -22,37 +22,35 @@ function SignIn() {
   }
   function handleLogin(e) {
     e.preventDefault();
-    localStorage.setItem("access_token", "access_token");
     dispatch(
       doLogin({
         email,
         password,
-      }),
+      })
     )
-    .then(() => {
-      toast.success('You are logged in', {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
+      .then(() => {
+        toast.success("You are logged in", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        navigate("/home");
+      })
+      .catch((err) => {
+        toast.error(`${err}`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       });
-      navigate("/home");
-    })
-    .catch((err) => {
-      toast.error(`${err}`, {
-        position: 'top-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    });
-    
   }
 
   return (

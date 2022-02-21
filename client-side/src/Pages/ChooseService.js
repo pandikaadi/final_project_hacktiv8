@@ -8,6 +8,7 @@ import RatingModal from "../Components/RatingModal";
 import { toast } from "react-toastify";
 import { GetOrders } from "../store/actionCreators/actionCreator";
 import BottomNav from "../Components/BottomNav";
+import Sorry from "../Components/Sorry";
 
 function CardForm() {
   const dispatch = useDispatch();
@@ -122,6 +123,11 @@ function CardForm() {
           (userOrder.orders.length === 0 ||
             userOrder.orders[userOrder.orders.length - 1].statusBarber ===
               "Voted") && <FormCard isLocated={selector} />}
+        {/* {!isService &&
+          (userOrder.orders[userOrder.orders.length - 1].statusBarber ===
+            "Finished" ||
+            userOrder.orders[userOrder.orders.length - 1].statusBarber ===
+              "Pending") && <Sorry />} */}
         {isService && <ChooseBarber />}
         {userOrder.orders[userOrder.orders.length - 1].statusBarber ===
           "Finished" && <RatingModal />}

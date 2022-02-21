@@ -38,7 +38,7 @@ function UpperBody() {
           {isAuthen && (
             <li>
               <Link to="/home" className="text-white font-semibold  mx-4">
-                BOOKING
+                HOME
               </Link>
             </li>
           )}

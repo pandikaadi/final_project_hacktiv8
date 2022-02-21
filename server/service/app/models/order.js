@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      
       // define association here
       Order.belongsTo(models.Barber,{foreignKey:"barberId"})
       Order.belongsTo(models.Service,{foreignKey:'serviceId'})
@@ -31,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         notEmpty: {
-          msg:'Please choose one '
+          msg:'Please choose one'
         }
       }
     },
@@ -41,6 +42,8 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notEmpty: {
           msg:'date is required'
+        }, notNull:{
+          msg:'date cant be null'
         }
       }
     },
@@ -50,6 +53,8 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notEmpty: {
           msg:'hour is required'
+        }, notNull:{
+          msg:'hour cant be null'
         }
       }
     },
@@ -65,6 +70,8 @@ module.exports = (sequelize, DataTypes) => {
       beforeCreate(instance,option){
         instance.statusPayment = false
         instance.statusBarber = 'Pending'
+        instance.orderKey = randomString(10, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
+        // instance.orderKey = 'orderkey'
       },
     },
     modelName: 'Order',

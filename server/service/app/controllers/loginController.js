@@ -25,6 +25,7 @@ const postLogin = async (req, res) => {
       role: result.role,
     };
     const token = createToken(payload);
+    
     res.status(200).json({
       access_token: token,
     });

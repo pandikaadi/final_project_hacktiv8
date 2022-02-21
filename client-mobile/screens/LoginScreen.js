@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Alert, Image, Keyboard, KeyboardAvoidingView, Text, TextInput, TouchableWithoutFeedback, Pressable, View, ScrollView, Button, StyleSheet, StatusBar } from "react-native";
+import { Alert, Image, Dimensions, Keyboard, KeyboardAvoidingView, Text, TextInput, TouchableWithoutFeedback, Pressable, View, ScrollView, Button, StyleSheet, StatusBar, TouchableOpacity } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios'
-
+const phoneHeight = Dimensions.get('window').height
 export default function LoginScreen({ navigation }) {
+  
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [token, setToken] = useState(null)
@@ -11,7 +12,9 @@ export default function LoginScreen({ navigation }) {
   const baseUrl = `https://4574-110-138-83-92.ngrok.io`
   const onLoginPress = async () => {
     try {
+
       const response = await axios.post(`${baseUrl}/barbers/login`, {
+
         email,
         password
       })
@@ -57,11 +60,20 @@ export default function LoginScreen({ navigation }) {
           <View style={styles.loginScreenContainer}>
             <StatusBar style='auto' />
             <View style={styles.loginFormView}>
-              <Text style={styles.logoText} >Shave8</Text>
-              <TextInput style={styles.loginFormTextInput} placeholder="Email" placeholderColor="#c4c3cb" onChangeText={email => setEmail(email)} value={email} />
-              <TextInput style={styles.loginFormTextInput} placeholder="Password" placeholderColor="#c4c3cb" onChangeText={password => setPassword(password)}
+              <View>
+                <Image style={[{width: "100%", height: 80}, styles.logoText]} source={require('../assets/logo1.png')} />
+              </View>
+              <View>
+                <TextInput style={styles.loginFormTextInput} placeholder="Email" placeholderColor="#c4c3cb" onChangeText={email => setEmail(email)} value={email} />
+              </View>
+              <View>
+                <TextInput style={styles.loginFormTextInput} placeholder="Password" placeholderColor="#c4c3cb" onChangeText={password => setPassword(password)}
                 value={password} secureTextEntry={true} />
-              <Button buttonStyle={styles.loginButton} onPress={onLoginPress} title="Login" />
+              </View>
+              <View>
+                <TouchableOpacity onPress={onLoginPress} title="Login"><Text style={styles.loginButton}>Sign In</Text></TouchableOpacity>
+              </View>
+                
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -79,20 +91,20 @@ const styles = StyleSheet.create({
   },
   containerView: {
     flex: 1,
-    alignItems: "center"
+    alignItems: "center",
+    backgroundColor: "#282c34",
+    minHeight: phoneHeight
   },
   loginScreenContainer: {
     flex: 1,
+    minWidth: "75%",
+    height: "100%",
+    marginTop: 100
   },
   logoText: {
-    fontSize: 40,
-    fontWeight: "800",
-    marginTop: 150,
-    marginBottom: 30,
-    textAlign: "center",
   },
   loginFormView: {
-    flex: 1,
+    
   },
   loginFormTextInput: {
     height: 43,
@@ -106,11 +118,16 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   loginButton: {
-    backgroundColor: "#3897f1",
+    width: "100%",
+    backgroundColor: "transparent",
+    borderWidth: 2,
+    borderColor: "white",
+    height: 43,
     borderRadius: 5,
-    height: 45,
-    marginTop: 10,
-    width: 350,
-    alignItems: "center"
+    marginTop: 5,
+    marginBottom: 5,
+    textAlign: "center",
+    textAlignVertical: "center",
+    color: "white"
   }
 });
