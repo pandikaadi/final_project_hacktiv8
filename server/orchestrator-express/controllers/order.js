@@ -182,6 +182,10 @@ const translateCoordinate = async (req, res) => {
   }
 };
 const updateStatusBarber = async (req, res) => {
+  console.log(req.body)
+  console.log('-------------------------------------------2')
+  console.log('-------------------------------------------3')
+  console.log('-------------------------------------------4')
   const token = req.headers.access_token;
   const { id } = req.params;
   const { statusBarber } = req.body;
