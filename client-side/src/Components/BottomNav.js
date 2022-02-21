@@ -79,7 +79,7 @@ function BottomNav() {
         </button>
 
         <button
-          href="#"
+          onClick={logoutHandler}
           className="w-full block py-2 px-3 text-center hover:bg-slate-200 hover:text-slate-800"
         >
           <svg
@@ -87,7 +87,6 @@ function BottomNav() {
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
-            onClick={logoutHandler}
             stroke="black"
           >
             <path

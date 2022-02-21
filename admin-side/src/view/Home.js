@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import Navbar from "../component/Navbar";
 import AdminModal from "../component/AdminModal";
 import BarberModal from "../component/BarberModal";
+import BarChart from "../component/Chart";
 
 function Home() {
   const { registerBarber, registerAdmin } = useSelector((state) => state.admin);
@@ -12,6 +13,7 @@ function Home() {
       <Navbar />
       {registerAdmin && <AdminModal />}
       {registerBarber && <BarberModal />}
+      <BarChart />
       <div className="container mx-auto px-4 sm:px-8">
         <div className="">
           <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
