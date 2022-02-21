@@ -1,16 +1,30 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
-// import { Chart, registerables } from "chart.js";
-// Chart.register(...registerables);
 import Chart from "chart.js/auto";
+import { useSelector } from "react-redux";
 
 function BarChart() {
+  let totalIncome = 0;
+  let totalVote = 0;
+  const { chartData } = useSelector((state) => state.data);
+
+  const totalBarber = chartData.app.barbers.length;
+  const totalOrder = chartData.app.orders.length;
+
+  chartData.app.orders.map((el) => {
+    return (totalIncome += el.price);
+  });
+
+  chartData.app.votes.map((el) => {
+    return (totalVote += el.value);
+  });
+
   const data = {
-    labels: ["Total Barber", "Total Income", "Total Order", "Book Average"],
+    labels: ["Total Barber", "Total Income", "Total Order", "Vote Average"],
     datasets: [
       {
         label: "# of Votes",
-        data: [12, 19, 3, 5],
+        data: [totalBarber, totalIncome, totalOrder, totalVote / totalOrder],
         backgroundColor: [
           "rgba(255, 99, 132, 0.2)",
           "rgba(54, 162, 235, 0.2)",

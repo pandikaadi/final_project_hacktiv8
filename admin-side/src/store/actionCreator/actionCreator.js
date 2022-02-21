@@ -1,6 +1,9 @@
 import {
   SET_REGISTER_BARBER,
   SET_REGISTER_ADMIN,
+  FETCH_CHARTDATA,
+  SET_LOADING,
+  SET_ERROR,
 } from "../actionTypes/actionType";
 
 export const postBarber = (payload) => {
@@ -27,22 +30,27 @@ export const postBarber = (payload) => {
   };
 };
 
-export const fetchBarber = (payload) => {
+export const fetchBarber = (payload, act) => {
+  console.log(act);
   return (dispatch) => {
     fetch("http://localhost:4000/admin/all", {
       method: "GET",
+      headers: { access_token: payload },
     })
       .then((res) => {
         return res.json().then((data) => {
           if (res.ok) {
-            console.log(data);
+            dispatch(fetchChartData(data));
           } else {
             return Promise.reject(data);
           }
         });
       })
       .catch((err) => {
-        console.log(err);
+        dispatch(setError(err));
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
       });
   };
 };
@@ -66,7 +74,7 @@ export const postAdmin = (payload) => {
         });
       })
       .catch((err) => {
-        console.log(err, ">>>>>>>>>error");
+        console.log(err);
       });
   };
 };
@@ -93,6 +101,27 @@ export const setRegister = (payload) => {
 export const setRegisterAdmin = (payload) => {
   return {
     type: SET_REGISTER_ADMIN,
+    payload,
+  };
+};
+
+export const fetchChartData = (payload) => {
+  return {
+    type: FETCH_CHARTDATA,
+    payload,
+  };
+};
+
+export const setLoading = (payload) => {
+  return {
+    type: SET_LOADING,
+    payload,
+  };
+};
+
+export const setError = (payload) => {
+  return {
+    type: SET_ERROR,
     payload,
   };
 };
