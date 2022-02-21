@@ -1,0 +1,58 @@
+[
+  {
+      "id" : 1,
+      "userMonggoId" : null,
+      "barberId" : 3,
+      "createdAt" : "2022-02-20T11:55:13.778Z",
+      "updatedAt" : "2022-02-20T11:55:13.778Z",
+      "value" : null
+  },
+  {
+      "id" : 15,
+      "userMonggoId" : "621210a7995c390e08e5c7af",
+      "barberId" : 5,
+      "createdAt" : "2022-02-20T19:53:50.227Z",
+      "updatedAt" : "2022-02-20T19:53:50.227Z",
+      "value" : 4
+  },
+  {
+      "id" : 16,
+      "userMonggoId" : "621210a7995c390e08e5c7af",
+      "barberId" : 5,
+      "createdAt" : "2022-02-20T19:53:50.227Z",
+      "updatedAt" : "2022-02-20T19:53:50.227Z",
+      "value" : 3
+  },
+  {
+      "id" : 17,
+      "userMonggoId" : "621210a7995c390e08e5c7af",
+      "barberId" : 5,
+      "createdAt" : "2022-02-20T19:53:50.227Z",
+      "updatedAt" : "2022-02-20T19:53:50.227Z",
+      "value" : 2
+  },
+  {
+      "id" : 18,
+      "userMonggoId" : "621210a7995c390e08e5c7af",
+      "barberId" : 5,
+      "createdAt" : "2022-02-20T19:53:50.227Z",
+      "updatedAt" : "2022-02-20T19:53:50.227Z",
+      "value" : 1
+  },
+  {
+      "id" : 19,
+      "userMonggoId" : "621210a7995c390e08e5c7af",
+      "barberId" : 5,
+      "createdAt" : "2022-02-20T19:53:50.227Z",
+      "updatedAt" : "2022-02-20T19:53:50.227Z",
+      "value" : 4
+  },
+  {
+      "id" : 14,
+      "userMonggoId" : "621210a7995c390e08e5c7af",
+      "barberId" : 5,
+      "createdAt" : "2022-02-20T19:53:50.227Z",
+      "updatedAt" : "2022-02-20T19:53:50.227Z",
+      "value" : 5
+  }
+]

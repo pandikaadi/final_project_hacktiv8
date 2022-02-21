@@ -1,8 +1,67 @@
 [
   {
+    "id": 1,
     "name": "anggoro sanrego",
     "email": "anggorego124@gmail.com",
-    "password":"testing",
-    "phoneNumber":"0821987633"
+    "password": "testing",
+    "phoneNumber": "0821987633",
+    "createdAt": "2022-02-19T15:01:01.910Z",
+    "updatedAt": "2022-02-19T15:01:01.910Z",
+    "role": null,
+    "lat": null,
+    "long": null,
+    "city": "Bandung"
+  },
+  {
+    "id": 2,
+    "name": "Tatang",
+    "email": null,
+    "password": null,
+    "phoneNumber": null,
+    "createdAt": "2022-02-19T15:01:01.910Z",
+    "updatedAt": "2022-02-19T15:01:01.910Z",
+    "role": null,
+    "lat": null,
+    "long": null,
+    "city": "Bandung"
+  },
+  {
+    "id": 3,
+    "name": "Titing",
+    "email": null,
+    "password": null,
+    "phoneNumber": null,
+    "createdAt": "2022-02-19T18:22:33.804Z",
+    "updatedAt": "2022-02-19T18:22:33.804Z",
+    "role": null,
+    "lat": null,
+    "long": null,
+    "city": "Jakarta"
+  },
+  {
+    "id": 5,
+    "name": "pandonoBarber",
+    "email": "pandonoBarber@gmail.com",
+    "password": "$2a$10$qKsYR5VK4YEmq8mueGks9ukl6U7iJSX12bD1j1qeLIKVKJ.\/51s2i",
+    "phoneNumber": "081324987305",
+    "createdAt": "2022-02-20T15:25:21.093Z",
+    "updatedAt": "2022-02-20T21:32:38.921Z",
+    "role": "Barber",
+    "lat": -6.9155783,
+    "long": 107.6517722,
+    "city": null
+  },
+  {
+    "id": 4,
+    "name": "pandonoBarber",
+    "email": "pandonoBarber@gmail.com",
+    "password": "$2a$10$QJ0p8sdkklLH6c6GDujkUucFUQjzP1mssZAUe\/j2Wv618bfNm5mpe",
+    "phoneNumber": "081324987305",
+    "createdAt": "2022-02-20T15:24:51.845Z",
+    "updatedAt": "2022-02-20T19:06:21.516Z",
+    "role": "Barber",
+    "lat": -6.9155557,
+    "long": 107.6517461,
+    "city": null
   }
 ]

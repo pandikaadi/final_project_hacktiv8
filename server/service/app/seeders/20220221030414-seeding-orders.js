@@ -1,13 +1,5 @@
 'use strict';
-const fs = require('fs')
-const { createHash } = require('../helpers/bcrypt')
-let datas = JSON.parse(fs.readFileSync("./db/barbers.json","utf-8"))
-datas.forEach(el=> {
-  // el.password = createHash(el.password)
-  el.createdAt = new Date()
-  el.updatedAt = new Date()
-  delete el.id
-})
+
 module.exports = {
   async up (queryInterface, Sequelize) {
     /**
@@ -19,7 +11,15 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-     await queryInterface.bulkInsert('Barbers',datas, {});
+     const orders = require("../db/order.json");
+
+     orders.forEach((v) => {
+       delete v.id;
+       v.createdAt = new Date();
+       v.updatedAt = new Date();
+     });
+ 
+     await queryInterface.bulkInsert("Orders", orders);
   },
 
   async down (queryInterface, Sequelize) {
@@ -29,6 +29,6 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-     await queryInterface.bulkDelete('Barbers', null, {});
+     await queryInterface.bulkDelete("Orders", null, {});
   }
 };
