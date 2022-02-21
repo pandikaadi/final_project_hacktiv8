@@ -112,16 +112,20 @@ const postLogin = async (req, res) => {
       role: foundUser.role,
     };
     const token = createToken(payload);
-    res.status(200).json({ access_token: token, role: foundUser.role });
+    res.status(200).json({
+      access_token: token,
+      role: foundUser.role
+    });
   } catch (err) {
-    console.log(err, "<<<<<<<<");
-    if (err.message === "InvalidEmail" || err.message === "InvalidPassword") {
+    console.log(err,'<<<<<<<<');
+    if (err.message === 'InvalidEmail' || err.message === 'InvalidPassword') {
       res.status(401).json({ message: "Invalid email/password" });
     } else {
       res.status(500).json(err.message);
     }
   }
 };
+  
 
 // const updateLocation = (req,res) => {
 

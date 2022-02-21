@@ -60,6 +60,32 @@ const getOrdersByDate = async (req, res) => {
   }
 };
 
+const getOrderById = async (req, res) => {
+  const token = req.headers.access_token
+  // const payload = verifyToken(token) //salah
+  // console.log(payload , req.params)
+  try {
+    const { data: order } = await axios({
+      method: 'GET',
+      url: `http://localhost:4001/orders/${req.params.id}`,
+      headers: {
+        access_token: token
+      }
+    })
+const {data:user} = await axios({
+  method:'GET',
+  url:`http://localhost:4002/users/${order.userMonggoId}`
+})
+if (order) {
+  res.status(200).json({ order,user });
+    } else {
+      res.status(404).json({ message: "orders not found" });
+    }
+  } catch (err) {
+    res.status(500).json(err)
+  }
+}
+
 const getOrdersByBarber = async (req, res) => {
   const token = req.headers.access_token;
   const payload = verifyToken(token);
@@ -180,5 +206,6 @@ module.exports = {
   deleteOrder,
   getOrdersByBarber,
   updateStatusBarber,
-  getOrdersByDate
+  getOrdersByDate,
+  getOrderById
 };

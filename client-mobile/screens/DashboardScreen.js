@@ -4,10 +4,12 @@ import { Button, FlatList, Linking, Dimensions, SafeAreaView, ScrollView, Status
 import DateTimePicker from '@react-native-community/datetimepicker'
 import axios from "axios";
 import * as Location from "expo-location";
-const baseUrl = `https://6c28-123-253-232-109.ngrok.io`
+
+const baseUrl = `https://4574-110-138-83-92.ngrok.io`
 
 export default function DashboardScreen({ navigation }) {
-  
+
+
   const [date, setDate] = useState(new Date())
   const [mode, setMode] = useState('date')
   const [show, setShow] = useState(false)
@@ -26,19 +28,21 @@ export default function DashboardScreen({ navigation }) {
     avgRating: 0
   })
   // console.log(orders);
+
+  const [isMounted, setIsMounted] = useState(true)
   useEffect(() => {
     let avg = null
-    if(votes.length > 0) {
+    if (votes.length > 0) {
       votes.forEach((e) => {
         avg += e.value
       })
     }
 
-    if(orders.length > 0) {
-    let totalCukur = 0
-    let totalIncome = 0
+    if (orders.length > 0) {
+      let totalCukur = 0
+      let totalIncome = 0
       orders.forEach((e) => {
-        if(e.statusBarber === "Finished" || e.statusBarber === "Voted") {
+        if (e.statusBarber === "Finished" || e.statusBarber === "Voted") {
           totalCukur += 1
           totalIncome += e.price
         }
@@ -47,7 +51,7 @@ export default function DashboardScreen({ navigation }) {
         ...statistic,
         totalCukur,
         totalIncome,
-        avgRating: 0 || +(avg/votes.length).toFixed(1)
+        avgRating: 0 || +(avg / votes.length).toFixed(1)
       })
     }
   }, [orders, votes])
@@ -65,6 +69,7 @@ export default function DashboardScreen({ navigation }) {
           access_token: token
         }
       })
+      console.log(responseVotes.data, 'dari axios')
       setVotes(responseVotes.data)
       setOrders(response.data)
       setLoading(false)
@@ -72,83 +77,81 @@ export default function DashboardScreen({ navigation }) {
       alert(err.message)
     }
   }
-  
-
   const tokenlogin = async () => {
     try {
       const value = await AsyncStorage.getItem('token')
       if (value !== null) {
         setToken(value)
         navigation.navigate("Dashboard")
-        // console.log('masukés')
+        // console.log('masukÃ©s')
       } else {
         console.log('tidak masuks')
       }
-      
+
     } catch (error) {
       console.log(error);
     }
   }
-  console.log(token);
   useEffect(async () => {
-    const intervalId = setInterval(() => {  //assign interval to a variable to clear it.
-      (async () => {
-        try {
-          await tokenlogin()
-          // console.log(token, `<<<< ini tokenys`);
-          if(token) {
+    if (isMounted) {
+      const intervalId = setInterval(() => {  //assign interval to a variable to clear it.
+        (async () => {
+          try {
+            await tokenlogin()
+            // console.log(token, `<<<< ini tokenys`);
+            if (token) {
+              let { status } = await Location.requestForegroundPermissionsAsync();
+              if (status !== "granted") {
+                setErrorMsg("Permission to access location was denied");
+                return;
+              }
 
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== "granted") {
-              setErrorMsg("Permission to access location was denied");
-              return;
-            }
-    
-            let getLocation = await Location.getCurrentPositionAsync({});
-            setLocation({
-              lat: getLocation.coords.latitude,
-              long: getLocation.coords.longitude,
-            });
-            const response = await axios({
-              url: `${baseUrl}/barbers/location`,
-              method: "PATCH",
-              headers: { access_token: token },
-              data: {
+              let getLocation = await Location.getCurrentPositionAsync({});
+              setLocation({
                 lat: getLocation.coords.latitude,
                 long: getLocation.coords.longitude,
-              },
-            });
-            console.log(response,`>>> ini ga error`);
+              });
+              const response = await axios({
+                url: `${baseUrl}/barbers/location`,
+                method: "PATCH",
+                headers: { access_token: token },
+                data: {
+                  lat: getLocation.coords.latitude,
+                  long: getLocation.coords.longitude,
+                },
+              });
+            }
+          } catch (error) {
+            console.log(`kalo error`);
+            console.log(error);
           }
-        } catch (error) {
-          console.log(`kalo error`);
-          console.log(error);
-        }
-      })();
-    }, 90000)
-  
-    return () => clearInterval(intervalId);
-   
+        })();
+      }, 90000)
+
+      return () => clearInterval(intervalId);
+    }
   }, [token]);
 
   useEffect(() => {
+    setIsMounted(true)
     getOrders()
-    .then(() => {
-      setOrdersByDate(orders)
-    })
+      .then(() => {
+        setOrdersByDate(orders)
+      })
   }, [])
+
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShow(Platform.OS === 'ios')
     setDate(currentDate)
-    
+
 
     let tempDate = new Date(currentDate)
     let fDate = tempDate.getDate() + '-' + (tempDate.getMonth() + 1) + '-' + tempDate.getFullYear();
     let splitReverse = fDate.split('-').reverse()
     let fTime = 'Hours: ' + (tempDate.getHours()) + '| Minutes: ' + tempDate.getMinutes();
     let splitted = fDate.split("-")
-    let formatted = [null,null,null]
+    let formatted = [null, null, null]
     if (splitted[0].length === 1) formatted[0] = "0" + splitted[0]
     else formatted[0] = splitted[0]
     if (splitted[1].length === 1) formatted[1] = "0" + splitted[1]
@@ -156,15 +159,15 @@ export default function DashboardScreen({ navigation }) {
     formatted[2] = splitted[2]
     let selectedOrders = []
     orders.forEach(e => {
-        if(e.date.split('T')[0].split('-').reverse().join('-') === formatted.join("-")) {
-          selectedOrders.push(e)
-        }
+      if (e.date.split('T')[0].split('-').reverse().join('-') === formatted.join("-")) {
+        selectedOrders.push(e)
+      }
     })
 
     setOrdersByDate(selectedOrders)
-    
+
     setText(fDate)
-    
+
     // console.log(fDate + '(' + fTime + ') ')
   }
 
@@ -175,11 +178,16 @@ export default function DashboardScreen({ navigation }) {
 
   const logout = async () => {
     await AsyncStorage.removeItem('token')
+    setIsMounted(false)
     navigation.navigate('Login')
+  }
+  const toDetail = (id) => {
+    setIsMounted(false)
+    navigation.navigate('Detail', { orderId: id })
   }
 
   if (loading) {
-    return(
+    return (
       <View>
         <Text>...loading</Text>
       </View>
@@ -193,48 +201,49 @@ export default function DashboardScreen({ navigation }) {
         <StatusBar style='auto' />
         <SafeAreaView>
           <View style={[styles.cardDashboard, styles.flexDirDashboard]}>
-            <View style={{flex:2}}>
+
+            <View style={{ flex: 2 }}>
               <Text >Gambar</Text>
             </View>
-            <View style={{flex: 3}}>
-            <View style={{flexDirection: "row", width:"100%"}} >
-              <View style={[{flex:1}]}>
-                <Text style={[styles.textDashboard]}>Total Cuts        :</Text>
+            <View style={{ flex: 3 }}>
+              <View style={{ flexDirection: "row", width: "100%" }} >
+                <View style={[{ flex: 1 }]}>
+                  <Text style={[styles.textDashboard]}>Total Cuts        :</Text>
+
+                </View>
+                <View style={[{ flex: 1 }]}>
+                  <Text style={[styles.textDashboard]}>{statistic.totalCukur}</Text>
+
+                </View>
+
 
               </View>
-              <View style={[{flex: 1}]}>
-                <Text style={[styles.textDashboard]}>{statistic.totalCukur}</Text>
+              <View style={{ flexDirection: "row", width: "100%" }} >
+                <View style={[{ flex: 1 }]}>
+                  <Text style={[styles.textDashboard]}>Total Income   :</Text>
+
+                </View>
+                <View style={[{ flex: 1 }]}>
+                  <Text style={[styles.textDashboard]}>Rp.{statistic.totalIncome}</Text>
+
+                </View>
+
 
               </View>
-              
-                    
-            </View>
-            <View style={{flexDirection: "row", width:"100%"}} >
-              <View style={[{flex: 1}]}>
-                <Text style={[styles.textDashboard]}>Total Income   :</Text>
+              <View style={{ flexDirection: "row", width: "100%" }} >
+                <View style={[{ flex: 1 }]}>
+                  <Text style={[styles.textDashboard]}>Rating              :</Text>
+
+                </View>
+                <View style={[{ flex: 1 }]}>
+                  <Text style={[styles.textDashboard]}>Rp.{statistic.avgRating}</Text>
+
+                </View>
+
 
               </View>
-              <View style={[{flex: 1}]}>
-                <Text style={[styles.textDashboard]}>Rp.{statistic.totalIncome}</Text>
 
-              </View>
-              
-                    
-            </View>
-            <View style={{flexDirection: "row", width:"100%"}} >
-              <View style={[{flex: 1}]}>
-                <Text style={[styles.textDashboard]}>Rating              :</Text>
-
-              </View>
-              <View style={[{flex: 1}]}>
-                <Text style={[styles.textDashboard]}>Rp.{statistic.avgRating}</Text>
-
-              </View>
-              
-                    
-            </View>
-
-            {/* <View style={{flexDirection: "row"}} >
+              {/* <View style={{flexDirection: "row"}} >
               <Text style={[styles.textDashboard, {flex: 1}]}>Total Cuts    :</Text>
               <Text style={[styles.textDashboard, {flex: 1}]}>{statistic.totalCukur}</Text>
                     
@@ -262,15 +271,15 @@ export default function DashboardScreen({ navigation }) {
             {
               ordersByDate.length > 0 && ordersByDate.map((item) => {
                 return (
-                <View  style={styles.cardDashboard} key={item.id}>
-                  
-                  <Text style={{color: "white"}}>{item.id}</Text>
-                  <Text style={{color: "white"}}>{item.hour}</Text>
-                  <Text style={{color: "white"}}>{item.price}</Text>
-                  <Text style={{color: "white"}}>{item.address}</Text>
-                  <Button title="Location" onPress={ ()=> Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${item.lat}%2C${item.long}`) }/>
-                  
-                </View>
+
+                  <View style={styles.cardDashboard} key={item.id}>
+                    <Text style={{ color: "white" }}>{item.id}</Text>
+                    <Text style={{ color: "white" }}>{item.hour}</Text>
+                    <Text style={{ color: "white" }}>{item.price}</Text>
+                    <Text style={{ color: "white" }}>{item.address}</Text>
+                    <Button title="Location" onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${item.lat}%2C${item.long}`)} />
+                    <Button title="Detail" onPress={() => toDetail(item.id)} />
+                  </View>
                 )
               })
             }
@@ -279,7 +288,6 @@ export default function DashboardScreen({ navigation }) {
         </SafeAreaView>
       </View>
     </ScrollView>
-    
   )
 }
 
