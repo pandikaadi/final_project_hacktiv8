@@ -72,13 +72,12 @@ const getOrderById = async (req, res) => {
         access_token: token
       }
     })
-
-    const {data:user} = awaitaxios({
-      method:'GET',
-      url:`http://localhost:4002/users/${order.userMonggoId}`
-    })
-    if (order) {
-      res.status(200).json({ order,user });
+const {data:user} = await axios({
+  method:'GET',
+  url:`http://localhost:4002/users/${order.userMonggoId}`
+})
+if (order) {
+  res.status(200).json({ order,user });
     } else {
       res.status(404).json({ message: "orders not found" });
     }
