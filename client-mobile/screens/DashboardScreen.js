@@ -4,10 +4,12 @@ import { Button, FlatList, Linking, Dimensions, SafeAreaView, ScrollView, Status
 import DateTimePicker from '@react-native-community/datetimepicker'
 import axios from "axios";
 import * as Location from "expo-location";
+
 const baseUrl = `https://6c28-123-253-232-109.ngrok.io`
 
 export default function DashboardScreen({ navigation }) {
   
+
   const [date, setDate] = useState(new Date())
   const [mode, setMode] = useState('date')
   const [show, setShow] = useState(false)
@@ -26,6 +28,7 @@ export default function DashboardScreen({ navigation }) {
     avgRating: 0
   })
   // console.log(orders);
+
   useEffect(() => {
     let avg = null
     if(votes.length > 0) {
@@ -65,6 +68,7 @@ export default function DashboardScreen({ navigation }) {
           access_token: token
         }
       })
+      console.log(responseVotes.data,'dari axios')
       setVotes(responseVotes.data)
       setOrders(response.data)
       setLoading(false)
@@ -72,38 +76,37 @@ export default function DashboardScreen({ navigation }) {
       alert(err.message)
     }
   }
-  
-
   const tokenlogin = async () => {
     try {
       const value = await AsyncStorage.getItem('token')
       if (value !== null) {
         setToken(value)
         navigation.navigate("Dashboard")
-        // console.log('masukés')
+        // console.log('masukÃ©s')
       } else {
         console.log('tidak masuks')
       }
-      
+
     } catch (error) {
       console.log(error);
     }
   }
-  console.log(token);
   useEffect(async () => {
     const intervalId = setInterval(() => {  //assign interval to a variable to clear it.
       (async () => {
         try {
           await tokenlogin()
           // console.log(token, `<<<< ini tokenys`);
-          if(token) {
+
+          if (token) {
+
 
             let { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== "granted") {
               setErrorMsg("Permission to access location was denied");
               return;
             }
-    
+
             let getLocation = await Location.getCurrentPositionAsync({});
             setLocation({
               lat: getLocation.coords.latitude,
@@ -118,7 +121,6 @@ export default function DashboardScreen({ navigation }) {
                 long: getLocation.coords.longitude,
               },
             });
-            console.log(response,`>>> ini ga error`);
           }
         } catch (error) {
           console.log(`kalo error`);
@@ -126,17 +128,18 @@ export default function DashboardScreen({ navigation }) {
         }
       })();
     }, 90000)
-  
+
     return () => clearInterval(intervalId);
-   
+
   }, [token]);
 
   useEffect(() => {
     getOrders()
-    .then(() => {
-      setOrdersByDate(orders)
-    })
+      .then(() => {
+        setOrdersByDate(orders)
+      })
   }, [])
+
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShow(Platform.OS === 'ios')
@@ -179,7 +182,7 @@ export default function DashboardScreen({ navigation }) {
   }
 
   if (loading) {
-    return(
+    return (
       <View>
         <Text>...loading</Text>
       </View>
@@ -193,6 +196,7 @@ export default function DashboardScreen({ navigation }) {
         <StatusBar style='auto' />
         <SafeAreaView>
           <View style={[styles.cardDashboard, styles.flexDirDashboard]}>
+
             <View style={{flex:2}}>
               <Text >Gambar</Text>
             </View>
@@ -262,15 +266,15 @@ export default function DashboardScreen({ navigation }) {
             {
               ordersByDate.length > 0 && ordersByDate.map((item) => {
                 return (
-                <View  style={styles.cardDashboard} key={item.id}>
-                  
-                  <Text style={{color: "white"}}>{item.id}</Text>
-                  <Text style={{color: "white"}}>{item.hour}</Text>
-                  <Text style={{color: "white"}}>{item.price}</Text>
-                  <Text style={{color: "white"}}>{item.address}</Text>
-                  <Button title="Location" onPress={ ()=> Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${item.lat}%2C${item.long}`) }/>
-                  
-                </View>
+
+                  <View style={styles.cardDashboard} key={item.id}>
+                    <Text style={{ color: "white" }}>{item.id}</Text>
+                    <Text style={{ color: "white" }}>{item.hour}</Text>
+                    <Text style={{ color: "white" }}>{item.price}</Text>
+                    <Text style={{ color: "white" }}>{item.address}</Text>
+                    <Button title="Location" onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${item.lat}%2C${item.long}`)} />
+                    <Button title="Detail" onPress={() => toDetail(item.id)} />
+                  </View>
                 )
               })
             }
@@ -279,7 +283,6 @@ export default function DashboardScreen({ navigation }) {
         </SafeAreaView>
       </View>
     </ScrollView>
-    
   )
 }
 

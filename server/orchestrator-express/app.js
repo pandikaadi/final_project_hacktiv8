@@ -25,6 +25,7 @@ app.put("/users/:id", userController.updateUser);
 
 app.get("/orders", orderController.getOrders);
 app.get("/dailyOrders", orderController.getOrdersByDate);
+app.get("/orders/:id",orderController.getOrderById)
 app.post("/orders", orderController.postOrder);
 app.delete("/orders/:id", orderController.deleteOrder);
 
