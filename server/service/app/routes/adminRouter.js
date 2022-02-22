@@ -7,4 +7,4 @@ adminRouter.use(authentication);
 
 adminRouter.get("/all", adminController.getAll);
 
-module.exports = adminRouter
+module.exports = adminRouter;

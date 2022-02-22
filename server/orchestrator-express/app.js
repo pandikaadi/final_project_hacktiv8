@@ -4,7 +4,7 @@ const app = express();
 const port = 4000;
 const userController = require("./controllers/user");
 const orderController = require("./controllers/order");
-const adminController = require("./controllers/admin")
+const adminController = require("./controllers/admin");
 const barberController = require("./controllers/barber");
 const coordinateController = require("./controllers/coordinate");
 const serviceController = require("./controllers/service");
@@ -26,7 +26,7 @@ app.put("/users/:id", userController.updateUser);
 
 app.get("/orders", orderController.getOrders);
 app.get("/dailyOrders", orderController.getOrdersByDate);
-app.get("/orders/:id",orderController.getOrderById)
+app.get("/orders/:id", orderController.getOrderById);
 app.post("/orders", orderController.postOrder);
 app.delete("/orders/:id", orderController.deleteOrder);
 
@@ -51,7 +51,7 @@ app.post("/coordinates", coordinateController.translateCoordinate);
 app.get("/votes/:barberId", voteController.getVotes);
 app.post("/votes", voteController.postVote);
 
-app.get("/admin/all", adminController.getAll)
+app.get("/admin/all", adminController.getAll);
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });

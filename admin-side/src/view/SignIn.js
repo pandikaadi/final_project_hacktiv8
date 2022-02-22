@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { adminLogin } from "../store/actionCreator/actionCreator";
+import { toast } from "react-toastify";
 
 function SignIn() {
   const dispatch = useDispatch();
@@ -31,13 +32,14 @@ function SignIn() {
           if (res.ok) {
             localStorage.setItem("access_token", data.access_token);
             localStorage.setItem("role", data.role);
+            toast.success("Login success");
             navigate("/home");
           } else {
             return Promise.reject(data);
           }
         })
         .catch((err) => {
-          console.log(err);
+          toast.error("Invalid usernmae or password");
         });
     });
   }

@@ -4,6 +4,7 @@ import {
   setRegisterAdmin,
   postAdmin,
 } from "../store/actionCreator/actionCreator";
+import { toast } from "react-toastify";
 
 function AdminModal() {
   const dispatch = useDispatch();
@@ -31,9 +32,20 @@ function AdminModal() {
       phoneNumber: newAdmin.phoneNumber,
       isAdmin: true,
     };
-
-    // console.log(payload);
-    dispatch(postAdmin(payload));
+    dispatch(postAdmin(payload))
+      .then((res) => {
+        return res.json().then((data) => {
+          if (res.ok) {
+            dispatch(setRegisterAdmin(false));
+            toast.success("New admin registered");
+          } else {
+            return Promise.reject(data);
+          }
+        });
+      })
+      .catch((err) => {
+        toast.error("Invalid requirement");
+      });
   };
 
   return (

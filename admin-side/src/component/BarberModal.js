@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { postBarber, setRegister } from "../store/actionCreator/actionCreator";
+import { toast } from "react-toastify";
 
 function BarberModal() {
   const dispatch = useDispatch();
@@ -30,8 +31,20 @@ function BarberModal() {
       city: newBarber.city,
     };
 
-    dispatch(postBarber(payload));
-    // console.log(payload);
+    dispatch(postBarber(payload))
+      .then((res) => {
+        return res.json().then((data) => {
+          if (res.ok) {
+            dispatch(setRegister(false));
+            toast.success("New barber registered");
+          } else {
+            return Promise.reject(data);
+          }
+        });
+      })
+      .catch((err) => {
+        toast.error("Invalid requirement");
+      });
   };
 
   return (
@@ -139,7 +152,7 @@ function BarberModal() {
                 type="submit"
                 className="w-full text-white bg-black hover:bg-slate-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               >
-                Register Baber
+                Register Barber
               </button>
             </form>
           </div>
