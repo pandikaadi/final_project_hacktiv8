@@ -67,6 +67,7 @@ const loginBarber = async (req, res) => {
 
 const updateLocationBarber = async (req, res) => {
   try {
+    console.log(`>>>>>>>>>>>>>>>>>>`);
     const { data: message } = await axios({
       headers: { access_token: req.headers.access_token },
       method: "PATCH",
@@ -77,6 +78,7 @@ const updateLocationBarber = async (req, res) => {
       res.status(200).json(req.body);
     }
   } catch (err) {
+    console.log(err, `ERRORR`);
     res.status(500).json(err.message);
   }
 };
