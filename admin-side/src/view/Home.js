@@ -30,14 +30,22 @@ function Home() {
     let res = 0;
     let length = [];
     chartData.app.barbers.map((el) => {
+      let total = 0;
       el.Votes.map((v) => {
         if (v.barberId == x) {
           length.push(v);
-          res += v.value / length.length;
+          total += v.value;
         }
       });
+      if (el.id == x) {
+        res = total / length.length;
+      }
     });
-    return res.toFixed(2);
+    if (res) {
+      return res.toFixed(2);
+    } else {
+      return 0;
+    }
   }
 
   useEffect(() => {
