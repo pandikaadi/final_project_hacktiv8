@@ -2,6 +2,13 @@ import React from "react";
 import { Bar, Pie } from "react-chartjs-2";
 import Chart from "chart.js/auto";
 import { useSelector } from "react-redux";
+function BarberMarker() {
+  // return barberPosition === null ? null : (
+  //   <Marker icon={customMarkerIconBarber} position={barberPosition}>
+  //     <Popup>Shave8 HQ</Popup>
+  //   </Marker>
+  // );
+}
 
 function BarChart({ chartData }) {
   let totalIncome = 0;

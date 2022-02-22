@@ -8,7 +8,7 @@ import * as TaskManager from 'expo-task-manager';
 import bgImage from '../assets/dashboardThumb.jpg'
 const LOCATION_TASK_NAME = 'background-location-task';
 
-const baseUrl = `http://a37f-123-253-232-109.ngrok.io`
+const baseUrl = `https://e519-123-253-232-109.ngrok.io`
 
 const requestPermissions = async () => {
   console.log('hereee');

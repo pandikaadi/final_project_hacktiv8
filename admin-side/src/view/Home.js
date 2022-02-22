@@ -5,6 +5,15 @@ import AdminModal from "../component/AdminModal";
 import BarberModal from "../component/BarberModal";
 import BarChart from "../component/Chart";
 import { fetchBarber } from "../store/actionCreator/actionCreator";
+import { renderToStaticMarkup } from "react-dom/server";
+import { divIcon } from "leaflet";
+import '../App.css'
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+} from "react-leaflet";
 
 function Home() {
   let totalIncome = 0;
@@ -12,8 +21,14 @@ function Home() {
   const { registerBarber, registerAdmin, loading, error } = useSelector(
     (state) => state.admin
   );
+  const iconMarkupBarber = renderToStaticMarkup(
+    <i className=" fa fa-map-marker-alt fa-3x" />
+  );
+  const customMarkerIconBarber = divIcon({
+    html: iconMarkupBarber,
+  });
   const { chartData } = useSelector((state) => state.data);
-
+  console.log(chartData, `>>>>>>>>>>>>>>`);
   function incomeCounter(x) {
     let res = 0;
     chartData.app.barbers.map((el) => {
@@ -57,6 +72,13 @@ function Home() {
   }
   if (error) {
     return <div>Somthing went wrong..</div>;
+  }
+  function LocationMarker({position, orderKey}) {
+    return position === null ? null : (
+      <Marker icon={customMarkerIconBarber} position={position}>
+        <Popup>orderKey: {orderKey}</Popup>
+      </Marker>
+    );
   }
 
   return (
@@ -122,6 +144,60 @@ function Home() {
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+        <div className="flex flex-col content-center items-center">
+            <div className="text-gray-600 mb-5">
+              TRACK ORDERS AND BARBERS
+            </div>
+          <div className="w-full content-center mb-10 rounded items-center flex flex-row">
+            <div className="border-2 rounded p-5 ml-auto h-fit  w-1/4 border-gray-700 text-gray-700 flex flex-col">
+              <div className="text-center mb-2">
+                <span className="">
+                  LEGEND
+                </span>
+              </div>
+              <div className="text-center mb-2">
+                <span className="">
+                <i className=" fa fa-map-marker-alt fa-2x mr-3" /><span>          ORDER</span>
+                </span>
+              </div>
+              <div className="text-center">
+                <span className="">
+                <i className=" fa fa-map-marker-alt text-blue-500 fa-2x mr-3" /><span>          BARBER</span>
+                </span>
+              </div>
+            </div>
+            <MapContainer
+              center={[-6.9155624, 107.6517627]}
+              style={{ height: 400, width: "100%" }}
+              id="mapid"
+              zoom={11}
+              className="max-w-2xl mx-auto"
+            >
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+               {chartData.app.orders.map((e) => (
+                 <LocationMarker orderKey={e.orderKey} position={{ lat: e.lat, lng: e.long }} />
+                 
+              ))}
+              {/* <LocationMarker />
+                      <BarberMarker />
+                      
+                      <HandleCenter mapCenter={position} /> */}
+              {chartData.app.barbers.map((e) => (
+                <Marker position={{ lat: e.lat, lng: e.long }}>
+                  <Popup position={{ lat: e.lat, lng: e.long }}>{e.name}</Popup>
+                </Marker>
+              ))}
+              {/* <LocationMarker />
+                      <BarberMarker />
+                      
+                      <HandleCenter mapCenter={position} /> */}
+             
+            </MapContainer>
           </div>
         </div>
       </div>
