@@ -17,13 +17,30 @@ module.exports = (sequelize, DataTypes) => {
   Vote.init(
     {
       userMonggoId: DataTypes.STRING,
-      value: DataTypes.INTEGER,
       barberId: {
         type: DataTypes.INTEGER,
+        allowNull: false,
         references: {
           model: { tableName: "Barbers" },
           key: "id",
         },
+        validate:{
+          notNull:{
+            msg:'barberId cant be null'
+          }
+        }
+      },
+      value: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            msg:'value is required'
+          },
+          notNull:{
+            msg:'value cant be null'
+          }
+        }
       },
     },
     {

@@ -6,13 +6,6 @@ const { createToken } = require("../helpers/jwt");
 const getBarbers = async (req, res) => {
   try {
     const barbers = await Barber.findAll();
-    // const coba = await User.create({
-    //   username: "anggorego",
-    //   email: "test@mail.com",
-    //   password: "testing",
-    //   phoneNumber: "0821232323",
-    // })
-    // console.log(coba);
     res.status(200).json(barbers);
   } catch (err) {
   
@@ -120,8 +113,6 @@ const updateLocation = async(req, res) => {
   // console.log(req.currentBarber, `>>>>>>>>>>>>WTFF`);
   const {lat, long} = req.body
   try {
-    // console.log(req.body);
-    // console.log(req);
     const findBarber = await Barber.findOne({
       where: { id: req.currentBarber.id },
     });
@@ -156,7 +147,7 @@ const barberLogin = async (req, res) => {
     });
 
     if (!result) {
-      throw { message: "Invalid email/password" };
+      throw new Error('no result')
     } else {
     }
     if (!compareHash(password, result.password)) {

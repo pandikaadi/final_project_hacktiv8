@@ -8,8 +8,7 @@ const authentication = async (req, res, next) => {
     const payload = verifyToken(access_token);
     if (process.env.NODE_ENV === "test" && payload) {
       req.currentUser = {
-        id: payload.id,
-        userMonggoId: payload.userMonggoId || null,
+        userMonggoId: payload.id,
         role: payload.role,
         username: payload.username,
         email: payload.email,
@@ -63,8 +62,10 @@ const authentication = async (req, res, next) => {
       }
     }
   } catch (err) {
-    if (err.name === "JsonWebTokenError") {
-      res.status(401).json(err);
+    if (err.message === 'not authorized') {
+      res.status(401).json(err.message);
+    } else if (err.name === 'JsonWebTokenError'){
+      res.status(401).json(err.message)
     } else {
       res.status(500).json(err);
     }

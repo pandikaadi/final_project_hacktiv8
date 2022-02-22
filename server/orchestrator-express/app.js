@@ -16,7 +16,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-console.log("app");
+
 
 app.get("/users", userController.getUsers);
 app.get("/users/:id", userController.getUserById);

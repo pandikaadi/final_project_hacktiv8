@@ -13,7 +13,6 @@ const findUsers = async (req, res) => {
 
 const findUserById = async (req, res) => {
   const { id } = req.params;
-  console.log(id);
   try {
     const user = await User.findById(id);
     if (!user) {
@@ -95,7 +94,6 @@ const deleteUser = async (req, res) => {
 };
 
 const postLogin = async (req, res) => {
-  console.log("jalan");
   const { email, password } = req.body;
   try {
     const foundUser = await User.findOne({ email: email });
@@ -117,7 +115,6 @@ const postLogin = async (req, res) => {
       role: foundUser.role
     });
   } catch (err) {
-    console.log(err,'<<<<<<<<');
     if (err.message === 'InvalidEmail' || err.message === 'InvalidPassword') {
       res.status(401).json({ message: "Invalid email/password" });
     } else {

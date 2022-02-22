@@ -1,7 +1,7 @@
 const { Order, Barber, Service, User } = require("../models/index");
 
-const sendMailOrder = require("../helpers/nodemailerOrder");
-const e = require("cors");
+// const sendMailOrder = require("../helpers/nodemailerOrder");
+
 
 const postOrder = async (req, res) => {
   const userId = req.currentUser.id;
@@ -13,7 +13,6 @@ const postOrder = async (req, res) => {
       .toISOString()
       .slice(5, 9)}${new Date().toISOString().slice(13, 20)}`;
     //order key barberId - userId - tanggal
-    console.log('post order before snap midtrans ---', req.body)
     const midtransClient = require("midtrans-client");
     // Create Snap API instance
     let snap = new midtransClient.Snap({
@@ -45,10 +44,9 @@ const postOrder = async (req, res) => {
       long: +long,
       serviceId,
       orderKey,
-      price,
+      price: +price,
       paymentUrl: transaction.redirect_url,
     });
-    console.log(orderKey, `>>>>>`);
     if (order) {
       const findOrder = await Order.findOne({
         where: { id: order.id },
@@ -61,36 +59,26 @@ const postOrder = async (req, res) => {
         //   findOrder.Barber.name,
         //   findOrder.Service.name
         // );
-        console.log(`order was found`);
         res.status(201).json({ findOrder });
       }
     }
   } catch (err) {
-    console.log(err, `>>>>>`);
-    if (err.name === "SequelizeForeignKeyConstraintError") {
-      res.status(400).json({ message: "bad request" });
-    } else if (err.errors) {
+    if (!err.errors){
+      res.status(500).json(err);
+    } else{
       err.errors.map((el) => {
         if (el.message === "date is required") {
           res.status(400).json(el);
         } else if (el.message === "hour is required") {
           res.status(400).json(el);
-        } else if (el.message === "date cant be null") {
-          res.status(400).json(el);
-        } else if (el.message === "hour cant be null") {
-          res.status(400).json(el);
-        } else {
         }
       });
-    } else {
-      res.status(500).json({ message: "Internal Server Error" });
     }
   }
 };
 
 const getOrdersByUserId = async (req, res) => {
   // get all orders by user id
-  console.log(req.currentUser, `>>>>>`);
   try {
     const { userMonggoId } = req.currentUser;
     if(req.currentUser.role === "Barber") {
@@ -112,13 +100,12 @@ const getOrdersByUserId = async (req, res) => {
       }
     }
   } catch (err) {
-    console.log(err);
     res.status(500).json(err);
   }
 };
 const getDailyOrders = async (req, res) => {
   // get all orders by user id
-  const { userMonggoId } = req.currentUser;
+  // const { userMonggoId } = req.currentUser;
   const { date, barberId } = req.query
   try {
     const orders = await Order.findAll({
@@ -126,29 +113,13 @@ const getDailyOrders = async (req, res) => {
       include: [{ model: Barber }, { model: Service }],
     });
     if (orders) {
-      console.log(orders);
       res.status(200).json(orders);
     }
   } catch (err) {
-    console.log(err);
     res.status(500).json(err);
   }
 };
 
-const getBarbers = async (req, res) => {
-  // get all orders by user id
-  console.log(">>>>>>");
-  const { userMonggoId } = req.currentUser;
-  try {
-    const barbers = await Barber.findAll();
-    if (barbers) {
-      res.status(200).json(barbers);
-    }
-  } catch (err) {
-    console.log(err);
-    res.status(500).json(err);
-  }
-};
 
 const getOrdersByBarberId = async (req, res) => {
   // get all orders by barber id
@@ -194,10 +165,14 @@ const deleteOrder = async (req, res) => {
       });
       res.status(200).json({ message: "Order success to delete" });
     } else {
-      res.status(404).json({ message: "Order not found" });
+      throw new Error('not found')
     }
   } catch (err) {
-    res.status(500).json(err);
+    if ( err.message === 'not found' ){
+      res.status(404).json(err)
+    }else{
+      res.status(500).json(err);
+    }
   }
 };
 
@@ -226,7 +201,6 @@ const updateStatus = async (req, res) => {
 };
 
 const paymentHandler = async (req, res) => {
-  console.log(`>>>>>>>MASUK PAYMENTHANDLER`);
   try {
     if (
       req.body.transaction_status == "settlement" ||

@@ -3,9 +3,7 @@ const { verifyToken } = require("../helpers/jwt");
 
 const getOrders = async (req, res) => {
   const token = req.headers.access_token;
-  console.log(`isiisisisi`);
   const payload = verifyToken(token);
-  console.log(payload);
   try {
     const { data: orders } = await axios({
       method: "GET",
@@ -32,7 +30,6 @@ const getOrders = async (req, res) => {
       }
     }
   } catch (err) {
-    console.log(err);
     res.status(500).json(err);
   }
 };
@@ -55,7 +52,6 @@ const getOrdersByDate = async (req, res) => {
       res.status(404).json({ message: "orders not found" });
     }
   } catch (err) {
-    console.log(err);
     res.status(500).json(err);
   }
 };
@@ -63,7 +59,6 @@ const getOrdersByDate = async (req, res) => {
 const getOrderById = async (req, res) => {
   const token = req.headers.access_token
   // const payload = verifyToken(token) //salah
-  // console.log(payload , req.params)
   try {
     const { data: order } = await axios({
       method: 'GET',
@@ -148,7 +143,6 @@ const postOrder = async (req, res) => {
     // } else {
     // }
   } catch (err) {
-    console.log(err);
     res.status(500).json(err);
   }
 };
