@@ -8,16 +8,17 @@ import RatingModal from "../Components/RatingModal";
 import { toast } from "react-toastify";
 import { GetOrders } from "../store/actionCreators/actionCreator";
 import BottomNav from "../Components/BottomNav";
-import Sorry from "../Components/Sorry";
 
 function CardForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [selector, setSelector] = useState(false);
   const { userOrder } = useSelector((state) => state.data);
-  const { isService, loading, error } = useSelector((state) => state.client);
+  const { isService, loading, error, hasOrder } = useSelector(
+    (state) => state.client
+  );
 
-  console.log(isService);
+  console.log(hasOrder, "fetch");
 
   function handleSelector(e) {
     dispatch(setLocation(e.target.value));
@@ -123,14 +124,10 @@ function CardForm() {
           (userOrder.orders.length === 0 ||
             userOrder.orders[userOrder.orders.length - 1].statusBarber ===
               "Voted") && <FormCard isLocated={selector} />}
-        {/* {!isService &&
-          (userOrder.orders[userOrder.orders.length - 1].statusBarber ===
-            "Finished" ||
-            userOrder.orders[userOrder.orders.length - 1].statusBarber ===
-              "Pending") && <Sorry />} */}
         {isService && <ChooseBarber />}
         {userOrder.orders[userOrder.orders.length - 1].statusBarber ===
-          "Finished" && <RatingModal />}
+          "Finished" &&
+          hasOrder && <RatingModal />}
         <BottomNav />
       </div>
     </>

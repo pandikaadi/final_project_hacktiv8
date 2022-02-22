@@ -33,7 +33,6 @@ function RatingModal() {
     }
   };
   const { hasOrder } = useSelector((state) => state.client);
-  console.log(hasOrder);
 
   useEffect(() => {
     dispatch(GetOrders(localStorage.getItem("access_token")));

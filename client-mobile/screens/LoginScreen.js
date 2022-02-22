@@ -9,7 +9,7 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState('')
   const [token, setToken] = useState(null)
   console.log(email, password)
-  const baseUrl = `https://9d4b-182-0-215-191.ngrok.io`
+  const baseUrl = `http://a37f-123-253-232-109.ngrok.io`
   const onLoginPress = async () => {
     try {
 
