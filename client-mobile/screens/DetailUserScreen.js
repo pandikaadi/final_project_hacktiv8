@@ -2,12 +2,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { SafeAreaView, StatusBar, StyleSheet, Text, View,Picker,TouchableOpacity } from "react-native";
+import { SafeAreaView, StatusBar, StyleSheet, Text, View,Picker,TouchableOpacity, Linking } from "react-native";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 
 export default function DetailUserScreen( { route, navigation } ) {
   const { orderId } = route.params
   const [order, setOrder] = useState({})
+ 
   const [loading, setLoading] = useState(true)
   const baseUrl = `http://a37f-123-253-232-109.ngrok.io`
   const getOrderById = async () => {
@@ -28,7 +29,7 @@ export default function DetailUserScreen( { route, navigation } ) {
 
   const changeStatus = async (params) => {
     try {
-      console.log(params)
+      // console.log(params)
       console.log(`${baseUrl}/ordersBarber/${orderId}`)
       const value = await AsyncStorage.getItem('token')
       const response = await axios.patch(`${baseUrl}/ordersBarber/${orderId}`, {
@@ -59,6 +60,7 @@ export default function DetailUserScreen( { route, navigation } ) {
     )
   }
   console.log(order.order.statusBarber)
+  console.log(order.order)
   return (
     <View>
       <StatusBar style='auto' />
@@ -117,9 +119,9 @@ export default function DetailUserScreen( { route, navigation } ) {
             {
               order.order.statusBarber === 'OTW' ? <TouchableOpacity onPress={() => changeStatus('Finished')}><Text>Finish</Text></TouchableOpacity> : null
             }
-            {
-              
-            }
+            <TouchableOpacity onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${order.order.lat}%2C${order.order.long}`)}>
+          <Text style={{color: "#282c34", backgroundColor:"white", width:150, marginTop: 5, fontWeight:"bold", borderRadius:10, paddingHorizontal: 30, borderWidth: 2, borderColor:"black", textAlignVertical:"center",textAlign:"center", padding: 5}}>NAVIGATE</Text>
+        </TouchableOpacity>
           </View>
         </View>
       </SafeAreaView>

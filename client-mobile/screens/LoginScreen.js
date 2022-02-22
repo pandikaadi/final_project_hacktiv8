@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: "75%",
     height: "100%",
-    marginTop: 150
+    marginTop: 190
   },
   logoText: {
   },

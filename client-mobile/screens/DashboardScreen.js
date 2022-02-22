@@ -1,10 +1,11 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
-import { Button, FlatList, TouchableOpacity, Image, Linking, Dimensions, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View } from "react-native";
+import { Button, FlatList, TouchableOpacity, Image, Linking, Dimensions, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, View, ImageBackground } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker'
 import axios from "axios";
 import * as Location from "expo-location";
 import * as TaskManager from 'expo-task-manager';
+import bgImage from '../assets/dashboardThumb.jpg'
 const LOCATION_TASK_NAME = 'background-location-task';
 
 const baseUrl = `http://a37f-123-253-232-109.ngrok.io`
@@ -15,7 +16,7 @@ const requestPermissions = async () => {
     const { status } = await Location.requestBackgroundPermissionsAsync();
     const { status: statusForeground } =
       await Location.requestForegroundPermissionsAsync();
-    console.log('here', status, statusForeground);
+    // console.log('here', status, statusForeground);
     if (status === 'granted' && statusForeground === 'granted') {
       await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
         accuracy: Location.Accuracy.Balanced,
@@ -39,7 +40,7 @@ const requestPermissions = async () => {
 
 export default function DashboardScreen({ navigation }) {
   // const route = useRoute()
-  
+
 
   const [date, setDate] = useState(new Date())
   const [mode, setMode] = useState('date')
@@ -139,7 +140,7 @@ export default function DashboardScreen({ navigation }) {
 
     return `Rp. ${formattedPrice.join("")}`;
   }
-  console.log(ordersByDate[0]);
+  // console.log(ordersByDate[0].Barber.name);
 
   useEffect(() => {
     console.log(`useEffect mounted`);
@@ -151,32 +152,32 @@ export default function DashboardScreen({ navigation }) {
   }, [])
   const list = ({ item }) => {
     return (
-      <View style={[styles.cardDashboard, {Width: 340}]} key={item.id}>
-        <View style={{flexDirection:"row", paddingHorizontal: 20, marginBottom: 5}}>
-        <Text style={{ color: "white", flex: 1 }}>Schedule        : </Text>
-        <Text style={{ color: "white", flex: 1, textAlign:"center" }}>{item.hour}</Text>
+      <View style={[styles.cardDashboard, { Width: 340 }]} key={item.id}>
+        <View style={{ flexDirection: "row", paddingHorizontal: 20, marginBottom: 5 }}>
+          <Text style={{ color: '#ddd9d6', flex: 1, fontWeight: "bold" }}>Schedule        : </Text>
+          <Text style={{ color: '#ddd9d6', flex: 1, fontWeight: "bold", textAlign: "center" }}>{item.hour}</Text>
         </View>
-        <View style={{flexDirection:"row", paddingHorizontal: 20, marginBottom: 5}}>
-        <Text style={{ color: "white", flex: 1, textAlign: "justify" }}>Price               : </Text>
-        <Text style={{ color: "white", flex: 1, textAlign:"center" }}>{priceFormatter(item.price)}</Text>
+        <View style={{ flexDirection: "row", paddingHorizontal: 20, marginBottom: 5 }}>
+          <Text style={{ color: '#ddd9d6', flex: 1, fontWeight: "bold", textAlign: "justify" }}>Price               : </Text>
+          <Text style={{ color: '#ddd9d6', flex: 1, fontWeight: "bold", textAlign: "center" }}>{priceFormatter(item.price)}</Text>
         </View>
-        <View style={{flexDirection:"row", paddingHorizontal: 20, marginBottom: 5}}>
-        <Text style={{ color: "white", flex: 1 }}>Service           : </Text>
-        <View style={{flex: 1, textAlign:"center"}}>
-          <Text style={{ color: "white"}}>{item.Service.name}</Text>
+        <View style={{ flexDirection: "row", paddingHorizontal: 20, marginBottom: 5 }}>
+          <Text style={{ color: '#ddd9d6', flex: 1, fontWeight: "bold" }}>Service           : </Text>
+          <View style={{ flex: 1, textAlign: "center" }}>
+            <Text style={{ color: '#ddd9d6', fontWeight: "bold" }}>{item.Service.name}</Text>
+          </View>
         </View>
-        </View>
-        <TouchableOpacity onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${item.lat}%2C${item.long}`)}>
-          <Text style={{color: "#282c34", backgroundColor:"white", width:150, marginTop: 5, fontWeight:"bold", borderRadius:10, paddingHorizontal: 30, borderWidth: 2, borderColor:"black", textAlignVertical:"center",textAlign:"center", padding: 5}}>NAVIGATE</Text>
-        </TouchableOpacity>
+        {/* <TouchableOpacity onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${item.lat}%2C${item.long}`)}>
+          <Text style={{color: "#282c34", backgroundColor:'#ddd9d6', width:150, marginTop: 5, fontWeight:"bold", borderRadius:10, paddingHorizontal: 30, borderWidth: 2, borderColor:"black", textAlignVertical:"center",textAlign:"center", padding: 5}}>NAVIGATE</Text>
+        </TouchableOpacity> */}
         <TouchableOpacity onPress={() => toDetail(item.id)}>
-          <Text style={{color: "#282c34", backgroundColor:"white" , width:150, marginTop: 10, fontWeight:"bold", borderRadius:10, paddingHorizontal: 30, borderWidth: 2, borderColor:"white", textAlignVertical:"center",textAlign:"center", padding: 5}}>DETAIL</Text>
+          <Text style={{ color: "#282c34", backgroundColor: '#ddd9d6', width: 180, height: 50, marginTop: 20, fontWeight: "bold", borderRadius: 10, paddingHorizontal: 30, borderWidth: 2, borderColor: '#ddd9d6', textAlignVertical: "center", textAlign: "center", padding: 5 }}>DETAIL</Text>
         </TouchableOpacity>
-                    {/* <Button title="Location" onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${item.lat}%2C${item.long}`)} /> */}
-                    {/* <Button title="Detail" onPress={() => toDetail(item.id)} /> */}
-                    
-                    {/* <Text style={{ color: "white" }}>{item.address}</Text> */}
-                  </View>
+        {/* <Button title="Location" onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${item.lat}%2C${item.long}`)} /> */}
+        {/* <Button title="Detail" onPress={() => toDetail(item.id)} /> */}
+
+        {/* <Text style={{ color: '#ddd9d6' }}>{item.address}</Text> */}
+      </View>
     );
   };
 
@@ -204,10 +205,10 @@ export default function DashboardScreen({ navigation }) {
       }
     })
     selectedOrders.sort((a, b) => {
-      if(a.hour < b.hour) {
+      if (a.hour < b.hour) {
         return -1
       }
-      if(a. hour > b.hour) {
+      if (a.hour > b.hour) {
         return 1
       }
       return 0
@@ -242,118 +243,124 @@ export default function DashboardScreen({ navigation }) {
   }
 
 
+
+
   return (
-      <View style={{minHeight: windowHeight, justifyContent:"space-between"}}>
+    <>
+      <View style={{ minHeight: windowHeight }}>
         <StatusBar style='auto' />
         <SafeAreaView>
-          <View style={[styles.cardDashboard, styles.flexDirDashboard, {marginTop: 0, marginHorizontal: 0, borderRadius: 0, paddingTop: 0}]}>
-
-            <View style={{ flex: 2, }}>
-            <Image style={[{width: "100%", height: "100%"}]} source={require('../assets/thumb.png')} />
+          <ImageBackground source={bgImage} resizeMode="cover" style={[{ width: 400, height: 800 }]} blurRadius={5}>
+            <View >
+              <Image style={[{ width: 400, height: 150, opacity: 0.8 }]} source={require('../assets/dashboardThumb.jpg')} />
             </View>
-            <View style={{ flex: 3, paddingLeft: 20 }}>
-              <View style={{ flexDirection: "row", width: "100%" }} >
-                <View style={[{ flex: 1 }]}>
-                  <Text style={[styles.textDashboard]}>Total Cuts        :</Text>
+            <View style={[styles.flexDirDashboard, { marginTop: 0, paddingTop: 0 }]}>
+              <View style={{ flex: 3, paddingLeft: 20 }}>
+                <View style={{ flexDirection: "row", width: "100%" }} >
+                  <View style={[{ flex: 1 }]}>
+                    <Text style={[styles.textDashboard]}>Hello, {ordersByDate[0].Barber.name}</Text>
+                  </View>
+                </View>
+                <View style={{ flexDirection: "row", width: "100%" }} >
+                  <View style={[{ flex: 1 }]}>
+                    <Text style={[styles.textDashboard]}>Total Cuts        :</Text>
+                  </View>
+                  <View style={[{ flex: 1 }]}>
+                    <Text style={[styles.textDashboard]}>{statistic.totalCukur}</Text>
+                  </View>
+
 
                 </View>
-                <View style={[{ flex: 1 }]}>
-                  <Text style={[styles.textDashboard]}>{statistic.totalCukur}</Text>
+                <View style={{ flexDirection: "row", width: "100%" }} >
+                  <View style={[{ flex: 1 }]}>
+                    <Text style={[styles.textDashboard]}>Total Income   :</Text>
 
-                </View>
+                  </View>
+                  <View style={[{ flex: 1 }]}>
+                    <Text style={[styles.textDashboard]}>{priceFormatter(statistic.totalIncome)}</Text>
 
+                  </View>
 
-              </View>
-              <View style={{ flexDirection: "row", width: "100%" }} >
-                <View style={[{ flex: 1 }]}>
-                  <Text style={[styles.textDashboard]}>Total Income   :</Text>
-
-                </View>
-                <View style={[{ flex: 1 }]}>
-                  <Text style={[styles.textDashboard]}>{priceFormatter(statistic.totalIncome)}</Text>
-
-                </View>
-
-
-              </View>
-              <View style={{ flexDirection: "row", width: "100%" }} >
-                <View style={[{ flex: 1 }]}>
-                  <Text style={[styles.textDashboard]}>Rating              :</Text>
-
-                </View>
-                <View style={[{ flex: 1 }]}>
-                  <Text style={[styles.textDashboard]}>{statistic.avgRating}</Text>
 
                 </View>
 
+                <View style={{ flexDirection: "row", width: "100%" }} >
+                  <View style={[{ flex: 1 }]}>
+                    <Text style={[styles.textDashboard]}>Rating              :</Text>
 
-              </View>
+                  </View>
+                  <View style={[{ flex: 1 }]}>
+                    <Text style={[styles.textDashboard]}>{statistic.avgRating}</Text>
 
-              {/* <View style={{flexDirection: "row"}} >
+                  </View>
+
+
+                </View>
+
+                {/* <View style={{flexDirection: "row"}} >
               <Text style={[styles.textDashboard, {flex: 1}]}>Total Cuts    :</Text>
               <Text style={[styles.textDashboard, {flex: 1}]}>{statistic.totalCukur}</Text>
-                    
                     </View> */}
-            </View>
-          </View>
-          <View style={styles.cardDashboard}>
-            <Text>{text}</Text>
-            <View >
-              <Button title='DatePicker' onPress={() => showMode('date')} />
+              </View>
             </View>
             <View>
+              <Text>Check Your Bookings :
+                <TouchableOpacity onPress={() => showMode('date')}><Text style={styles.loginButton}>Calendar</Text></TouchableOpacity></Text>
+              <View>
+              </View>
+              {show && (<DateTimePicker
+                testID="dateTimePicker"
+                value={date}
+                mode={mode}
+                is24Hour={true}
+                display='default'
+                onChange={onChange}
+              />)}
             </View>
-            {show && (<DateTimePicker
-              testID="dateTimePicker"
-              value={date}
-              mode={mode}
-              is24Hour={true}
-              display='default'
-              onChange={onChange}
-            />)}
-          </View>
-          <View style={{marginBottom: 20}}>
-            <FlatList
+            <View style={{ marginBottom: 20 }}>
+              <FlatList
                 data={ordersByDate}
                 renderItem={list}
                 horizontal
                 keyExtractor={(e) => e.id}
 
               />
-          </View>
-          <Button onPress={logout} title="Log Out" />
+            </View>
+            <Button buttonStyle={{ color: '#ddd9d6' }} onPress={logout} title="Log Out" />
+          </ImageBackground>
         </SafeAreaView>
       </View>
+    </>
   )
 }
 
 TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
   try {
-      if (error) {
-        console.log(error);
-        // Error occurred - check `error.message` for more details.
-        return;
+    if (error) {
+      console.log(error);
+      // Error occurred - check `error.message` for more details.
+      return;
+    }
+    if (data) {
+      const { locations } = data;
+      const token = await AsyncStorage.getItem('token')
+      if (token !== null) {
+        // console.log('masukÃ©s')
+        console.log(locations[0].coords.latitude, locations[0].coords.longitude);
+        const response = await axios({
+          url: `${baseUrl}/barbers/location`,
+          method: "PATCH",
+          headers: { access_token: token },
+          data: {
+            lat: locations[0].coords.latitude,
+            long: locations[0].coords.longitude,
+          },
+        });
+      } else {
+        console.log('tidak masuks')
       }
-      if (data) {
-        const { locations } = data;
-        const token = await AsyncStorage.getItem('token')
-          if (token !== null) {
-            // console.log('masukÃ©s')
-            console.log(locations[0].coords.latitude, locations[0].coords.longitude);
-            const response = await axios({
-                          url: `${baseUrl}/barbers/location`,
-                          method: "PATCH",
-                          headers: { access_token: token },
-                          data: {
-                            lat: locations[0].coords.latitude,
-                            long: locations[0].coords.longitude,
-                          },
-                        });
-          } else {
-            console.log('tidak masuks')
-          }
-        // console.log(locations, new Date(), value, '<---- cara kirim ini ke komponen?');
-      
+      // console.log(locations, new Date(), value, '<---- cara kirim ini ke komponen?');
+
     }
   } catch (error) {
     console.log(error);
@@ -398,7 +405,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   loginButton: {
-    backgroundColor: "#3897f1",
+    backgroundColor: "#ddd9d6",
     borderRadius: 5,
     height: 45,
     marginTop: 10,
@@ -419,8 +426,8 @@ const styles = StyleSheet.create({
   },
   textDashboard: {
     fontWeight: 'bold',
-    color: '#ffffff',
-    marginVertical: 20
+    color: '#ddd9d6',
+    marginVertical: 1
   },
   cardUserDetail: {
     margin: 10,
