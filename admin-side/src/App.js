@@ -5,10 +5,23 @@ import SignUp from "./view/SignUp";
 import Home from "./view/Home";
 import BeforeLogin from "./component/privateComponent/BeforeLogin";
 import AfterLogin from "./component/privateComponent/AfterLogin";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <Routes>
         <Route
           path="/signin"

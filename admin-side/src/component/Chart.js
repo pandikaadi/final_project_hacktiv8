@@ -6,8 +6,6 @@ import { useSelector } from "react-redux";
 function BarChart({ chartData }) {
   let totalIncome = 0;
   let totalVote = 0;
-  // const { chartData } = useSelector((state) => state.data);
-  console.log(chartData, ">>>>>>>>");
   const { loading, error } = useSelector((state) => state.admin);
 
   const totalBarber = chartData.app.barbers.length;
