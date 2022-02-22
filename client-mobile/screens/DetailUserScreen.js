@@ -2,13 +2,14 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { SafeAreaView, StatusBar, StyleSheet, Text, View, Picker, TouchableOpacity } from "react-native";
+import { SafeAreaView, StatusBar, StyleSheet, Text, View,Picker,TouchableOpacity } from "react-native";
+import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 
-export default function DetailUserScreen({ route }) {
+export default function DetailUserScreen( { route, navigation } ) {
   const { orderId } = route.params
   const [order, setOrder] = useState({})
   const [loading, setLoading] = useState(true)
-  const baseUrl = `https://0c30-123-253-232-109.ngrok.io`
+  const baseUrl = `http://a37f-123-253-232-109.ngrok.io`
   const getOrderById = async () => {
     console.log(`${baseUrl}/orders/${orderId}`)
     try {
@@ -62,13 +63,53 @@ export default function DetailUserScreen({ route }) {
     <View>
       <StatusBar style='auto' />
       <SafeAreaView>
+              <View
+               style={{
+                backgroundColor:"#F7F6F2",
+                paddingTop: 10,
+                borderBottomWidth: 2,
+                borderColor: "#9A9483"
+               }}>
+                <TouchableOpacity
+                  onPress={() => navigation.goBack()}
+                  style={
+                    {
+                      width: 50,
+                      flexDirection: "row",
+                      marginBottom: 10,
+                    }
+                  }
+                >
+                  <Ionicons
+                    name="arrow-back-circle-outline"
+                    size={30}
+                    color="black"
+                    style={{
+                      marginRight: 10,
+                      marginLeft: 10,
+                      
+                    }}
+                  />
+                  <Text
+                    style={
+                    { color: "black",
+                            fontWeight: "bold",
+                            textAlign: "center",
+                            textAlignVertical:"center"
+                          }
+                    }
+                  >
+                    Back
+                  </Text>
+                </TouchableOpacity>
+              </View>
         <View style={styles.cardUserDetail}>
-          <Text>Nama Pelanggan :{order.user.username}</Text>
-          <Text>Nomer Telepon: {order.user.phoneNumber}</Text>
-          <Text>Jam dan Tanggal</Text>
-          <Text>Status Pembayaran</Text>
-          <Text>coordinat </Text>
-          <Text>Status Cukur</Text>
+          <Text style={{color: "white"}}>Nama Pelanggan :{order.user.username}</Text>
+          <Text style={{color: "white"}}>Nomer Telepon: {order.user.phoneNumber}</Text>
+          <Text style={{color: "white"}}>Jam dan Tanggal</Text>
+          <Text style={{color: "white"}}>Status Pembayaran</Text>
+          <Text style={{color: "white"}}>coordinat </Text>
+          <Text style={{color: "white"}}>Status Cukur</Text>
           <View style={styles.container}>
             {
               order.order.statusBarber === 'Paid' ? <TouchableOpacity onPress={() => changeStatus('OTW')}><Text>On My Way !</Text></TouchableOpacity> : null
