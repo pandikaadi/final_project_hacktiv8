@@ -56,7 +56,7 @@ function Home() {
       <Navbar />
       {registerAdmin && <AdminModal />}
       {registerBarber && <BarberModal />}
-      <BarChart />
+      <BarChart chartData={chartData} />
       <div className="container mx-auto px-4 sm:px-8">
         <div className="">
           <div className="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">

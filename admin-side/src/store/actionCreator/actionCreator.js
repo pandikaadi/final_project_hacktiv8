@@ -31,7 +31,7 @@ export const postBarber = (payload) => {
 };
 
 export const fetchBarber = (payload, act) => {
-  console.log(act);
+  console.log(payload);
   return (dispatch) => {
     fetch("http://localhost:4000/admin/all", {
       method: "GET",
