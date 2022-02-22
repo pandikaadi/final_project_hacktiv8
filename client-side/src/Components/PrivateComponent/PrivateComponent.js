@@ -18,12 +18,10 @@ export default function PrivateRouter({ children }) {
   if (loading) {
     return <div>Loading...</div>;
   }
-
   if (!isAuthen) {
     return <Navigate to="/signin" state={{ from: location }} replace />;
   }
   if (
-    userOrder.orders[userOrder.orders.length - 1].statusBarber === "Finished" ||
     userOrder.orders[userOrder.orders.length - 1].statusBarber === "Pending"
   ) {
     return <Navigate to="/payment" state={{ from: location }} replace />;
