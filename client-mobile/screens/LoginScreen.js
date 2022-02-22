@@ -24,7 +24,7 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const [token, setToken] = useState(null);
   console.log(email, password);
-  const baseUrl = `http://e519-123-253-232-109.ngrok.io`;
+  const baseUrl = `http://99da-123-253-232-109.ngrok.io`;
   const onLoginPress = async () => {
     try {
       const response = await axios.post(`${baseUrl}/barbers/login`, {
@@ -68,13 +68,13 @@ export default function LoginScreen({ navigation }) {
             <StatusBar style="auto" />
             <View style={styles.loginFormView}>
               <View style={styles.upperTextHandler}>
-                {/* <Image
+                <Image
                   style={[{ width: "100%", height: 80 }, styles.logoText]}
                   source={require("../assets/logo1.png")}
-                /> */}
-                <Text style={styles.upperText}>SHAVE8</Text>
+                />
+                {/* <Text style={styles.upperText}>SHAVE8</Text> */}
               </View>
-              <View>
+              <View style={{marginBottom:10}}>
                 <TextInput
                   style={styles.loginFormTextInput}
                   placeholder="Email"
@@ -83,7 +83,7 @@ export default function LoginScreen({ navigation }) {
                   value={email}
                 />
               </View>
-              <View>
+              <View style={{marginBottom:10}}>
                 <TextInput
                   style={styles.loginFormTextInput}
                   placeholder="Password"
@@ -98,7 +98,7 @@ export default function LoginScreen({ navigation }) {
                   <Text style={styles.loginButton}>Sign In</Text>
                 </TouchableOpacity>
               </View>
-              <View style={styles.bottomTextHandler}>
+              <View style={[styles.bottomTextHandler, {marginTop: 10}]}>
                 <Text style={styles.forgotPassword}>Forgot password?</Text>
               </View>
             </View>

@@ -21,7 +21,7 @@ import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
 const LOCATION_TASK_NAME = "background-location-task";
 
-const baseUrl = `http://e519-123-253-232-109.ngrok.io`;
+const baseUrl = `http://99da-123-253-232-109.ngrok.io`;
 
 const requestPermissions = async () => {
   console.log("hereee");
@@ -72,13 +72,20 @@ export default function DashboardScreen({ navigation }) {
 
   const [isMounted, setIsMounted] = useState(true);
   useEffect(() => {
-    let avg = null;
+    let totalVote = null;
     if (votes.length > 0) {
       votes.forEach((e) => {
-        avg += e.value;
+        totalVote += e.value;
       });
     }
-
+    let avg
+    if(votes.length === 0) {
+      avg = 0
+    } else {
+      avg = totalVote / votes.length
+    }
+    
+    console.log(votes);
     if (orders.length > 0) {
       let totalCukur = 0;
       let totalIncome = 0;
@@ -92,7 +99,7 @@ export default function DashboardScreen({ navigation }) {
         ...statistic,
         totalCukur,
         totalIncome,
-        avgRating: 0 || +(avg / votes.length).toFixed(1),
+        avgRating: 0 || +(avg).toFixed(1),
       });
     }
   }, [orders, votes]);
@@ -295,6 +302,7 @@ export default function DashboardScreen({ navigation }) {
     setText(fDate);
   };
   const windowHeight = Dimensions.get("window").height;
+  const windowWidth = Dimensions.get("window").width;
   const showMode = (currentMode) => {
     setShow(true);
     setMode(currentMode);
@@ -312,8 +320,21 @@ export default function DashboardScreen({ navigation }) {
 
   if (loading) {
     return (
-      <View>
-        <Text>...loading</Text>
+      <View
+        style={{
+          justifyContent: "center",
+          alignContent: "center",
+          height: windowHeight,
+          width: windowWidth,
+          backgroundColor: "white",
+        }}
+      >
+        <View style={{marginHorizontal:"auto", paddingHorizontal:"auto", alignItems:"center"}}>
+          <Image
+            source={require("../assets/loading.gif")}
+            style={[{ width:150, height: 100, resizeMode:"contain", marginHorizontal:"auto" }]}
+          />
+        </View>
       </View>
     );
   }
@@ -339,6 +360,9 @@ export default function DashboardScreen({ navigation }) {
         <Text style={styles.secondText}>Goals and achievement</Text>
         <Text style={styles.firstText}>Today's activity:</Text>
       </View>
+      <TouchableOpacity style={{marginBottom: 15}} onPress={() => showMode("date")}>
+          <Text style={{color: "#ddd9d6", paddingVertical: 5, paddingHorizontal: 10, width:150, textAlign:"center", alignSelf:"center", borderRadius:20, borderColor:"#ddd9d6", borderWidth:2}}>CHOOSE A DATE</Text>
+        </TouchableOpacity>
       <View
         style={{
           marginTop: 2,
@@ -347,7 +371,7 @@ export default function DashboardScreen({ navigation }) {
           marginBottom: 8,
         }}
       >
-        <Button title="Date Picker" onPress={() => showMode("date")} />
+        
         {show && (
           <DateTimePicker
             testID="dateTimePicker"
@@ -413,7 +437,7 @@ export default function DashboardScreen({ navigation }) {
                     marginBottom: 10,
                   }}
                 >
-                  <Text style={styles.recordText}>Total vote</Text>
+                  <Text style={styles.recordText}>Rating Average</Text>
                   <Text
                     style={{
                       fontSize: 16,
@@ -421,7 +445,7 @@ export default function DashboardScreen({ navigation }) {
                       color: "#282c34",
                     }}
                   >
-                    {statistic.totalCukur}
+                    {statistic.avgRating}
                   </Text>
                 </View>
               </View>
@@ -445,7 +469,7 @@ export default function DashboardScreen({ navigation }) {
 TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
   try {
     if (error) {
-      console.log(error);
+      console.log(error, `>>>>>>>>>`);
       return;
     }
     if (data) {
@@ -470,7 +494,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
       }
     }
   } catch (error) {
-    console.log(error);
+    console.log(error, `>>>SSS`);
   }
 });
 

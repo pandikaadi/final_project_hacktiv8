@@ -20,7 +20,7 @@ export default function DetailUserScreen({ route, navigation }) {
   const { orderId } = route.params;
   const [order, setOrder] = useState({});
   const [loading, setLoading] = useState(true);
-  const baseUrl = `https://e519-123-253-232-109.ngrok.io`;
+  const baseUrl = `http://99da-123-253-232-109.ngrok.io`;
   const windowHeight = Dimensions.get("window").height;
   const getOrderById = async () => {
     console.log(`${baseUrl}/orders/${orderId}`);
