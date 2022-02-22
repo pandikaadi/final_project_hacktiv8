@@ -1,7 +1,6 @@
 const axios = require("axios");
 
 const getBarbers = async (req, res) => {
-  
   try {
     const { data: barbers } = await axios({
       method: "GET",
@@ -33,7 +32,6 @@ const getBarberById = async (req, res) => {
     res.status(500).json(err);
   }
 };
-
 const postBarber = async (req, res) => {
   const { name, email, password, phoneNumber, city } = req.body;
   try {
@@ -68,11 +66,11 @@ const loginBarber = async (req, res) => {
 };
 
 const updateLocationBarber = async (req, res) => {
-  console.log(`>>> update loc mashok`,req.body);
+  console.log(`>>> update loc mashok`, req.body);
 
   try {
     const { data: message } = await axios({
-      headers: {access_token: req.headers.access_token},
+      headers: { access_token: req.headers.access_token },
       method: "PATCH",
       url: "http://localhost:4001/barbers/location",
       data: req.body,
