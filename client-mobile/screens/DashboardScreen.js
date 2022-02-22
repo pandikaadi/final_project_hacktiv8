@@ -153,7 +153,7 @@ export default function DashboardScreen({ navigation }) {
 
     return `Rp. ${formattedPrice.join("")}`;
   }
-  console.log(ordersByDate[0]);
+  // console.log(ordersByDate[0].Barber.name);
 
   useEffect(() => {
     console.log(`useEffect mounted`);

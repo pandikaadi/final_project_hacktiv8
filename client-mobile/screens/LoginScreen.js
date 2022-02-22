@@ -117,10 +117,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#282c34",
     minHeight: phoneHeight,
   },
-  loginScreenContainer: {},
-  upperTextHandler: {
-    justifyContent: "center",
-    alignItems: "center",
+  loginScreenContainer: {
+    flex: 1,
+    minWidth: "75%",
+    height: "100%",
+    marginTop: 190
+  },
+  logoText: {
   },
   upperText: {
     fontSize: 40,

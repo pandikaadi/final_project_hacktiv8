@@ -44,14 +44,6 @@ function Navbar() {
               >
                 <ul className="flex flex-col lg:flex-row list-none mr-auto">
                   <li className="nav-item">
-                    <Link
-                      className="px-3 py-2 flex items-center text-sm uppercase font-light leading-snug text-slate-500 hover:opacity-75"
-                      to="/category"
-                    >
-                      <p className="ml-2">New Service</p>
-                    </Link>
-                  </li>
-                  <li className="nav-item">
                     <button
                       className="px-3 py-2 flex items-center text-sm uppercase font-light leading-snug text-slate-500 hover:opacity-75"
                       onClick={() => dispatch(setRegister(true))}
