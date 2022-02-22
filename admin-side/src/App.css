@@ -6,7 +6,15 @@
   height: 40vmin;
   pointer-events: none;
 }
+.leaflet-container {
+  height: 600px;
+  width: 100%;
+}
 
+.leaflet-div-icon {
+  background: transparent;
+  border: none;
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
