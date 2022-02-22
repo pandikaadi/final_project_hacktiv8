@@ -7,7 +7,6 @@ const getServices = async (req, res) => {
       res.status(200).json(services);
     }
   } catch (err) {
-    console.log(err);
     res.status(500).json(err);
   }
 };
@@ -25,24 +24,23 @@ const getServiceById = async (req, res) => {
     }
   } catch (err) {
     if ( err.message === 'not found'){
-     res.status(404).json({ messege: "Service not found" });
-    }else{
-      res.status(500).json(err);
-    }
+      res.status(404).json(err.message);
+     }else{
+       res.status(500).json(err);
+     }
   }
 };
 const postService = async (req, res) => {
-  const { name, price } = req.body;
+  const { name, price, image } = req.body;
   try {
     const service = await Service.create({
       name,
       price,
+      image,
     });
-    if (service) {
+ 
       res.status(201).json(service);
-    } else {
-      res.status(404).json({ messege: "Bad request" });
-    }
+  
   } catch (err) {
     if (!err.errors){
       res.status(500).json(err)
@@ -52,7 +50,10 @@ const postService = async (req, res) => {
           res.status(400).json(el)
         } else if ( el.message === 'price is required'){
           res.status(400).json(el)
-        } 
+        }else {
+          res.status(400).json(el)
+
+        }
       })
     }
   }

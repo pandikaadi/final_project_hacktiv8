@@ -7,7 +7,7 @@ const paymentHandler = async (req, res) => {
       });
       res.status(200).json(payment);
   } catch (err) {
-    console.log(err);
+    
     res.status(500).json(err);
   }
 };

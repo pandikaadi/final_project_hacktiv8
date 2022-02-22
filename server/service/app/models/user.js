@@ -2,7 +2,6 @@
 const {
   Model
 } = require('sequelize');
-const { createHash } = require('../helpers/bcrypt')
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -66,19 +65,9 @@ module.exports = (sequelize, DataTypes) => {
     long: DataTypes.STRING
   }, {
     sequelize,
-    hooks:{
-      beforeCreate(user,option){
-        user.role = 'Customer'
-      }
-    },
     modelName: 'User',
   });
-  User.beforeCreate((instanceUser, options)=>{
-    console.log(instanceUser.password,'hook user ------------------');
-    const hashPassword = createHash(instanceUser.password)
-    instanceUser.password = hashPassword
-    console.log(instanceUser.password,'hook user after hashing ------------------');
-  })
-  console.log(User,'yessssssssss');
+
+
   return User;
 };

@@ -17,6 +17,15 @@ const userTest = {
   role: 'Customer'
 };
 
+const adminTest = {
+  id: '620a0610e279625ce506cbd3',
+  username: "pelanggan",
+  email: "pelanggan@gmail.com",
+  password: "testing",
+  phoneNumber: "0821232323",
+  role: 'Admin'
+};
+
 const orderTest = {
   userMonggoId:'1',
   barberId: 1,
@@ -47,10 +56,15 @@ const barberTest = {
   city:'jawa',
   lat: 0.6000,
   long:10.0434,
+  role:'Barber'
 };
 
 const voteTest = {
-  value: 1
+  orderData:{
+    id:1,
+    barberId:1
+  },
+  star: 1
 };
 
 // mock data generator helpers
@@ -87,7 +101,7 @@ const generateOrder = (userId, barberId, serviceId) => {
     serviceId: serviceId,
     address: 'fake address',
     city:'jawa',
-    date: "01/01/2022",
+    date: new Date(),
     hour: "19.00",
     price: 20000,
     paymentUrl: 'https://test.com/',
@@ -102,14 +116,13 @@ const assertOrder = (received, expected) => {
 }
 
 let token ;
-
-
+let server;
 const invalidToken =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBtYWlsLmNvbSIsImlkIjoxLCJpYXQiOjE2MjI2MDk2NTF9.gShAB2qaCUjlnvNuM1MBWfBVEjDGdqjWSJNMEScXIeE";
 
 beforeAll((done) => {
   Promise.all([Service.create(serviceTest),Barber.create(barberTest)])
-    .then((datas) => {
+    .then((_)=> {
       done();
     })
     .catch((err) => {
@@ -128,18 +141,19 @@ afterAll((done) => {
     Barber.destroy({ truncate: true, cascade: true, restartIdentity: true }),
     Vote.destroy({ truncate: true, cascade: true, restartIdentity: true })
   ])
+
   .then((_) => {
-      done();
+    
+    done();
     })
-    .catch((err) => {
-      done(err);
-    });
+  .catch((err) => {
+    done(err);
+  });
 });
 
 
-
-describe("order rouets test", () => {
-  describe("POST /orders", () => {
+  describe("order rouets test", () => {
+    describe("POST /orders", () => {
     describe("succes create order", () => {
       let midtrans = require('midtrans-client');
       jest.mock('midtrans-client');
@@ -154,6 +168,7 @@ describe("order rouets test", () => {
           };
         });
       });
+
       test("201 Success create order - should create new Order", async () => {
         token = createToken(userTest)
 
@@ -183,25 +198,6 @@ describe("order rouets test", () => {
           };
         });
       });
-      test("400 failed create order - should return error if barberId is Empty", () => {
-        token = createToken(userTest)
-        request(app)
-          .post("/orders")
-          .set("access_token", token)
-          .send({
-            userId: 1,
-            barberId: 0,
-            date: "22/12/2022",
-            hour: " 19.00",
-          })
-          .end((err, res) => {
-            if (err) return done(err);
-            const { body, status } = res;
-
-            expect(status).toBe(400);
-            return done();
-          });
-      });
       
       test("400 failed create order - should return error if date is Empty", (done) => {
         token = createToken(userTest)
@@ -209,10 +205,18 @@ describe("order rouets test", () => {
           .post("/orders")
           .set("access_token", token)
           .send({
-            userId: 1,
-            barberId: 0,
+            userMonggoId:'1',
+            barberId: 1,
+            serviceId: 1,
+            address: 'fake address',
+            city:'jawa',
             date: "",
-            hour: "19.00",
+            hour: "08:00-10:00",
+            price: 20000,
+            paymentUrl: 'https://test.com/',
+            orderKey: '123356dfdf',
+            lat:0.9999,
+            long:10.000
           })
           .end((err, res) => {
             if (err) return done(err);
@@ -235,7 +239,7 @@ describe("order rouets test", () => {
             serviceId: 1,
             address: 'fake address',
             city:'jawa',
-            date: "01/01/2022",
+            date: new Date(),
             hour: "",
             price: 20000,
             paymentUrl: 'https://test.com/',
@@ -243,41 +247,137 @@ describe("order rouets test", () => {
             lat:0.9999,
             long:10.000
           })
-          .end((err, res) => {
-            if (err) return done(err);
-            const { body, status } = res;
-            expect(status).toBe(400);
-            expect(body).toEqual(expect.any(Object));
+          // .end((err, res) => {
+          //   if (err) return done(err);
+          //   const { body, status } = res;
+          //   expect(status).toBe(400);
+          //   expect(body).toEqual(expect.any(Object));
 
-            return done();
-          });
-      });
-      test("400 failed create order - should return error if date is null", (done) => {
-        token = createToken(userTest)
-        request(app)
-          .post("/orders")
-          .set("access_token", token)
-          .send({
-            userId: 1,
-            barberId: 1,
-            hour: "",
+          //   return done();
+          // });
+          .then((response) => {
+            const { body, status } = response;
+            expect(status).toBe(400);
+            done();
           })
+          .catch((err) => {
+            done(err);
+          });
+      });
+      test("500 Failed create order - should return error ", (done) => {
+        token = createToken({
+          ...userTest
+        })   
+        jest.spyOn(Order, "create").mockRejectedValue(new Error("test error"));
+        // token = createToken(userTest)
+        request(app)
+        .post("/orders")
+        .set("access_token", token)
+        .end((err, res) => {
+          if (err) return done(err);
+          const { body, status } = res;
+          expect(status).toBe(500);
+          return done();
+        });
+      });
+    });
+    });
+    describe("GET /orders", () => {
+      test("200 Success orders", (done) => {
+        token = createToken({
+          ...userTest
+        })    
+        request(app)
+          .get("/orders")
+          .set("access_token", token)
+          .then((response) => {
+            const { body, status } = response;
+            expect(status).toBe(200);
+            expect(Array.isArray(body)).toBeTruthy();
+            expect(body.length).toBeGreaterThan(0);
+            done();
+          })
+          .catch((err) => {
+            done(err);
+          });
+      });
+
+      test("401 failed get orders with invalid token", (done) => {
+        // token = createToken({
+        //   userTest
+        // })
+        request(app)
+          .get("/orders")
+          .set("access_token", invalidToken)
+          .then((response) => {
+            const { body, status } = response;
+            expect(status).toBe(401);
+      
+      
+            done();
+          })
+          .catch((err) => {
+            done(err);
+          });
+      });
+
+      test("500 Failed get  - should return error ", (done) => {
+        token = createToken({
+          ...userTest
+        })   
+        jest.spyOn(Order, 'findAll').mockRejectedValue(new Error("test error"));
+        request(app)
+          .get("/orders")
+          .set("access_token", token)
           .end((err, res) => {
             if (err) return done(err);
             const { body, status } = res;
-
-            expect(status).toBe(400);
-            expect(body).toEqual(expect.any(Object));
-
+            expect(status).toBe(500);
             return done();
           });
       });
-      test("500 Failed register - should return error ", (done) => {
-        jest.spyOn(Order, "create").mockRejectedValue(new Error("test error"));
-        token = createToken(userTest)
+      
+    });
+    describe("GET /orders/:id", () => {
+      test("200 Success get order by id", (done) => {
         request(app)
-        .set("access_token", token)
-          .post("/orders")
+          .get("/orders/1")
+          .set("access_token", token)
+          .then((response) => {
+            const { body, status } = response;
+            expect(status).toBe(200);
+            expect(body).toEqual(expect.any(Object));
+            expect(body).toHaveProperty("id", expect.any(Number));
+            done();
+          })
+          .catch((err) => {
+            done(err);
+          });
+      });
+
+      test("401 failed get orders by id with invalid token", (done) => {
+        // token = createToken({
+        //   userTest
+        // })
+        request(app)
+          .get("/orders/1")
+          .set("access_token", invalidToken)
+          .then((response) => {
+            const { body, status } = response;
+            expect(status).toBe(401);
+            done();
+          })
+          .catch((err) => {
+            done(err);
+          });
+      });
+
+      test("500 Failed getOrdersByid - should return error ", (done) => {
+        token = createToken(userTest)
+        jest.spyOn(Order, "findOne").mockRejectedValue(new Error("test error"));
+        request(app)
+          .get("/orders/1")
+          .set("access_token", token)
           .end((err, res) => {
             if (err) return done(err);
             const { body, status } = res;
@@ -286,162 +386,133 @@ describe("order rouets test", () => {
           });
       });
     });
-  });
-  describe("GET /orders", () => {
-    let midtrans = require('midtrans-client');
-    jest.mock('midtrans-client');
-    beforeEach(() => {
-      midtrans.Snap.mockImplementation(() => {
-        return {
-          createTransaction: () => {
-            return {
-              token: '123qwe',
-            };
-          },
-        };
+    describe('GET /orders/dailyOrders',()=>{
+      test("200 Success get daily order", (done) => {
+        token = createToken({
+          userTest
+        }) 
+        request(app)
+          .get("/orders/dailyOrders?date=01/01/2022&&barberId=1")
+          .set("access_token", token)
+          .then((response) => {
+            const { body, status } = response;
+            expect(status).toBe(200);
+            // expect(body).toEqual(expect.any(Object));
+            // expect(body).toHaveProperty("id", expect.any(Number));
+            done();
+          })
+          .catch((err) => {
+            done(err);
+          });
+      });
+
+      test("401 failed get orders by id with invalid token", (done) => {
+        // token = createToken({
+        //   userTest
+        // })
+        request(app)
+          .get("/orders/dailyOrders?date=01/01/2022&&barberId=1")
+          .set("access_token", invalidToken)
+          .then((response) => {
+            const { body, status } = response;
+            expect(status).toBe(401);
+            done();
+          })
+          .catch((err) => {
+            done(err);
+          });
+      });
+
+      test("500 Failed getOrdersByid - should return error ", (done) => {
+        token = createToken(userTest)
+        jest.spyOn(Order, "findAll").mockRejectedValue(new Error("test error"));
+        request(app)
+          .get("/orders/dailyOrders?date=01/01/2022&&barberId=1")
+          .set("access_token", token)
+          .end((err, res) => {
+            if (err) return done(err);
+            const { body, status } = res;
+            expect(status).toBe(500);
+            return done();
+          });
+      });
+
+    })
+    describe("DELETE /orders/:id", () => {
+      test("200 Success delete order by id", (done) => {
+        request(app)
+          .delete("/orders/1")
+          .set("access_token", token)
+          .then((response) => {
+            const { body, status } = response;
+            expect(status).toBe(200);
+            done();
+          })
+          .catch((err) => {
+            done(err);
+          });
+      });
+      test("404 failed delete order by id", (done) => {
+        request(app)
+          .delete("/orders/1")
+          .set("access_token", token)
+          .then((response) => {
+            const { body, status } = response;
+            expect(status).toBe(404);
+            done();
+          })
+          .catch((err) => {
+            done(err);
+          });
+      });
+
+      test("500 Failed delete - should return error ", (done) => {
+        token = createToken({
+          userTest
+        }) 
+        jest.spyOn(Order, "findOne").mockRejectedValue(new Error("test error"));
+        request(app)
+          .delete("/orders/1")
+          .set("access_token", token)
+          .end((err, res) => {
+            if (err) return done(err);
+            const { body, status } = res;
+            expect(status).toBe(500);
+            return done();
+          });
       });
     });
-    test("200 Success orders", (done) => {
-      token = createToken({
-        ...userTest
-      })    
-      request(app)
-        .get("/orders")
-        .set("access_token", token)
-        .then((response) => {
-          const { body, status } = response;
-          expect(status).toBe(200);
+    describe("POST payment handler ", ()=>{
+      test("200 Success update payment handle - should update status barber", (done) => {
+        request(app)
+          .post("/paymentHandler")
+          .end((err, res) => {
+            if (err) return done(err);
+            const { body, status } = res;
+            expect(status).toBe(200);
+            // expect(body).toEqual(expect.any(Obj));;
+            return done();
+          });
+      });
 
-          expect(Array.isArray(body)).toBeTruthy();
-          expect(body.length).toBeGreaterThan(0);
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
-    });
-    test("401 failed get orders with invalid token", (done) => {
-      // token = createToken({
-      //   userTest
-      // })
-      request(app)
-        .get("/orders")
-        .set("access_token", invalidToken)
-        .then((response) => {
-          const { body, status } = response;
-          expect(status).toBe(401);
-     
-    
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
-    });
+      // test("500 Failed update status - should return error ", (done) => {
+      //   jest.spyOn(Order, "update").mockRejectedValue(new Error("test error"));
+      //   request(app)
+      //     .post("/paymentHandler")
+      //     .end((err, res) => {
+      //       if (err) return done(err);
+      //       const { body, status } = res;
+      //       expect(status).toBe(500);
+      //       return done();
+      //     });
+      // });
 
-    test("500 Failed get  - should return error ", (done) => {
-      jest.spyOn(Order, 'findAll').mockRejectedValue(new Error("test error"));
-      request(app)
-        .post("/orders")
-        .end((err, res) => {
-          if (err) return done(err);
-          const { body, status } = res;
-          expect(status).toBe(500);
-          return done();
-        });
-    });
+      // MASIH BUG !!
+
+    })
     
   });
-  describe("GET /orders/:id", () => {
-    test("200 Success get order by id", (done) => {
-      request(app)
-        .get("/orders/1")
-        .set("access_token", token)
-        .then((response) => {
-          const { body, status } = response;
-          expect(status).toBe(200);
-          expect(body).toEqual(expect.any(Object));
-          expect(body).toHaveProperty("id", expect.any(Number));
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
-    });
-    test("500 Failed getOrdersByid - should return error ", (done) => {
-      jest.spyOn(Order, "findOne").mockRejectedValue(new Error("test error"));
-
-      request(app)
-        .get("/orders/1")
-        .end((err, res) => {
-          if (err) return done(err);
-          const { body, status } = res;
-          expect(status).toBe(500);
-          return done();
-        });
-    });
-  });
-  describe('GET /orders/dailyOrders',()=>{
-    test("200 Success get daily order", (done) => {
-      token = createToken({
-        userTest
-      }) 
-      request(app)
-        .get("/orders/dailyOrders?date=01/01/2022&&barberId=1")
-        .set("access_token", token)
-        .then((response) => {
-          const { body, status } = response;
-          expect(status).toBe(200);
-          // expect(body).toEqual(expect.any(Object));
-          // expect(body).toHaveProperty("id", expect.any(Number));
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
-    });
-
-  })
-  describe("DELETE /orders/:id", () => {
-    test("200 Success delete order by id", (done) => {
-      request(app)
-        .delete("/orders/1")
-        .set("access_token", token)
-        .then((response) => {
-          const { body, status } = response;
-          expect(status).toBe(200);
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
-    });
-    test("404 failed delete order by id", (done) => {
-      request(app)
-        .delete("/orders/1")
-        .set("access_token", token)
-        .then((response) => {
-          const { body, status } = response;
-          expect(status).toBe(404);
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
-    });
-    test("500 Failed delete - should return error ", (done) => {
-      jest.spyOn(Barber, "destroy").mockRejectedValue(new Error("test error"));
-      request(app)
-        .delete("/barbers/1")
-        .end((err, res) => {
-          if (err) return done(err);
-          const { body, status } = res;
-          expect(status).toBe(500);
-          return done();
-        });
-    });
-  });
-});
+  
   describe("service routes test", () => {
     describe("POST /services", ()=>{
      
@@ -478,7 +549,6 @@ describe("order rouets test", () => {
           .send({
             name: "basic cut",
             image: "https://images.unsplash.com/photo-1634302104565-cc698ee83144?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
-
           })
           .end((err, res) => {
             if (err) return done(err);
@@ -494,7 +564,6 @@ describe("order rouets test", () => {
             name: "",
             price: 1000,
             image: "https://images.unsplash.com/photo-1634302104565-cc698ee83144?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
-
           })
           .end((err, res) => {
             if (err) return done(err);
@@ -544,7 +613,7 @@ describe("order rouets test", () => {
             return done();
           });
       });
-  })
+    })
     describe("GET /services", ()=>{
       test("200 Success get service - should  return service", async () => {
         const service = await Service.create(generateService());
@@ -553,11 +622,7 @@ describe("order rouets test", () => {
         expect(res.body.length).toBeGreaterThan(0)
       });
 
-    test("404 failed get service  - should return error", async () => {
-      const res = await request(app)
-        .get(`/services/9999999`)
-      expect(res.status).toBe(404);
-    });
+
     
       test("500 Failed get service - should return error ", (done) => {
         jest.spyOn(Service, "findAll").mockRejectedValue(new Error("test error"));
@@ -570,6 +635,33 @@ describe("order rouets test", () => {
             return done();
           });
       });
+    })
+    describe("GET /services/:id",()=>{
+      test("200 Success get service - should  return service", async () => {
+        const service = await Service.create(generateService());
+        const res = await request(app).get("/services/1");
+        expect(res.status).toBe(200)
+        // expect(res.body.length).toBeGreaterThan(0)
+      });
+
+      test("404 failed get service  - should return error", async () => {
+        const res = await request(app)
+          .get(`/services/9999999`)
+        expect(res.status).toBe(404);
+      });
+
+      test("500 Failed get service - should return error ", (done) => {
+        jest.spyOn(Service, "findOne").mockRejectedValue(new Error("test error"));
+        request(app)
+          .get("/services/1")
+          .end((err, res) => {
+            if (err) return done(err);
+            const { body, status } = res;
+            expect(status).toBe(500);
+            return done();
+          });
+      });
+
     })
     describe("PUT /services", ()=>{
       test("200 Success  update service - should update service", (done) => {
@@ -638,98 +730,7 @@ describe("order rouets test", () => {
       });
     })
   });
-  describe("vote routes test", () => {
-    test("201 Success up vote - should add new vote", (done) => {
-      token = createToken({
-        userTest
-      })     
-      request(app)
-        .post("/votes/1")
-        .set("access_token", token)
-        .send(voteTest)
-        .end((err, res) => {
-          if (err) return done(err);
-          const { body, status } = res;
-          expect(status).toBe(201);
-          expect(body).toEqual(expect.any(Object));
-          return done();
-        });
-    });
-    test("200 Success gey vote - should get votes", (done) => {
-      token = createToken({
-        userTest
-      })     
-      request(app)
-        .get("/votes/1")
-        .set("access_token", token)
-        .send(voteTest)
-        .end((err, res) => {
-          if (err) return done(err);
-          const { body, status } = res;
-          expect(status).toBe(200);
-          expect(body).toEqual(expect.any(Object));
-          return done();
-        });
-    });
-    test("400 failed create vote - should return error ", (done) => {
-      token = createToken(userTest)
-      request(app)
-        .post("/votes/1")
-        .set("access_token", token)
-        .send({
-      
-        })
-        .end((err, res) => {
-          if (err) return done(err);
-          const { body, status } = res;
-          expect(status).toBe(400);
-          expect(body).toEqual(expect.any(Object));
 
-          return done();
-        });
-    });
-    test("400 failed create vote - should return error ", (done) => {
-      token = createToken(userTest)
-      request(app)
-        .post("/votes/1")
-        .set("access_token", token)
-        .send({
-          value:''
-        })
-        .end((err, res) => {
-          if (err) return done(err);
-          const { body, status } = res;
-          expect(status).toBe(400);
-          expect(body).toEqual(expect.any(Object));
-
-          return done();
-        });
-    });
-
-
-    test("500 Failed upvote - should return error ", (done) => {
-      jest.spyOn(Vote, "create").mockRejectedValue(new Error("test error"));
-      request(app)
-        .post("/votes/1")
-        .end((err, res) => {
-          if (err) return done(err);
-          const { body, status } = res;
-          expect(status).toBe(500);
-          return done();
-        });
-    });
-    test("500 Failed get votes - should return error ", (done) => {
-      jest.spyOn(Vote, "findAll").mockRejectedValue(new Error("test error"));
-      request(app)
-        .get("/votes/1")
-        .end((err, res) => {
-          if (err) return done(err);
-          const { body, status } = res;
-          expect(status).toBe(500);
-          return done();
-        });
-    });
-  });
 
   describe("barber routes test", () => {
     describe("POST /barbers", () => {
@@ -1018,9 +1019,10 @@ describe("order rouets test", () => {
     describe("DELETE /barbers", () => {
       test("200 Success delete barbers", async () => {
         const barber = await Barber.create(generateBarber());
-        const res = await request(app).delete(`/barbers/${barber.id}`)
+        const res = await request(app).delete(`/barbers/${barber.dataValues.id}`)
         expect(res.status).toBe(200);
       });
+
       test("500 faield delete barbers", async () => {
         const barber = await Barber.create(generateBarber());
         jest.spyOn(Barber, 'destroy').mockRejectedValue(new Error('test error'));
@@ -1029,8 +1031,6 @@ describe("order rouets test", () => {
         expect(res.status).toBe(500)
       });
     });
-
-
     describe("login barber", () => {
       test("200 Success login barber ", (done) => {
         request(app)
@@ -1062,7 +1062,167 @@ describe("order rouets test", () => {
             return done();
           });
       });
+      test("404 failed", (done) => {
+        request(app)
+          .post("/barbers/login")
+          // .set('access_token', token)
+          .send({
+            email: "lebron.james.failed@mail.com",
+            password: "testing",
+          })
+          .end((err, res) => {
+            if (err) return done(err);
+            const { body, status } = res;
+            console.log(body,'<<<<< BARBER LOGIN');
+            expect(status).toBe(404);
+            return done();
+          });
+      });
+      test("500 Failed update barbers - should return error ", (done) => {
+        jest.spyOn(Barber, "findOne").mockRejectedValue(new Error("test error"));
+        request(app)
+          .post("/barbers/login")
+          .end((err, res) => {
+            if (err) return done(err);
+            const { body, status } = res;
+            expect(status).toBe(500);
+            return done();
+          });
+      });
     });
   });
 
+  describe("vote routes test", () => {
+    test("201 Success up vote - should add new vote", (done) => {
+      token = createToken({
+        userTest
+      })     
+      request(app)
+        .post("/votes")
+        .set("access_token", token)
+        .send(voteTest)
+        .end((err, res) => {
+          if (err) return done(err);
+          const { body, status } = res;
+          expect(status).toBe(201);
+          expect(body).toEqual(expect.any(Object));
+          return done();
+        });
+    });
 
+    test("400 failed create vote - should return error if value null ", (done) => {
+      token = createToken(userTest)
+      request(app)
+        .post("/votes")
+        .set("access_token", token)
+        .send({
+          orderData:{
+            id:1,
+            barberId:1
+          },
+          
+        })
+        .end((err, res) => {
+          if (err) return done(err);
+          const { body, status } = res;
+          expect(status).toBe(400);
+          return done();
+        });
+    });
+    test("400 failed create vote - should return error if barberId null ", (done) => {
+      token = createToken(userTest)
+      request(app)
+        .post("/votes")
+        .set("access_token", token)
+        .send({
+          orderData:{
+            id:1,
+          
+          },
+          star:1
+        })
+        .end((err, res) => {
+          if (err) return done(err);
+          const { body, status } = res;
+          expect(status).toBe(400);
+          return done();
+        });
+    });
+
+    test("200 Success get vote - should get votes", (done) => {
+      token = createToken({
+        userTest
+      })     
+      request(app)
+        .get("/votes/1")
+        .set("access_token", token)
+        .send(voteTest)
+        .end((err, res) => {
+          if (err) return done(err);
+          const { body, status } = res;
+          expect(status).toBe(200);
+          expect(body).toEqual(expect.any(Object));
+          return done();
+        });
+    });
+
+    test("500 Failed upvote - should return error ", (done) => {
+      token = createToken({
+        userTest
+      })     
+      jest.spyOn(Vote, "create").mockRejectedValue(new Error("test error"));
+      request(app)
+        .post("/votes")
+        .set("access_token", token)
+        .end((err, res) => {
+          if (err) return done(err);
+          const { body, status } = res;
+          expect(status).toBe(500);
+          return done();
+        });
+    });
+    test("500 Failed get votes - should return error ", (done) => {
+      jest.spyOn(Vote, "findAll").mockRejectedValue(new Error("test error"));
+      request(app)
+        .get("/votes/1")
+        .end((err, res) => {
+          if (err) return done(err);
+          const { body, status } = res;
+          expect(status).toBe(500);
+          return done();
+        });
+    });
+  });
+
+  describe('GET/ ADMIN' ,()=>{
+      test("200 Success Get All - should get all ", (done) => {
+        token = createToken({
+          adminTest
+        })     
+        request(app)
+          .get("/admin/all")
+          .set("access_token", token)
+          .end((err, res) => {
+            if (err) return done(err);
+            const { body, status } = res;
+            expect(status).toBe(200);
+            expect(body).toEqual(expect.any(Object));
+            return done();
+          });
+      });
+      test("500 Failed get all - should return error ", (done) => {
+        token = createToken({
+          adminTest
+        })   
+        jest.spyOn(Barber, "findAll").mockRejectedValue(new Error("test error"));
+        request(app)
+          .get("/admin/all")
+          .set("access_token", token)
+          .end((err, res) => {
+            if (err) return done(err);
+            const { body, status } = res;
+            expect(status).toBe(500);
+            return done();
+          });
+      });
+  })

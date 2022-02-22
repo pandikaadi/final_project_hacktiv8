@@ -1,10 +1,5 @@
 'use strict';
 
-const randomString = (length, chars) => {
-    var result = '';
-    for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
-    return result;
-}
 const {
   Model
 } = require('sequelize');
@@ -29,7 +24,6 @@ module.exports = (sequelize, DataTypes) => {
     long: DataTypes.DECIMAL,
     barberId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
       validate: {
         notEmpty: {
           msg:'Please choose one'
@@ -42,8 +36,6 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notEmpty: {
           msg:'date is required'
-        }, notNull:{
-          msg:'date cant be null'
         }
       }
     },
@@ -53,8 +45,6 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         notEmpty: {
           msg:'hour is required'
-        }, notNull:{
-          msg:'hour cant be null'
         }
       }
     },

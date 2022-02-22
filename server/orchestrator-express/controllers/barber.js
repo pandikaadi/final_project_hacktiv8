@@ -66,8 +66,6 @@ const loginBarber = async (req, res) => {
 };
 
 const updateLocationBarber = async (req, res) => {
-  console.log(`>>> update loc mashok`, req.body);
-
   try {
     const { data: message } = await axios({
       headers: { access_token: req.headers.access_token },
