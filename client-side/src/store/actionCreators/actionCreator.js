@@ -60,6 +60,9 @@ export const PostVote = (payload) => {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        dispatch(hasOrder(false));
       });
   };
 };
