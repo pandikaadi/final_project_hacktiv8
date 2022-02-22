@@ -10,6 +10,7 @@ const coordinateController = require("./controllers/coordinate");
 const serviceController = require("./controllers/service");
 const voteController = require("./controllers/vote");
 const voteRouter = require("../service/app/routes/voteRouter");
+const { paymentHandler } = require("../service/app/controllers/orderController");
 
 app.use(cors());
 app.use(express.json());
@@ -42,6 +43,7 @@ app.delete("/barbers/:id", barberController.deleteBarber);
 app.get("/services", serviceController.getServices);
 app.get("/services/:id", serviceController.getServiceById);
 app.post("/services", serviceController.postService);
+app.post("/paymentHandler", paymentHandler);
 app.delete("/services/:id", serviceController.deleteService);
 
 app.post("/coordinates", coordinateController.translateCoordinate);

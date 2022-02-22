@@ -7,7 +7,7 @@ import * as Location from "expo-location";
 import * as TaskManager from 'expo-task-manager';
 const LOCATION_TASK_NAME = 'background-location-task';
 
-const baseUrl = `https://0c30-123-253-232-109.ngrok.io`
+const baseUrl = `http://a37f-123-253-232-109.ngrok.io`
 
 const requestPermissions = async () => {
   console.log('hereee');
@@ -243,7 +243,7 @@ export default function DashboardScreen({ navigation }) {
 
 
   return (
-      <View style={{minHeight: windowHeight}}>
+      <View style={{minHeight: windowHeight, justifyContent:"space-between"}}>
         <StatusBar style='auto' />
         <SafeAreaView>
           <View style={[styles.cardDashboard, styles.flexDirDashboard, {marginTop: 0, marginHorizontal: 0, borderRadius: 0, paddingTop: 0}]}>
