@@ -23,8 +23,8 @@ export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [token, setToken] = useState(null);
-  console.log(email, password);
-  const baseUrl = `http://99da-123-253-232-109.ngrok.io`;
+  
+  const baseUrl = `https://6a70-110-138-83-92.ngrok.io`;
   const onLoginPress = async () => {
     try {
       const response = await axios.post(`${baseUrl}/barbers/login`, {
