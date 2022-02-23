@@ -5,7 +5,7 @@ export default function AfterLogin({ children }) {
   const location = useLocation();
 
   if (isAuthen) {
-    return <Navigate to="/home" state={{ from: location }} replace />;
+    return <Navigate to="/" state={{ from: location }} replace />;
   }
   return children;
 }
