@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
+import { useFocusEffect } from '@react-navigation/native'
 import {
   Button,
   FlatList,
@@ -21,7 +22,7 @@ import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
 const LOCATION_TASK_NAME = "background-location-task";
 
-const baseUrl = `https://6a70-110-138-83-92.ngrok.io`;
+const baseUrl = `https://8f1e-110-138-83-92.ngrok.io`;
 
 const requestPermissions = async () => {
   console.log("hereee");
@@ -29,7 +30,7 @@ const requestPermissions = async () => {
     const { status } = await Location.requestBackgroundPermissionsAsync();
     const { status: statusForeground } =
       await Location.requestForegroundPermissionsAsync();
-    console.log("here", status, statusForeground);
+    // console.log("here", status, statusForeground);
     if (status === "granted" && statusForeground === "granted") {
       await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
         accuracy: Location.Accuracy.Balanced,
@@ -64,6 +65,7 @@ export default function DashboardScreen({ navigation }) {
   const [token, setToken] = useState(null);
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [email,setEmail] = useState("")
   const [statistic, setStatistic] = useState({
     totalIncome: 0,
     totalCukur: 0,
@@ -79,13 +81,13 @@ export default function DashboardScreen({ navigation }) {
       });
     }
     let avg
-    if(votes.length === 0) {
+    if (votes.length === 0) {
       avg = 0
     } else {
       avg = totalVote / votes.length
     }
-    
-    console.log(votes);
+
+    // console.log(votes);
     if (orders.length > 0) {
       let totalCukur = 0;
       let totalIncome = 0;
@@ -105,6 +107,8 @@ export default function DashboardScreen({ navigation }) {
   }, [orders, votes]);
   const getOrders = async () => {
     try {
+      const barberEmail = await AsyncStorage.getItem("email")
+      setEmail(barberEmail)
       const token = await AsyncStorage.getItem("token");
       setToken(token);
       const response = await axios.get(`${baseUrl}/ordersBarber`, {
@@ -124,6 +128,7 @@ export default function DashboardScreen({ navigation }) {
         setVotes(responseVotes.data);
       }
       setOrders(response.data);
+
       setLoading(false);
     } catch (err) {
       alert(err.message);
@@ -143,9 +148,18 @@ export default function DashboardScreen({ navigation }) {
       console.log(error, `>>>>>>`);
     }
   };
+
   useEffect(async () => {
     requestPermissions();
   }, [token]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getOrders().then(() => {
+        setOrdersByDate(orders);
+      });
+    }, [])
+  )
 
   function priceFormatter(price) {
     let formattedPrice = price.toString().split("");
@@ -169,6 +183,7 @@ export default function DashboardScreen({ navigation }) {
       setOrdersByDate(orders);
     });
   }, []);
+  
   const list = ({ item }) => {
     return (
       <View style={styles.cardDashboard2} key={item.id}>
@@ -177,18 +192,19 @@ export default function DashboardScreen({ navigation }) {
             style={{
               marginTop: 10,
               marginBottom: 5,
+              marginHorizontal:25,
               flexDirection: "row",
               paddingHorizontal: 20,
               justifyContent: "space-between",
             }}
           >
             <Text
-              style={{ color: "#282c34", fontSize: 16, fontWeight: "bold" }}
+              style={{ color: "#ffffff", fontSize: 16, fontWeight: "bold" }}
             >
               Schedule :{" "}
             </Text>
             <Text
-              style={{ color: "#282c34", fontSize: 16, fontWeight: "bold" }}
+              style={{ color: "#ffffff", fontSize: 16, fontWeight: "bold" }}
             >
               {item.hour}
             </Text>
@@ -197,17 +213,18 @@ export default function DashboardScreen({ navigation }) {
             style={{
               flexDirection: "row",
               paddingHorizontal: 20,
+              marginHorizontal:25,
               marginBottom: 5,
               justifyContent: "space-between",
             }}
           >
             <Text
-              style={{ color: "#282c34", fontSize: 16, fontWeight: "bold" }}
+              style={{ color: "#ffffff", fontSize: 16, fontWeight: "bold" }}
             >
               Price :{" "}
             </Text>
             <Text
-              style={{ color: "#282c34", fontSize: 16, fontWeight: "bold" }}
+              style={{ color: "#ffffff", fontSize: 16, fontWeight: "bold" }}
             >
               {priceFormatter(item.price)}
             </Text>
@@ -216,17 +233,18 @@ export default function DashboardScreen({ navigation }) {
             style={{
               flexDirection: "row",
               paddingHorizontal: 20,
+              marginHorizontal:25,
               marginBottom: 5,
               justifyContent: "space-between",
             }}
           >
             <Text
-              style={{ color: "#282c34", fontSize: 16, fontWeight: "bold" }}
+              style={{ color: "#ffffff", fontSize: 16, fontWeight: "bold" }}
             >
               Service :{" "}
             </Text>
             <Text
-              style={{ color: "#282c34", fontSize: 16, fontWeight: "bold" }}
+              style={{ color: "#ffffff", fontSize: 16, fontWeight: "bold" }}
             >
               {item.Service.name}
             </Text>
@@ -236,7 +254,7 @@ export default function DashboardScreen({ navigation }) {
               <Text
                 style={{
                   color: "#ddd9d6",
-                  backgroundColor: "#282c34",
+                  backgroundColor: "#282c34",//jangan diganti
                   width: 150,
                   marginTop: 10,
                   fontWeight: "bold",
@@ -318,7 +336,7 @@ export default function DashboardScreen({ navigation }) {
     navigation.navigate("Detail", { orderId: id });
   };
 
-  if (loading) {
+  if (loading && !email) {
     return (
       <View
         style={{
@@ -329,10 +347,10 @@ export default function DashboardScreen({ navigation }) {
           backgroundColor: "white",
         }}
       >
-        <View style={{marginHorizontal:"auto", paddingHorizontal:"auto", alignItems:"center"}}>
+        <View style={{ marginHorizontal: "auto", paddingHorizontal: "auto", alignItems: "center" }}>
           <Image
             source={require("../assets/loading.gif")}
-            style={[{ width:150, height: 100, resizeMode:"contain", marginHorizontal:"auto" }]}
+            style={[{ width: 150, height: 100, resizeMode: "contain", marginHorizontal: "auto" }]}
           />
         </View>
       </View>
@@ -356,13 +374,13 @@ export default function DashboardScreen({ navigation }) {
         />
       </View>
       <View style={styles.headerController}>
-        <Text style={styles.firstText}>Hello, user!</Text>
+        <Text style={styles.firstText}>Hello, {email.split('@')[0]}!</Text>
         <Text style={styles.secondText}>Goals and achievement</Text>
         <Text style={styles.firstText}>Today's activity:</Text>
       </View>
-      <TouchableOpacity style={{marginBottom: 15}} onPress={() => showMode("date")}>
-          <Text style={{color: "#ddd9d6", paddingVertical: 5, paddingHorizontal: 10, width:150, textAlign:"center", alignSelf:"center", borderRadius:20, borderColor:"#ddd9d6", borderWidth:2}}>CHOOSE A DATE</Text>
-        </TouchableOpacity>
+      <TouchableOpacity style={{ marginBottom: 15 }} onPress={() => showMode("date")}>
+        <Text style={{ color: "#ddd9d6", paddingVertical: 5, paddingHorizontal: 10, width: 150, textAlign: "center", alignSelf: "center", borderRadius: 20, borderColor: "#ddd9d6", borderWidth: 2 }}>CHOOSE A DATE</Text>
+      </TouchableOpacity>
       <View
         style={{
           marginTop: 2,
@@ -371,7 +389,7 @@ export default function DashboardScreen({ navigation }) {
           marginBottom: 8,
         }}
       >
-        
+
         {show && (
           <DateTimePicker
             testID="dateTimePicker"
@@ -401,12 +419,12 @@ export default function DashboardScreen({ navigation }) {
                     marginBottom: 10,
                   }}
                 >
-                  <Text style={styles.recordText}>Total cut</Text>
+                  <Text style={styles.recordText}>Total cuts</Text>
                   <Text
                     style={{
                       fontSize: 16,
                       fontWeight: "bold",
-                      color: "#282c34",
+                      color: "#ffffff",
                     }}
                   >
                     {statistic.totalCukur}
@@ -424,7 +442,7 @@ export default function DashboardScreen({ navigation }) {
                     style={{
                       fontSize: 16,
                       fontWeight: "bold",
-                      color: "#282c34",
+                      color: "#ffffff",
                     }}
                   >
                     {priceFormatter(statistic.totalIncome)}
@@ -442,7 +460,7 @@ export default function DashboardScreen({ navigation }) {
                     style={{
                       fontSize: 16,
                       fontWeight: "bold",
-                      color: "#282c34",
+                      color: "#ffffff",
                     }}
                   >
                     {statistic.avgRating}
@@ -494,7 +512,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
       }
     }
   } catch (error) {
-    console.log(error, `>>>SSS`);
+    console.log(error);
   }
 });
 
@@ -516,7 +534,7 @@ const styles = StyleSheet.create({
   recordText: {
     marginRight: 100,
     fontWeight: "bold",
-    color: "#282c34",
+    color: "#ffffff",
     fontSize: 16,
     textTransform: "capitalize",
   },
@@ -560,7 +578,7 @@ const styles = StyleSheet.create({
   cardDashboard2: {
     marginBottom: 20,
     backgroundColor: "#4682B4",
-    height: 150,
+    height: 180,
     width: 370,
     borderRadius: 7,
     marginLeft: 12,
@@ -573,6 +591,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    paddingTop:15
   },
   textDashboard: {
     fontWeight: "bold",
@@ -594,5 +613,5 @@ const styles = StyleSheet.create({
   flexDirDashboard: {
     flexDirection: "row",
     justifyContent: "space-evenly",
-  },
+  }
 });

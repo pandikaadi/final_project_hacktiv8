@@ -20,7 +20,7 @@ export default function DetailUserScreen({ route, navigation }) {
   const { orderId } = route.params;
   const [order, setOrder] = useState({});
   const [loading, setLoading] = useState(true);
-  const baseUrl = `https://6a70-110-138-83-92.ngrok.io`;
+  const baseUrl = `https://8f1e-110-138-83-92.ngrok.io`;
   const windowHeight = Dimensions.get("window").height;
   const getOrderById = async () => {
     console.log(`${baseUrl}/orders/${orderId}`);
@@ -132,9 +132,9 @@ export default function DetailUserScreen({ route, navigation }) {
               <Text style={{ color: "#6E7C7C", fontWeight:"bold", fontSize:17, marginBottom:5, textAlignVertical:"center" }}>
                 Client Detail
               </Text>
-              <Text style={{ color: "#282c34", fontSize:15, marginBottom: 5, textAlignVertical:"center" }}>
+              {/* <Text style={{ color: "#282c34", fontSize:15, marginBottom: 5, textAlignVertical:"center" }}>
                 {order.order.orderKey}
-              </Text>
+              </Text> */}
             </View>
             <Text style={{ color: "#282c34", fontSize:15, marginBottom: 5 }}>
               {order.user.username}
