@@ -34,7 +34,6 @@ function BarChart({ chartData }) {
     labels: ["Total Barber", "Total Users", "Total Order", "Total Vote"],
     datasets: [
       {
-        label: "# of Votes",
         data: [totalBarber, totalUser, totalOrder, chartData.app.votes.length],
         backgroundColor: [
           "rgba(255, 99, 132, 0.2)",
@@ -62,6 +61,11 @@ function BarChart({ chartData }) {
           },
         },
       ],
+    },
+    plugins: {
+      legend: {
+        labels: false,
+      },
     },
   };
 
