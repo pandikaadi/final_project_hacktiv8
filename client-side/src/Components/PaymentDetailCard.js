@@ -37,7 +37,9 @@ function PaymentDetailCard() {
   if (loading) {
     return (
       <>
-        <p>LOADING..</p>
+        <div className="flex justify-center h-screen">
+          <img className="m-auto" src={require("../assets/loading.gif")} />
+        </div>
       </>
     );
   }

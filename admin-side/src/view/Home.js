@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Navbar from "../component/Navbar";
 import AdminModal from "../component/AdminModal";
@@ -7,13 +7,8 @@ import BarChart from "../component/Chart";
 import { fetchBarber } from "../store/actionCreator/actionCreator";
 import { renderToStaticMarkup } from "react-dom/server";
 import { divIcon } from "leaflet";
-import '../App.css'
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-} from "react-leaflet";
+import "../App.css";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 
 function Home() {
   let totalIncome = 0;
@@ -28,7 +23,6 @@ function Home() {
     html: iconMarkupBarber,
   });
   const { chartData } = useSelector((state) => state.data);
-  console.log(chartData, `>>>>>>>>>>>>>>`);
   function incomeCounter(x) {
     let res = 0;
     chartData.app.barbers.map((el) => {
@@ -39,6 +33,13 @@ function Home() {
       });
     });
     return res;
+  }
+
+  function currencyFormat(value) {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }).format(value);
   }
 
   function voteCounter(x) {
@@ -68,12 +69,17 @@ function Home() {
   }, [dispatch]);
 
   if (loading) {
-    return <div>Loading...</div>;
-  }
+    return (
+    <div className="flex w-full h-screen justify-center items-center">
+      <div className="justify-center self-center">
+        <img src={require("../assets/loading.gif")} alt="loading.gif" />
+      </div>
+    </div>
+    )}
   if (error) {
     return <div>Somthing went wrong..</div>;
   }
-  function LocationMarker({position, orderKey}) {
+  function LocationMarker({ position, orderKey }) {
     return position === null ? null : (
       <Marker icon={customMarkerIconBarber} position={position}>
         <Popup>orderKey: {orderKey}</Popup>
@@ -136,7 +142,7 @@ function Home() {
                       </td>
                       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                         <p className="text-gray-900 whitespace-no-wrap text-center">
-                          {incomeCounter(x.id)}
+                          {currencyFormat(incomeCounter(x.id))}
                         </p>
                       </td>
                     </tr>
@@ -147,24 +153,22 @@ function Home() {
           </div>
         </div>
         <div className="flex flex-col content-center items-center">
-            <div className="text-gray-600 mb-5">
-              TRACK ORDERS AND BARBERS
-            </div>
+          <div className="text-gray-600 mb-5">TRACK ORDERS AND BARBERS</div>
           <div className="w-full content-center mb-10 rounded items-center flex flex-row">
             <div className="border-2 rounded p-5 ml-auto h-fit  w-1/4 border-gray-700 text-gray-700 flex flex-col">
               <div className="text-center mb-2">
-                <span className="">
-                  LEGEND
-                </span>
+                <span className="">LEGEND</span>
               </div>
               <div className="text-center mb-2">
                 <span className="">
-                <i className=" fa fa-map-marker-alt fa-2x mr-3" /><span>          ORDER</span>
+                  <i className=" fa fa-map-marker-alt fa-2x mr-3" />
+                  <span> ORDER</span>
                 </span>
               </div>
               <div className="text-center">
                 <span className="">
-                <i className=" fa fa-map-marker-alt text-blue-500 fa-2x mr-3" /><span>          BARBER</span>
+                  <i className=" fa fa-map-marker-alt text-blue-500 fa-2x mr-3" />
+                  <span> BARBER</span>
                 </span>
               </div>
             </div>
@@ -179,16 +183,19 @@ function Home() {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-               {chartData.app.orders.map((e) => (
-                 <LocationMarker orderKey={e.orderKey} position={{ lat: e.lat, lng: e.long }} />
-                 
+              {chartData.app.orders.map((e) => (
+                <LocationMarker
+                  key={e.orderKey}
+                  orderKey={e.orderKey}
+                  position={{ lat: e.lat, lng: e.long }}
+                />
               ))}
               {/* <LocationMarker />
                       <BarberMarker />
                       
                       <HandleCenter mapCenter={position} /> */}
               {chartData.app.barbers.map((e) => (
-                <Marker position={{ lat: e.lat, lng: e.long }}>
+                <Marker key={e.id} position={{ lat: e.lat, lng: e.long }}>
                   <Popup position={{ lat: e.lat, lng: e.long }}>{e.name}</Popup>
                 </Marker>
               ))}
@@ -196,7 +203,6 @@ function Home() {
                       <BarberMarker />
                       
                       <HandleCenter mapCenter={position} /> */}
-             
             </MapContainer>
           </div>
         </div>

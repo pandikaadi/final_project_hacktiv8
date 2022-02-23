@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { postBarber, setRegister } from "../store/actionCreator/actionCreator";
+import { fetchBarber, postBarber, setRegister } from "../store/actionCreator/actionCreator";
 import { toast } from "react-toastify";
 
 function BarberModal() {
@@ -36,6 +36,14 @@ function BarberModal() {
         return res.json().then((data) => {
           if (res.ok) {
             dispatch(setRegister(false));
+            dispatch(fetchBarber(localStorage.getItem("access_token")));
+            setNewBarber({
+              name: "",
+              email: "",
+              password: "",
+              phoneNumber: "",
+              city: "",
+            })
             toast.success("New barber registered");
           } else {
             return Promise.reject(data);

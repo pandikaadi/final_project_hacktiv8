@@ -23,10 +23,6 @@ function BarChart({ chartData }) {
     return (totalIncome += el.price);
   });
 
-  chartData.app.votes.map((el) => {
-    return (totalVote += el.value);
-  });
-
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -35,11 +31,10 @@ function BarChart({ chartData }) {
   }
 
   const data = {
-    labels: ["Total Barber", "Total Users", "Total Order", "Vote Average"],
+    labels: ["Total Barber", "Total Users", "Total Order", "Total Vote"],
     datasets: [
       {
-        label: "# of Votes",
-        data: [totalBarber, totalUser, totalOrder, totalVote / totalOrder],
+        data: [totalBarber, totalUser, totalOrder, chartData.app.votes.length],
         backgroundColor: [
           "rgba(255, 99, 132, 0.2)",
           "rgba(54, 162, 235, 0.2)",
@@ -66,6 +61,11 @@ function BarChart({ chartData }) {
           },
         },
       ],
+    },
+    plugins: {
+      legend: {
+        labels: false,
+      },
     },
   };
 

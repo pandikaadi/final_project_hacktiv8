@@ -16,7 +16,11 @@ export default function PrivateRouter({ children }) {
   const { userOrder } = useSelector((state) => state.data);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center h-screen">
+        <img className="m-auto" src={require("../../assets/loading.gif")} />
+      </div>
+    );
   }
   if (!isAuthen) {
     return <Navigate to="/signin" state={{ from: location }} replace />;

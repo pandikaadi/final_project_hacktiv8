@@ -8,6 +8,7 @@ import RatingModal from "../Components/RatingModal";
 import { toast } from "react-toastify";
 import { GetOrders } from "../store/actionCreators/actionCreator";
 import BottomNav from "../Components/BottomNav";
+import image9 from "../assets/image9.png";
 
 function CardForm() {
   const dispatch = useDispatch();
@@ -17,8 +18,6 @@ function CardForm() {
   const { isService, loading, error, hasOrder } = useSelector(
     (state) => state.client
   );
-
-  console.log(hasOrder, "fetch");
 
   function handleSelector(e) {
     dispatch(setLocation(e.target.value));
@@ -47,9 +46,9 @@ function CardForm() {
 
   if (loading) {
     return (
-      <>
-        <p>LOADING..</p>
-      </>
+      <div className="flex justify-center h-screen">
+        <img className="m-auto" src={require("../assets/loading.gif")} />
+      </div>
     );
   }
   if (error) {
@@ -71,7 +70,7 @@ function CardForm() {
           <ul className="flex flex-row justify-between">
             <li>
               <p className="text-zinc-900 text-3xl font-bold tracking-wider">
-                Hello, User!
+                Welcome!
               </p>
               {!isService && (
                 <p className="text-zinc-900">Find your personality now!</p>
@@ -84,7 +83,7 @@ function CardForm() {
               {!isService && (
                 <select
                   onChange={handleSelector}
-                  className="flex font-semibold text-white bg-zinc-900 mt-4 px-2 py-1 rounded-lg"
+                  className="flex font-semibold text-white bg-zinc-600 mt-4 px-2 py-1 rounded-lg"
                 >
                   <option>My Location</option>
                   <option value="1">Jakarta</option>
@@ -96,28 +95,24 @@ function CardForm() {
         </div>
 
         <div className="mx-4 mt-4 flex justify-between flex-row mb-4">
-          <div className="mr-2 flex flex-col mt-2 border-2 w-fit px-2 py-1 rounded">
-            <button className="bg-transparent font-semibold border-1 border-zinc-900 text-zinc-900 text-xs">
-              DISCOUNTS
-            </button>
-          </div>
-          <div className="mr-2 flex flex-row mt-2 border-2 w-fit px-2 py-1 rounded">
-            <button className="bg-transparent font-semibold border-1 border-zinc-900 text-zinc-900 text-xs">
-              MISSIONS
-            </button>
-          </div>
-          <div className="mr-2 flex flex-row mt-2 border-2 w-fit px-2 py-1 rounded">
-            <button className="bg-transparent font-semibold border-1 border-zinc-900 text-zinc-900 text-xs">
-              VOUCHERS
-            </button>
-          </div>
-          <div className="flex flex-row mt-2 border-2 w-fit px-2 py-1 rounded">
-            <button
-              className="bg-transparent font-semibold border-1 border-zinc-900 text-zinc-900 text-xs"
-              onClick={() => handleShowDetailOrder()}
-            >
-              MY ORDER
-            </button>
+          <div
+            onClick={() => handleShowDetailOrder()}
+            className="flex flex-row bg-gradient-to-r from-gray-100 to-gray-300 border-2 h-24 shadow-lg rounded-lg w-full"
+          >
+            <div className="flex flex-1 justify-start mx-4 mt-4">
+              {/* <p className="font-bold text-xl">Check your detail order here!</p> */}
+              <ul className="font-medium text-lg">
+                <li>
+                  <p>Check your detail</p>
+                </li>
+                <li>
+                  <p>order here!</p>
+                </li>
+              </ul>
+            </div>
+            <div className="mx-1">
+              <img src={image9} className="w-24" />
+            </div>
           </div>
         </div>
         {!isService &&
