@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Navbar from "../component/Navbar";
 import AdminModal from "../component/AdminModal";
@@ -23,7 +23,6 @@ function Home() {
     html: iconMarkupBarber,
   });
   const { chartData } = useSelector((state) => state.data);
-  console.log(chartData, `>>>>>>>>>>>>>>`);
   function incomeCounter(x) {
     let res = 0;
     chartData.app.barbers.map((el) => {
@@ -70,8 +69,13 @@ function Home() {
   }, [dispatch]);
 
   if (loading) {
-    return <div>Loading...</div>;
-  }
+    return (
+    <div className="flex w-full h-screen justify-center items-center">
+      <div className="justify-center self-center">
+        <img src={require("../assets/loading.gif")} alt="loading.gif" />
+      </div>
+    </div>
+    )}
   if (error) {
     return <div>Somthing went wrong..</div>;
   }
@@ -181,6 +185,7 @@ function Home() {
               />
               {chartData.app.orders.map((e) => (
                 <LocationMarker
+                  key={e.orderKey}
                   orderKey={e.orderKey}
                   position={{ lat: e.lat, lng: e.long }}
                 />
@@ -190,7 +195,7 @@ function Home() {
                       
                       <HandleCenter mapCenter={position} /> */}
               {chartData.app.barbers.map((e) => (
-                <Marker position={{ lat: e.lat, lng: e.long }}>
+                <Marker key={e.id} position={{ lat: e.lat, lng: e.long }}>
                   <Popup position={{ lat: e.lat, lng: e.long }}>{e.name}</Popup>
                 </Marker>
               ))}
