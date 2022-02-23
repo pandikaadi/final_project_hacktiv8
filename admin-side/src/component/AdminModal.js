@@ -37,6 +37,12 @@ function AdminModal() {
         return res.json().then((data) => {
           if (res.ok) {
             dispatch(setRegisterAdmin(false));
+            setNewAdmin({
+              username: "",
+              email: "",
+              password: "",
+              phoneNumber: "",
+            })
             toast.success("New admin registered");
           } else {
             return Promise.reject(data);
