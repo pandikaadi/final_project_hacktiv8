@@ -19,8 +19,6 @@ function CardForm() {
     (state) => state.client
   );
 
-  console.log(hasOrder, "fetch");
-
   function handleSelector(e) {
     dispatch(setLocation(e.target.value));
     setSelector(true);
@@ -48,9 +46,9 @@ function CardForm() {
 
   if (loading) {
     return (
-      <>
-        <p>LOADING..</p>
-      </>
+      <div className="flex justify-center h-screen">
+        <img className="m-auto" src={require("../assets/loading.gif")} />
+      </div>
     );
   }
   if (error) {
