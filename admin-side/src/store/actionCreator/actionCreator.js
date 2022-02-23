@@ -19,6 +19,7 @@ export const postBarber = (payload) => {
 };
 
 export const fetchBarber = (payload) => {
+  console.log("masuk");
   return (dispatch) => {
     fetch("http://localhost:4000/admin/all", {
       method: "GET",

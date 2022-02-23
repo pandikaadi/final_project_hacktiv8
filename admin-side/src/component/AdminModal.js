@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import {
   setRegisterAdmin,
   postAdmin,
+  fetchBarber,
 } from "../store/actionCreator/actionCreator";
 import { toast } from "react-toastify";
 
@@ -36,6 +37,7 @@ function AdminModal() {
       .then((res) => {
         return res.json().then((data) => {
           if (res.ok) {
+            dispatch(fetchBarber(localStorage.getItem("access_token")));
             dispatch(setRegisterAdmin(false));
             toast.success("New admin registered");
           } else {
