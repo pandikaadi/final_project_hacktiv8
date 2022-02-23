@@ -33,7 +33,7 @@ function SignIn() {
             localStorage.setItem("access_token", data.access_token);
             localStorage.setItem("role", data.role);
             toast.success("Login success");
-            navigate("/home");
+            navigate("/");
           } else {
             return Promise.reject(data);
           }
