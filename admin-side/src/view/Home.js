@@ -11,7 +11,6 @@ import "../App.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 
 function Home() {
-  let totalIncome = 0;
   const dispatch = useDispatch();
   const { registerBarber, registerAdmin, loading, error } = useSelector(
     (state) => state.admin
@@ -23,7 +22,6 @@ function Home() {
     html: iconMarkupBarber,
   });
   const { chartData } = useSelector((state) => state.data);
-  console.log(chartData, `>>>>>>>>>>>>>>`);
   function incomeCounter(x) {
     let res = 0;
     chartData.app.barbers.map((el) => {
@@ -70,7 +68,11 @@ function Home() {
   }, [dispatch]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center h-screen">
+        <img className="m-auto" src={require("../assets/loading.gif")} />
+      </div>
+    );
   }
   if (error) {
     return <div>Somthing went wrong..</div>;

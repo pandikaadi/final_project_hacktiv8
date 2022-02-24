@@ -32,33 +32,33 @@ function App() {
         <Route
           path="/signin"
           element={
-            <ToSignGuard>
-              <SignIn />
-            </ToSignGuard>
+            // <ToSignGuard>
+            <SignIn />
+            // </ToSignGuard>
           }
         />
         <Route
           path="/signup"
           element={
-            <ToSignGuard>
-              <SignUp />
-            </ToSignGuard>
+            // <ToSignGuard>
+            <SignUp />
+            // </ToSignGuard>
           }
         />
         <Route
           path="/home"
           element={
-            <PrivateRouter>
-              <ChooseService />
-            </PrivateRouter>
+            // <PrivateRouter>
+            <ChooseService />
+            // </PrivateRouter>
           }
         />
         <Route
           path="/book"
           element={
-            <BeforeBook>
-              <BookForm />
-            </BeforeBook>
+            // <BeforeBook>
+            <BookForm />
+            // </BeforeBook>
           }
         />
         <Route path="/payment" element={<PaymentPage />} />
