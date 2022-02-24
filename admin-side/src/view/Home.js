@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Navbar from "../component/Navbar";
 import AdminModal from "../component/AdminModal";
@@ -183,6 +183,7 @@ function Home() {
               />
               {chartData.app.orders.map((e) => (
                 <LocationMarker
+                  key={e.orderKey}
                   orderKey={e.orderKey}
                   position={{ lat: e.lat, lng: e.long }}
                 />
@@ -192,7 +193,7 @@ function Home() {
                       
                       <HandleCenter mapCenter={position} /> */}
               {chartData.app.barbers.map((e) => (
-                <Marker position={{ lat: e.lat, lng: e.long }}>
+                <Marker key={e.id} position={{ lat: e.lat, lng: e.long }}>
                   <Popup position={{ lat: e.lat, lng: e.long }}>{e.name}</Popup>
                 </Marker>
               ))}

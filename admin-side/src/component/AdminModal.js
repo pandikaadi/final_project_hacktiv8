@@ -39,6 +39,12 @@ function AdminModal() {
           if (res.ok) {
             dispatch(fetchBarber(localStorage.getItem("access_token")));
             dispatch(setRegisterAdmin(false));
+            setNewAdmin({
+              username: "",
+              email: "",
+              password: "",
+              phoneNumber: "",
+            })
             toast.success("New admin registered");
           } else {
             return Promise.reject(data);

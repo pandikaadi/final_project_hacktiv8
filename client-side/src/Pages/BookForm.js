@@ -60,7 +60,7 @@ function BookForm() {
   const [position, setPosition] = useState(null);
   const [form, setForm] = useState({
     address: "",
-    date: "",
+    date: new Date().toISOString().split("T")[0],
     hour: "",
   });
 
@@ -276,6 +276,7 @@ function BookForm() {
               <div className="flex justify-center mb-2">
                 <input
                   min={new Date().toISOString().split("T")[0]}
+                  defaultValue={new Date().toISOString().split("T")[0]}
                   onChange={formHandler}
                   required
                   value={form.date}

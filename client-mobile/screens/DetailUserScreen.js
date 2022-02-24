@@ -20,10 +20,10 @@ export default function DetailUserScreen({ route, navigation }) {
   const { orderId } = route.params;
   const [order, setOrder] = useState({});
   const [loading, setLoading] = useState(true);
-  const baseUrl = `http://99da-123-253-232-109.ngrok.io`;
+  const baseUrl = `https://8f1e-110-138-83-92.ngrok.io`;
   const windowHeight = Dimensions.get("window").height;
   const getOrderById = async () => {
-    console.log(`${baseUrl}/orders/${orderId}`);
+    
     try {
       const value = await AsyncStorage.getItem("token");
       const response = await axios.get(`${baseUrl}/orders/${orderId}`, {
@@ -115,7 +115,7 @@ export default function DetailUserScreen({ route, navigation }) {
           </TouchableOpacity>
         </View>
         <View style={{justifyContent:"center", marginTop:"auto", marginBottom:"auto", paddingBottom:20}}>
-          <View style={[styles.cardUserDetail, {paddingHorizontal: 15}]}>
+          <View style={[styles.cardUserDetail, {paddingHorizontal: 20}]}>
             <View
               style={{
                 marginBottom: 5,
@@ -132,9 +132,9 @@ export default function DetailUserScreen({ route, navigation }) {
               <Text style={{ color: "#6E7C7C", fontWeight:"bold", fontSize:17, marginBottom:5, textAlignVertical:"center" }}>
                 Client Detail
               </Text>
-              <Text style={{ color: "#282c34", fontSize:15, marginBottom: 5, textAlignVertical:"center" }}>
+              {/* <Text style={{ color: "#282c34", fontSize:15, marginBottom: 5, textAlignVertical:"center" }}>
                 {order.order.orderKey}
-              </Text>
+              </Text> */}
             </View>
             <Text style={{ color: "#282c34", fontSize:15, marginBottom: 5 }}>
               {order.user.username}
@@ -203,7 +203,6 @@ const styles = StyleSheet.create({
   cardUserDetail: {
     backgroundColor: "white",
     borderRadius: 30,
-    paddingLeft: 25,
     height: "86%",
     marginHorizontal: 20,
     marginTop: 30,

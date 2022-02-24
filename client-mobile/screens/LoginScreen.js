@@ -23,8 +23,8 @@ export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [token, setToken] = useState(null);
-  console.log(email, password);
-  const baseUrl = `http://99da-123-253-232-109.ngrok.io`;
+  const baseUrl = `https://8f1e-110-138-83-92.ngrok.io`;
+  
   const onLoginPress = async () => {
     try {
       const response = await axios.post(`${baseUrl}/barbers/login`, {
@@ -33,6 +33,7 @@ export default function LoginScreen({ navigation }) {
       });
       // console.log(response.data)
       await AsyncStorage.setItem("token", response.data.access_token);
+      await AsyncStorage.setItem("email", email)
       setEmail("");
       setPassword("");
       navigation.navigate("Dashboard");
