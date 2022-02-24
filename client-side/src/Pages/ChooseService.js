@@ -48,15 +48,19 @@ function CardForm() {
   useEffect(() => {
     dispatch(GetOrders(localStorage.getItem("access_token")));
     if (!userOrder.orders) {
+      console.log("aaaaaaaaaaaaaaaaaaaa");
       dispatch(isServiceSelected(false));
-    } else if (
-      userOrder.orders[userOrder.orders.length - 1].statusBarber !== "Finished"
-    ) {
-      setIsFinish(true);
-    } else if (
-      userOrder.orders[userOrder.orders.length - 1].statusBarber !== "Voted"
-    ) {
-      setIsVoted(true);
+    } else if (userOrder.orders.length) {
+      if (
+        userOrder.orders[userOrder.orders.length - 1].statusBarber ===
+        "Finished"
+      ) {
+        setIsFinish(true);
+      } else if (
+        userOrder.orders[userOrder.orders.length - 1].statusBarber === "Voted"
+      ) {
+        setIsVoted(true);
+      }
     } else {
       console.log("aaaa");
     }
@@ -132,7 +136,7 @@ function CardForm() {
             </div>
           </div>
         </div>
-        {!isService && !isVoted && <FormCard isLocated={selector} />}
+        {!isService && <FormCard isLocated={selector} />}
         {isService && <ChooseBarber />}
         {isFinish && hasOrder && <RatingModal />}
         <BottomNav />

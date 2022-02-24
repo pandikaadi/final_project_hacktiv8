@@ -15,8 +15,8 @@ import {
   SET_ERROR,
   SET_VOTE,
 } from "../actionTypes/actionType";
-// const baseUrl = "https://fd93-110-138-83-92.ngrok.io";
-const baseUrl = "http://localhost:4000";
+const baseUrl = "https://fd93-110-138-83-92.ngrok.io";
+// const baseUrl = "http://localhost:4000";
 
 export const CreateNewClient = (payload) => {
   return (dispatch) => {
