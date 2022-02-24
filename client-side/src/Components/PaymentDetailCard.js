@@ -15,11 +15,10 @@ function PaymentDetailCard() {
   const { userOrder } = useSelector((state) => state.data);
   const { loading, error } = useSelector((state) => state.client);
 
-  console.log(userOrder);
   const backHome = () => {
     navigate("/home");
   };
-  console.log(userOrder.orders);
+
   function handleCancelOrder() {
     dispatch(cancelOrder(userOrder.orders[userOrder.orders.length - 1].id))
       .then(() => {

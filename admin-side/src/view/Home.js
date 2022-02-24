@@ -11,7 +11,6 @@ import "../App.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 
 function Home() {
-  let totalIncome = 0;
   const dispatch = useDispatch();
   const { registerBarber, registerAdmin, loading, error } = useSelector(
     (state) => state.admin
@@ -70,12 +69,11 @@ function Home() {
 
   if (loading) {
     return (
-    <div className="flex w-full h-screen justify-center items-center">
-      <div className="justify-center self-center">
-        <img src={require("../assets/loading.gif")} alt="loading.gif" />
+      <div className="flex justify-center h-screen">
+        <img className="m-auto" src={require("../assets/loading.gif")} />
       </div>
-    </div>
-    )}
+    );
+  }
   if (error) {
     return <div>Somthing went wrong..</div>;
   }

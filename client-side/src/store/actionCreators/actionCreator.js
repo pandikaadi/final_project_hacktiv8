@@ -15,6 +15,7 @@ import {
   SET_ERROR,
   SET_VOTE,
 } from "../actionTypes/actionType";
+// const baseUrl = "https://fd93-110-138-83-92.ngrok.io";
 const baseUrl = "http://localhost:4000";
 
 export const CreateNewClient = (payload) => {
@@ -56,6 +57,7 @@ export const PostVote = (payload) => {
       headers: { access_token: localStorage.getItem("access_token") },
     })
       .then((res) => {
+        console.log(res);
         dispatch(GetOrders(localStorage.getItem("access_token")));
       })
       .catch((err) => {
@@ -75,7 +77,9 @@ export const GetOrders = (payload) => {
       headers: { access_token: payload },
     })
       .then((res) => {
-        if (
+        if (res.data.orders.length === 0) {
+          dispatch(hasOrder(true));
+        } else if (
           res.data.orders[res.data.orders.length - 1].statusBarber ===
             "Finished" &&
           res.data.orders[res.data.orders.length - 1].statusPayment === true
@@ -183,7 +187,6 @@ export const GetAllService = (payload) => {
       data: payload,
     })
       .then((res) => {
-        console.log(res.data);
         dispatch(fetchServices(res.data));
       })
       .catch((err) => {
@@ -249,10 +252,10 @@ export const postNewOrder = (payload) => {
       })
       .catch((err) => {
         throw err;
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
       });
-    // .finally(() => {
-    //   dispatch(fetchUserLoading(false));
-    // });
   };
 };
 

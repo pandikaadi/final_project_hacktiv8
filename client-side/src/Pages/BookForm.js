@@ -21,6 +21,7 @@ import {
   hasOrder,
   isServiceSelected,
   postNewOrder,
+  setLoading,
   showRatingForm,
 } from "../store/actionCreators/actionCreator";
 import RatingModal from "../Components/RatingModal";
@@ -89,13 +90,12 @@ function BookForm() {
         barberId: barber,
         city: location,
       };
-      console.log(payload);
       dispatch(postNewOrder(payload))
         .then((data) => {
           dispatch(hasOrder(true));
           dispatch(isServiceSelected(false));
           dispatch(showRatingForm(true));
-          console.log("sebelum navigate ke home");
+          dispatch(setLoading(true));
           navigate("/payment");
         })
         .catch((err) => {
